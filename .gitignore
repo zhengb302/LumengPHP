@@ -2,3 +2,5 @@
 # 忽略NetBeans项目配置目录
 nbproject/
 
+# 忽略vendor目录
+vendor/

@@ -1,4 +1,17 @@
 {
+    "name": "Lumeng/LumengPHP",
+    "description": "A lightweight PHP framework that is fast and testable.",
+    "keywords": ["framework", "PHP framework"],
+    "homepage": "https://github.com/zhengb302/LumengPHP",
+    "license": "Apache License 2.0",
+    "authors": [
+        {
+            "name": "Lumeng",
+            "email": "908235332@qq.com",
+            "homepage": "https://github.com/zhengb302/",
+            "role": "Developer"
+        }
+    ],
     "require": {
     },
     "autoload": {

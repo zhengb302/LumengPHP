@@ -13,6 +13,7 @@
         }
     ],
     "require": {
+        "lumeng/lumeng-php-utils": "dev-master"
     },
     "autoload": {
         "psr-4": {

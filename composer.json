@@ -13,7 +13,10 @@
         }
     ],
     "require": {
-        "lumeng/lumeng-php-utils": "dev-master"
+        "lumeng/lumeng-php-utils": "dev-master",
+        "symfony/config": "^2.8",
+        "symfony/yaml": "^2.8",
+        "symfony/http-kernel": "^2.8"
     },
     "autoload": {
         "psr-4": {

@@ -8,7 +8,7 @@ use LumengPHP\Kernel\AppKernel;
 
 $request = Request::createFromGlobals();
 
-$kernel = new AppKernel();
+$kernel = new AppKernel(__DIR__ . '/config/config.yml');
 
 $response = $kernel->handle($request);
 

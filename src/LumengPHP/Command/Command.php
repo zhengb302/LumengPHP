@@ -2,8 +2,9 @@
 
 namespace LumengPHP\Command;
 
-use \LumengPHP\Kernel\AppContext;
-use \LumengPHP\Kernel\HttpRequest;
+use LumengPHP\Kernel\AppContext;
+use LumengPHP\Kernel\HttpRequest;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  *
@@ -18,8 +19,8 @@ interface Command {
     public function init();
 
     /**
-     * 执行命令并返回处理结果
-     * @return Result
+     * 执行命令并返回Response
+     * @return Response
      */
     public function execute();
 }

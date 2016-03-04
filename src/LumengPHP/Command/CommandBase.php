@@ -31,28 +31,4 @@ abstract class CommandBase implements Command {
         $this->req = $request;
     }
 
-    public function init() {
-        
-    }
-
-    /**
-     * 
-     * @param string $msg
-     * @param array $more
-     * @return Result
-     */
-    protected function makeSuccessResult($msg = '', array $more = array()) {
-        return new Result(Result::SUCCESS, $msg, $more);
-    }
-
-    /**
-     * 
-     * @param string $msg
-     * @param array $more
-     * @return Result
-     */
-    protected function makeFailedResult($msg = '', array $more = array()) {
-        return new Result(Result::FAILURE, $msg, $more);
-    }
-
 }

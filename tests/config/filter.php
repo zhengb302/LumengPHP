@@ -1,7 +1,7 @@
 <?php
 
 /*
- * 过滤器配置
+ * 过滤器组件配置
  */
 
 return array(
@@ -21,6 +21,5 @@ return array(
         ),
     ),
     'postFilters' => array(
-        
     ),
 );

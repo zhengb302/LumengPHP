@@ -15,6 +15,7 @@ use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\HttpKernel\EventListener\RouterListener;
 use LumengPHP\Kernel\ControllerResolver;
+use LumengPHP\Kernel\EventListener\FilterListener;
 
 /**
  * 
@@ -49,6 +50,8 @@ class AppKernel implements HttpKernelInterface, TerminableInterface {
      * 初始化
      */
     private function initialize() {
+        $requestStack = new RequestStack();
+
         $routes = new RouteCollection();
         $routeConfigs = $this->configs['framework']['router'];
         foreach ($routeConfigs as $name => $routeConfig) {
@@ -60,8 +63,10 @@ class AppKernel implements HttpKernelInterface, TerminableInterface {
         $matcher = new UrlMatcher($routes, new RequestContext());
 
         $dispatcher = new EventDispatcher();
-        $routerListener = new RouterListener($matcher, new RequestStack());
+        $routerListener = new RouterListener($matcher, $requestStack);
         $dispatcher->addSubscriber($routerListener);
+        $filterListener = new FilterListener($this->configs['framework']['filter']);
+        $dispatcher->addSubscriber($filterListener);
 
         //@todo AppContext的实现类从配置中获取，而不是直接写死
         $appContext = new AppContextImpl();
@@ -70,7 +75,7 @@ class AppKernel implements HttpKernelInterface, TerminableInterface {
         $appConfig = new AppConfig($this->configs);
 
         $resolver = new ControllerResolver($appContext, $appConfig);
-        $this->kernel = new HttpKernel($dispatcher, $resolver);
+        $this->kernel = new HttpKernel($dispatcher, $resolver, $requestStack);
     }
 
     /**

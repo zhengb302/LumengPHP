@@ -3,14 +3,14 @@
 namespace LumengPHP\Kernel;
 
 /**
- * 配置程序接口
+ * 应用配置接口
  *
  * @author zhengluming <luming.zheng@baozun.cn>
  */
-interface Configuration {
+interface AppConfig {
 
     /**
-     * 取得配置数据
+     * 返回应用配置数据
      * @param string $key 配置key
      * @return mixed
      */

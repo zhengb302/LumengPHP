@@ -1,6 +1,6 @@
 <?php
 
-namespace LumengPHP\Kernel;
+namespace LumengPHP\Misc;
 
 /**
  * 结果

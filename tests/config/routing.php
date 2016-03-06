@@ -8,11 +8,6 @@ return array(
     'homepage' => array(
         'path' => '/',
         '_cmd' => 'tests\Commands\HomepageCommand',
-        'preFilters' => array(
-            array(
-                'class' => '',
-            ),
-        ),
     ),
     'product' => array(
         'path' => '/product/',

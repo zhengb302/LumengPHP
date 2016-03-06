@@ -9,7 +9,7 @@ return array(
     'framework' => array(
         'defaultLocale' => 'zh',
         'router' => require(__DIR__ . '/routing.php'),
-        'globalFilters' => require(__DIR__ . '/global_filters.php'),
+        'filters' => require(__DIR__ . '/filters.php'),
     ),
 );
 

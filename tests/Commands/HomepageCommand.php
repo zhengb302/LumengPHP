@@ -2,6 +2,7 @@
 
 namespace tests\Commands;
 
+use LumengPHP\Command\AbstractCommand;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -9,7 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
  *
  * @author Lumeng <zhengb302@163.com>
  */
-class HomepageCommand extends \LumengPHP\Command\CommandBase {
+class HomepageCommand extends AbstractCommand {
 
     public function init() {
         

@@ -63,7 +63,13 @@ class AppKernel implements HttpKernelInterface, TerminableInterface {
         $routerListener = new RouterListener($matcher, new RequestStack());
         $dispatcher->addSubscriber($routerListener);
 
-        $resolver = new ControllerResolver();
+        //@todo AppContext的实现类从配置中获取，而不是直接写死
+        $appContext = new AppContextImpl();
+
+        //@todo 在AppKernel的构造器中，就应该使用AppConfig，而不是推迟到这里
+        $appConfig = new AppConfig($this->configs);
+
+        $resolver = new ControllerResolver($appContext, $appConfig);
         $this->kernel = new HttpKernel($dispatcher, $resolver);
     }
 

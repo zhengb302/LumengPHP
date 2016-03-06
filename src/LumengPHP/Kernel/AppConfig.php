@@ -28,6 +28,7 @@ class AppConfig {
      * @return mixed
      */
     public function get($key) {
+        //@todo 增强获取配置的功能，如可以直接通过"foo.bar"的方式获取
         return isset($this->configs[$key]) ? $this->configs[$key] : null;
     }
 

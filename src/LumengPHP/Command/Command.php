@@ -1,7 +1,9 @@
 <?php
 
-namespace LumengPHP\Kernel;
+namespace LumengPHP\Command;
 
+use LumengPHP\Kernel\AppContext;
+use LumengPHP\Kernel\AppConfig;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Exception;

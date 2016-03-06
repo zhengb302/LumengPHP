@@ -7,6 +7,7 @@ use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpFoundation\Response;
+use LumengPHP\Filter\FilterBuilder;
 
 /**
  * Filter组件相关事件
@@ -20,8 +21,14 @@ class FilterListener implements EventSubscriberInterface {
      */
     private $filterConfig;
 
-    public function __construct(array $filterConfig) {
+    /**
+     * @var FilterBuilder 
+     */
+    private $filterBuilder;
+
+    public function __construct(array $filterConfig, FilterBuilder $filterBuilder) {
         $this->filterConfig = $filterConfig;
+        $this->filterBuilder = $filterBuilder;
     }
 
     public function onKernelRequest(GetResponseEvent $event) {
@@ -46,8 +53,9 @@ class FilterListener implements EventSubscriberInterface {
                 continue;
             }
 
+            $this->filterBuilder->setParameters($preFilterConfig['parameters']);
             $class = $preFilterConfig['class'];
-            $filter = new $class();
+            $filter = $this->filterBuilder->getFilter($class);
             $response = $filter->doFilter();
             if (!is_null($response) && $response instanceof Response) {
                 $event->setResponse($response);
@@ -67,15 +75,17 @@ class FilterListener implements EventSubscriberInterface {
 
         $currentRouteName = $request->attributes->get('_route');
 
+        $this->filterBuilder->setResponse($response);
+
         foreach ($postFilterConfigs as $name => $postFilterConfig) {
             if (!empty($postFilterConfig['routes']) &&
                     !in_array($currentRouteName, $postFilterConfig['routes'])) {
                 continue;
             }
 
+            $this->filterBuilder->setParameters($postFilterConfig['parameters']);
             $class = $postFilterConfig['class'];
-            $filter = new $class();
-            $filter->setResponse($response);
+            $filter = $this->filterBuilder->getFilter($class);
             $filter->doFilter();
         }
     }

@@ -16,6 +16,7 @@ use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\HttpKernel\EventListener\RouterListener;
 use LumengPHP\Kernel\ControllerResolver;
 use LumengPHP\Kernel\EventListener\FilterListener;
+use LumengPHP\Filter\FilterBuilder;
 
 /**
  * 
@@ -42,14 +43,23 @@ class AppKernel implements HttpKernelInterface, TerminableInterface {
      * {@inheritdoc}
      */
     public function handle(Request $request, $type = self::MASTER_REQUEST, $catch = true) {
-        $this->initialize();
+        //初始化
+        $this->initialize($request);
+
+        //处理请求
         return $this->kernel->handle($request, $type, $catch);
     }
 
     /**
      * 初始化
      */
-    private function initialize() {
+    private function initialize(Request $request) {
+        //@todo AppContext的实现类从配置中获取，而不是直接写死
+        $appContext = new AppContextImpl();
+
+        //@todo 在AppKernel的构造器中，就应该使用AppConfig，而不是推迟到这里
+        $appConfig = new AppConfig($this->configs);
+
         $requestStack = new RequestStack();
 
         $routes = new RouteCollection();
@@ -63,16 +73,14 @@ class AppKernel implements HttpKernelInterface, TerminableInterface {
         $matcher = new UrlMatcher($routes, new RequestContext());
 
         $dispatcher = new EventDispatcher();
+
         $routerListener = new RouterListener($matcher, $requestStack);
         $dispatcher->addSubscriber($routerListener);
-        $filterListener = new FilterListener($this->configs['framework']['filter']);
+
+        $filterConfig = $this->configs['framework']['filter'];
+        $filterBuilder = new FilterBuilder($appContext, $appConfig, $request);
+        $filterListener = new FilterListener($filterConfig, $filterBuilder);
         $dispatcher->addSubscriber($filterListener);
-
-        //@todo AppContext的实现类从配置中获取，而不是直接写死
-        $appContext = new AppContextImpl();
-
-        //@todo 在AppKernel的构造器中，就应该使用AppConfig，而不是推迟到这里
-        $appConfig = new AppConfig($this->configs);
 
         $resolver = new ControllerResolver($appContext, $appConfig);
         $this->kernel = new HttpKernel($dispatcher, $resolver, $requestStack);

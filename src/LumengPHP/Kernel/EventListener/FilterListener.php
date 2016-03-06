@@ -38,7 +38,14 @@ class FilterListener implements EventSubscriberInterface {
             return;
         }
 
+        $currentRouteName = $request->attributes->get('_route');
+
         foreach ($preFilterConfigs as $name => $preFilterConfig) {
+            if (!empty($preFilterConfig['routes']) &&
+                    !in_array($currentRouteName, $preFilterConfig['routes'])) {
+                continue;
+            }
+
             $class = $preFilterConfig['class'];
             $filter = new $class();
             $response = $filter->doFilter();
@@ -55,9 +62,17 @@ class FilterListener implements EventSubscriberInterface {
             return;
         }
 
+        $request = $event->getRequest();
         $response = $event->getResponse();
 
+        $currentRouteName = $request->attributes->get('_route');
+
         foreach ($postFilterConfigs as $name => $postFilterConfig) {
+            if (!empty($postFilterConfig['routes']) &&
+                    !in_array($currentRouteName, $postFilterConfig['routes'])) {
+                continue;
+            }
+
             $class = $postFilterConfig['class'];
             $filter = new $class();
             $filter->setResponse($response);

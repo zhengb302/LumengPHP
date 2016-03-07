@@ -16,34 +16,20 @@ use Exception;
 interface Command {
 
     /**
-     * 返回AppContext实例
-     * @return AppContext
-     */
-    public function getAppContext();
-
-    /**
-     * 返回AppConfig实例
-     * @return AppConfig
-     */
-    public function getAppConfig();
-
-    /**
-     * 返回Request实例
-     * @return Request
-     */
-    public function getRequest();
-
-    /**
      * 初始化方法<br />
      * execute方法执行之前，init方法会被框架调用。
      * 在这里可以进行一些初始化操作
+     * 
+     * @param AppContext $appContext 应用环境对象
      */
-    public function init();
+    public function init(AppContext $appContext);
 
     /**
      * 执行命令并返回Response
+     * 
+     * @param Request $request 请求对象
      * @return Response
      * @throws Exception
      */
-    public function execute();
+    public function execute(Request $request);
 }

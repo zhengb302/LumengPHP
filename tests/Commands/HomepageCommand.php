@@ -2,7 +2,9 @@
 
 namespace tests\Commands;
 
-use LumengPHP\Command\AbstractCommand;
+use LumengPHP\Kernel\AppContext;
+use LumengPHP\Command\Command;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -10,13 +12,13 @@ use Symfony\Component\HttpFoundation\Response;
  *
  * @author Lumeng <zhengb302@163.com>
  */
-class HomepageCommand extends AbstractCommand {
+class HomepageCommand implements Command {
 
-    public function init() {
+    public function init(AppContext $appContext) {
         
     }
 
-    public function execute() {
+    public function execute(Request $request) {
         return new Response('homepage');
     }
 

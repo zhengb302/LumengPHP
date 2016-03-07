@@ -8,5 +8,10 @@ namespace LumengPHP\Kernel;
  * @author zhengluming <luming.zheng@baozun.cn>
  */
 interface AppContext {
-    
+
+    /**
+     * 返回AppConfig实例
+     * @return AppConfig
+     */
+    public function getAppConfig();
 }

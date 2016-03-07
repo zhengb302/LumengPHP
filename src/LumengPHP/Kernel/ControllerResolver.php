@@ -13,26 +13,10 @@ use LumengPHP\Command\Command;
  */
 class ControllerResolver implements ControllerResolverInterface {
 
-    /**
-     * @var AppContext
-     */
-    private $appContext;
-
-    /**
-     * @var AppConfig
-     */
-    private $appConfig;
-
-    public function __construct(AppContext $appContext, AppConfig $appConfig) {
-        $this->appContext = $appContext;
-        $this->appConfig = $appConfig;
-    }
-
     public function getController(Request $request) {
         $cmdClass = $request->attributes->get('_cmd');
 
-        //@todo 这里可能引入CommandBuilder，而不是直接实例化
-        $cmdInstance = new $cmdClass($this->appContext, $this->appConfig, $request);
+        $cmdInstance = new $cmdClass();
         if (!($cmdInstance instanceof Command)) {
             $msg = "{$cmdClass} isn't sub-class of LumengPHP\Command\Command.";
             throw new \InvalidArgumentException($msg);
@@ -43,7 +27,7 @@ class ControllerResolver implements ControllerResolverInterface {
     }
 
     public function getArguments(Request $request, $controller) {
-        return array();
+        return array($request);
     }
 
 }

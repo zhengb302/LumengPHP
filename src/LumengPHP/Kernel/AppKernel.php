@@ -54,11 +54,11 @@ class AppKernel implements HttpKernelInterface, TerminableInterface {
      * 初始化
      */
     private function initialize(Request $request) {
-        //@todo AppContext的实现类从配置中获取，而不是直接写死
-        $appContext = new AppContextImpl();
-
         //@todo 在AppKernel的构造器中，就应该使用AppConfig，而不是推迟到这里
         $appConfig = new AppConfig($this->configs);
+        
+        //@todo AppContext的实现类从配置中获取，而不是直接写死
+        $appContext = new AppContextImpl($appConfig);
 
         $requestStack = new RequestStack();
 
@@ -82,7 +82,7 @@ class AppKernel implements HttpKernelInterface, TerminableInterface {
         $filterListener = new FilterListener($filterConfig, $filterBuilder);
         $dispatcher->addSubscriber($filterListener);
 
-        $resolver = new ControllerResolver($appContext, $appConfig);
+        $resolver = new ControllerResolver();
         $this->kernel = new HttpKernel($dispatcher, $resolver, $requestStack);
     }
 

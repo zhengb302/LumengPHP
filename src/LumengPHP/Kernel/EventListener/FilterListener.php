@@ -7,7 +7,7 @@ use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpFoundation\Response;
-use LumengPHP\Filter\FilterBuilder;
+use LumengPHP\Kernel\AppContext;
 
 /**
  * Filter组件相关事件
@@ -22,13 +22,13 @@ class FilterListener implements EventSubscriberInterface {
     private $filterConfig;
 
     /**
-     * @var FilterBuilder 
+     * @var AppContext 
      */
-    private $filterBuilder;
+    private $appContext;
 
-    public function __construct(array $filterConfig, FilterBuilder $filterBuilder) {
+    public function __construct(array $filterConfig, AppContext $appContext) {
         $this->filterConfig = $filterConfig;
-        $this->filterBuilder = $filterBuilder;
+        $this->appContext = $appContext;
     }
 
     public function onKernelRequest(GetResponseEvent $event) {
@@ -53,10 +53,10 @@ class FilterListener implements EventSubscriberInterface {
                 continue;
             }
 
-            $this->filterBuilder->setParameters($preFilterConfig['parameters']);
             $class = $preFilterConfig['class'];
-            $filter = $this->filterBuilder->getFilter($class);
-            $response = $filter->doFilter();
+            $filter = new $class();
+            $filter->init($this->appContext);
+            $response = $filter->doFilter($request, null);
             if (!is_null($response) && $response instanceof Response) {
                 $event->setResponse($response);
                 return;
@@ -75,18 +75,16 @@ class FilterListener implements EventSubscriberInterface {
 
         $currentRouteName = $request->attributes->get('_route');
 
-        $this->filterBuilder->setResponse($response);
-
         foreach ($postFilterConfigs as $name => $postFilterConfig) {
             if (!empty($postFilterConfig['routes']) &&
                     !in_array($currentRouteName, $postFilterConfig['routes'])) {
                 continue;
             }
 
-            $this->filterBuilder->setParameters($postFilterConfig['parameters']);
             $class = $postFilterConfig['class'];
-            $filter = $this->filterBuilder->getFilter($class);
-            $filter->doFilter();
+            $filter = new $class();
+            $filter->init($this->appContext);
+            $filter->doFilter($request, $response);
         }
     }
 

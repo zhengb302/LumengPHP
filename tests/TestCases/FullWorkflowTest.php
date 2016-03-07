@@ -19,7 +19,7 @@ class FullWorkflowTest extends \PHPUnit_Framework_TestCase {
 
         $response = $kernel->handle($request);
 
-        $this->expectOutputString('homepage');
+        $this->expectOutputString('defaultLocale: zh. homepage');
         $response->send();
 
         $kernel->terminate($request, $response);

@@ -22,7 +22,7 @@ class AppContextImpl implements AppContext {
      * {@inheritdoc}
      */
     public function getAppConfig() {
-        $this->appConfig;
+        return $this->appConfig;
     }
 
 }

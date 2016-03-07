@@ -15,8 +15,8 @@ use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\HttpKernel\EventListener\RouterListener;
 use LumengPHP\Kernel\ControllerResolver;
+use LumengPHP\Kernel\EventListener\CommandInitializationListener;
 use LumengPHP\Kernel\EventListener\FilterListener;
-use LumengPHP\Filter\FilterBuilder;
 
 /**
  * 
@@ -44,7 +44,7 @@ class AppKernel implements HttpKernelInterface, TerminableInterface {
      */
     public function handle(Request $request, $type = self::MASTER_REQUEST, $catch = true) {
         //初始化
-        $this->initialize($request);
+        $this->initialize();
 
         //处理请求
         return $this->kernel->handle($request, $type, $catch);
@@ -53,7 +53,7 @@ class AppKernel implements HttpKernelInterface, TerminableInterface {
     /**
      * 初始化
      */
-    private function initialize(Request $request) {
+    private function initialize() {
         //@todo 在AppKernel的构造器中，就应该使用AppConfig，而不是推迟到这里
         $appConfig = new AppConfig($this->configs);
 
@@ -76,6 +76,9 @@ class AppKernel implements HttpKernelInterface, TerminableInterface {
 
         $routerListener = new RouterListener($matcher, $requestStack);
         $dispatcher->addSubscriber($routerListener);
+
+        $cmdInitListener = new CommandInitializationListener($appContext);
+        $dispatcher->addSubscriber($cmdInitListener);
 
         $filterConfig = $this->configs['framework']['filter'];
         $filterListener = new FilterListener($filterConfig, $appContext);

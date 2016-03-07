@@ -3,15 +3,5 @@
 $autoloader = require(dirname(__DIR__) . '/vendor/autoload.php');
 $autoloader->add('tests\\', dirname(__DIR__));
 
-use Symfony\Component\HttpFoundation\Request;
-use LumengPHP\Kernel\AppKernel;
-
-$request = Request::createFromGlobals();
-
-$kernel = new AppKernel(__DIR__ . '/config/config.php');
-
-$response = $kernel->handle($request);
-
-$response->send();
-
-$kernel->terminate($request, $response);
+//定义测试根目录
+define('TEST_ROOT', __DIR__);

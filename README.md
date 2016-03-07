@@ -1,2 +1,2 @@
 # LumengPHP
-A lightweight PHP framework that is fast and testable.
+A lightweight PHP framework which is fast and testable.

@@ -36,8 +36,6 @@ class FilterWorkflowTest extends \PHPUnit_Framework_TestCase {
 
         //点击数此时应该为3
         $this->assertEquals(3, HitCounterFilter::$counter);
-        
-        var_dump($requestYetAnother);
     }
 
 }

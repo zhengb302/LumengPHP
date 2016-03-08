@@ -19,7 +19,7 @@ use LumengPHP\Kernel\EventListener\CommandInitializationListener;
 use LumengPHP\Kernel\EventListener\FilterListener;
 
 /**
- * 
+ * AppKernel convert a Request object to a Response one.
  *
  * @author Lumeng <zhengb302@163.com>
  */
@@ -67,6 +67,11 @@ class AppKernel implements HttpKernelInterface, TerminableInterface {
         foreach ($routeConfigs as $name => $routeConfig) {
             $path = $routeConfig['path'];
             $defaults = $routeConfig;
+
+            $defaults['_path'] = $defaults['path'];
+            $defaults['_cmd'] = $defaults['cmd'];
+            unset($defaults['path'], $defaults['cmd']);
+
             $routes->add($name, new Route($path, $defaults));
         }
 

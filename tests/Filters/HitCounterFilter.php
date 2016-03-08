@@ -14,12 +14,14 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class HitCounterFilter implements Filter {
 
+    public static $counter = 0;
+
     public function init(AppContext $appContext) {
         
     }
 
     public function doFilter(Request $request, Response $response = null) {
-        
+        self::$counter++;
     }
 
 }

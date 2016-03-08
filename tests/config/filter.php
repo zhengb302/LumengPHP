@@ -11,7 +11,7 @@ return array(
         ),
         'user-auth' => array(
             'class' => 'tests\Filters\UserAuthFilter',
-            'routes' => array(''),
+            'routes' => array('product', 'showOrder'),
         ),
     ),
     'postFilters' => array(

@@ -26,7 +26,7 @@ class FullWorkflowTest extends \PHPUnit_Framework_TestCase {
     }
 
     public function testPathWithPlaceholder() {
-        $request = Request::create('/order/showOrder/38/?name=lilei', 'GET');
+        $request = Request::create('/order/showOrder/38/?name=lilei&key=123456', 'GET');
 
         $kernel = new AppKernel(TEST_ROOT . '/config/config.php');
 

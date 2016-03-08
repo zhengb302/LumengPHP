@@ -19,7 +19,10 @@ class UserAuthFilter implements Filter {
     }
 
     public function doFilter(Request $request, Response $response = null) {
-        
+        $key = $request->query->get('key');
+        if ($key != '123456') {
+            return new Response('HTTP 403 Forbidden', 403);
+        }
     }
 
 }

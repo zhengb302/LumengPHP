@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "537bf621e01c6152e1fa72311e42fb2d",
-    "content-hash": "63ce39defdaeb076f02a42edf99d9878",
+    "hash": "068d3b54655eafeee5c3d55aecf0cd20",
+    "content-hash": "ef94309caafd3efb7c1d159b8fc05b49",
     "packages": [
         {
             "name": "ircmaxell/password-compat",
@@ -48,46 +48,6 @@
                 "password"
             ],
             "time": "2014-11-20 16:49:30"
-        },
-        {
-            "name": "lumeng/lumeng-php-utils",
-            "version": "0.1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/zhengb302/LumengPHP-Utils.git",
-                "reference": "d290ea70ed689a335aed1f43fc59e69c098480df"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/zhengb302/LumengPHP-Utils/zipball/d290ea70ed689a335aed1f43fc59e69c098480df",
-                "reference": "d290ea70ed689a335aed1f43fc59e69c098480df",
-                "shasum": ""
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "LumengPHP\\Utils\\": "src/LumengPHP/Utils/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "Apache License 2.0"
-            ],
-            "authors": [
-                {
-                    "name": "Lumeng",
-                    "email": "908235332@qq.com",
-                    "homepage": "https://github.com/zhengb302/",
-                    "role": "Developer"
-                }
-            ],
-            "description": "A tool library for PHP.",
-            "homepage": "https://github.com/zhengb302/LumengPHP-Utils",
-            "keywords": [
-                "library",
-                "tool library"
-            ],
-            "time": "2016-02-26 03:14:37"
         },
         {
             "name": "psr/log",

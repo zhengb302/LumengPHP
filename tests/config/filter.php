@@ -15,6 +15,9 @@ return array(
         ),
     ),
     'postFilters' => array(
-        
+        'copyright-appender' => array(
+            'class' => 'tests\Filters\CopyrightAppendFilter',
+            'routes' => array('aboutUs'),
+        ),
     ),
 );

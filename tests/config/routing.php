@@ -21,5 +21,9 @@ return array(
         'path' => '/backgroundThief',
         'cmd' => '\tests\Commands\BackgroundThiefCommand',
     ),
+    'aboutUs' => array(
+        'path' => '/about-us',
+        'cmd' => '\tests\Commands\AboutUsCommand',
+    )
 );
 

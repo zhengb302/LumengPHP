@@ -68,4 +68,24 @@ class FilterWorkflowTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals('defaultLocale: zh. homepage', $responseYetAnother->getContent());
     }
 
+    public function testPostFilter() {
+        $kernel = new AppKernel(TEST_ROOT . '/config/config.php');
+
+        //第一个请求，copyright-appender过滤器有作用到此路径上，响应内容有被修改
+        $request = Request::create('/about-us', 'GET');
+        $response = $kernel->handle($request);
+        //$response->send();
+        $kernel->terminate($request, $response);
+
+        $this->assertEquals("We are an great company!\nCopyright@2016", $response->getContent());
+
+        //第二个请求，copyright-appender过滤器未作用到此路径上，所以响应内容未被修改。
+        $requestTwice = Request::create('/order/showOrder/49/?name=zhangsan&key=123456', 'GET');
+        $responseTwice = $kernel->handle($requestTwice);
+        //$response->send();
+        $kernel->terminate($requestTwice, $responseTwice);
+
+        $this->assertEquals("id is 49, name is zhangsan", $responseTwice->getContent());
+    }
+
 }

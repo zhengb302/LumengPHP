@@ -17,6 +17,7 @@ use Symfony\Component\HttpKernel\EventListener\RouterListener;
 use LumengPHP\Kernel\ControllerResolver;
 use LumengPHP\Kernel\EventListener\CommandInitializationListener;
 use LumengPHP\Kernel\EventListener\FilterListener;
+use LumengPHP\DependencyInjection\ServiceContainer;
 
 /**
  * AppKernel convert a Request object to a Response one.
@@ -54,7 +55,8 @@ class AppKernel implements HttpKernelInterface, TerminableInterface {
      * 初始化
      */
     private function initialize() {
-        $appContext = new AppContextImpl($this->appConfig);
+        $serviceContainer = new ServiceContainer($this->appConfig->get('services'));
+        $appContext = new AppContextImpl($this->appConfig, $serviceContainer);
 
         $routes = $this->loadRoutes();
         $matcher = new UrlMatcher($routes, new RequestContext());

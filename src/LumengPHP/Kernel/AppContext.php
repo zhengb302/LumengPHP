@@ -2,6 +2,8 @@
 
 namespace LumengPHP\Kernel;
 
+use LumengPHP\DependencyInjection\ServiceContainer;
+
 /**
  * 应用环境接口
  *
@@ -10,8 +12,18 @@ namespace LumengPHP\Kernel;
 interface AppContext {
 
     /**
-     * 返回AppConfig实例
-     * @return AppConfig
+     * 取得应用配置数据
+     * @see AppConfig
+     * @param string $key 配置key
+     * @return mixed|null 
      */
-    public function getAppConfig();
+    public function getConfig($key);
+
+    /**
+     * 取得服务对象实例
+     * @see ServiceContainer
+     * @param string $serviceName 服务名称
+     * @return mixed 一个服务对象
+     */
+    public function getService($serviceName);
 }

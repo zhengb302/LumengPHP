@@ -3,7 +3,6 @@
 namespace tests\Commands;
 
 use LumengPHP\Kernel\AppContext;
-use LumengPHP\Kernel\AppConfig;
 use LumengPHP\Command\Command;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,14 +19,8 @@ class HomepageCommand implements Command {
      */
     private $defaultLocale;
 
-    /**
-     * @var AppConfig 
-     */
-    private $appConfig;
-
     public function init(AppContext $appContext) {
-        $this->appConfig = $appContext->getAppConfig();
-        $this->defaultLocale = $this->appConfig->get('framework.defaultLocale');
+        $this->defaultLocale = $appContext->getConfig('framework.defaultLocale');
     }
 
     public function execute(Request $request) {

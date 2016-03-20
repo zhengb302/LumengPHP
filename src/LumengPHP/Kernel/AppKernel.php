@@ -26,9 +26,9 @@ use LumengPHP\Kernel\EventListener\FilterListener;
 class AppKernel implements HttpKernelInterface, TerminableInterface {
 
     /**
-     * @var array 
+     * @var AppConfig AppConfig对象
      */
-    private $configs;
+    private $appConfig;
 
     /**
      * @var HttpKernel 
@@ -36,7 +36,7 @@ class AppKernel implements HttpKernelInterface, TerminableInterface {
     private $kernel;
 
     public function __construct($configFilepath) {
-        $this->configs = require($configFilepath);
+        $this->appConfig = new AppConfig(require($configFilepath));
     }
 
     /**
@@ -54,16 +54,36 @@ class AppKernel implements HttpKernelInterface, TerminableInterface {
      * 初始化
      */
     private function initialize() {
-        //@todo 在AppKernel的构造器中，就应该使用AppConfig，而不是推迟到这里
-        $appConfig = new AppConfig($this->configs);
+        $appContext = new AppContextImpl($this->appConfig);
 
-        //@todo AppContext的实现类从配置中获取，而不是直接写死
-        $appContext = new AppContextImpl($appConfig);
+        $routes = $this->loadRoutes();
+        $matcher = new UrlMatcher($routes, new RequestContext());
 
         $requestStack = new RequestStack();
 
+        $dispatcher = new EventDispatcher();
+
+        $routerListener = new RouterListener($matcher, $requestStack);
+        $dispatcher->addSubscriber($routerListener);
+
+        $cmdInitListener = new CommandInitializationListener($appContext);
+        $dispatcher->addSubscriber($cmdInitListener);
+
+        $filterConfig = $this->appConfig->get('framework.filter');
+        $filterListener = new FilterListener($filterConfig, $appContext);
+        $dispatcher->addSubscriber($filterListener);
+
+        $resolver = new ControllerResolver();
+        $this->kernel = new HttpKernel($dispatcher, $resolver, $requestStack);
+    }
+
+    /**
+     * 加载路由
+     * @return RouteCollection
+     */
+    private function loadRoutes() {
         $routes = new RouteCollection();
-        $routeConfigs = $this->configs['framework']['router'];
+        $routeConfigs = $this->appConfig->get('framework.router');
         foreach ($routeConfigs as $name => $routeConfig) {
             $path = $routeConfig['path'];
             $defaults = $routeConfig;
@@ -75,22 +95,7 @@ class AppKernel implements HttpKernelInterface, TerminableInterface {
             $routes->add($name, new Route($path, $defaults));
         }
 
-        $matcher = new UrlMatcher($routes, new RequestContext());
-
-        $dispatcher = new EventDispatcher();
-
-        $routerListener = new RouterListener($matcher, $requestStack);
-        $dispatcher->addSubscriber($routerListener);
-
-        $cmdInitListener = new CommandInitializationListener($appContext);
-        $dispatcher->addSubscriber($cmdInitListener);
-
-        $filterConfig = $this->configs['framework']['filter'];
-        $filterListener = new FilterListener($filterConfig, $appContext);
-        $dispatcher->addSubscriber($filterListener);
-
-        $resolver = new ControllerResolver();
-        $this->kernel = new HttpKernel($dispatcher, $resolver, $requestStack);
+        return $routes;
     }
 
     /**

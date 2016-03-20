@@ -34,11 +34,11 @@ class ServiceContainer {
     /**
      * 根据服务名称返回一个服务对象
      * @param string $serviceName 服务名称
-     * @return mixed 一个服务对象
+     * @return mixed|null 一个服务对象。如果服务不存在，返回null
      */
     public function get($serviceName) {
         if (!isset($this->configs[$serviceName])) {
-            trigger_error("service \"{$serviceName}\" not found!", E_USER_ERROR);
+            return null;
         }
 
         if (!isset($this->services[$serviceName])) {

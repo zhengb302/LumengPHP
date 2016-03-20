@@ -23,7 +23,7 @@ interface AppContext {
      * 取得服务对象实例
      * @see ServiceContainer
      * @param string $serviceName 服务名称
-     * @return mixed 一个服务对象
+     * @return mixed|null 一个服务对象。如果服务不存在，返回null
      */
     public function getService($serviceName);
 }

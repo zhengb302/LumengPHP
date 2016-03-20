@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "068d3b54655eafeee5c3d55aecf0cd20",
-    "content-hash": "ef94309caafd3efb7c1d159b8fc05b49",
+    "hash": "e23f5580827c21d50e34531177dbc8c2",
+    "content-hash": "ed5fd245d3f506085e63ad17e90ee7d2",
     "packages": [
         {
             "name": "ircmaxell/password-compat",
@@ -48,6 +48,46 @@
                 "password"
             ],
             "time": "2014-11-20 16:49:30"
+        },
+        {
+            "name": "lumeng/lumeng-php-db",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/zhengb302/LumengPHP-Db.git",
+                "reference": "fc76bd918bc25b74624e318890c38ccd2c13e962"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/zhengb302/LumengPHP-Db/zipball/fc76bd918bc25b74624e318890c38ccd2c13e962",
+                "reference": "fc76bd918bc25b74624e318890c38ccd2c13e962",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "LumengPHP\\Db\\": "src/LumengPHP/Db/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache License 2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Lumeng",
+                    "email": "908235332@qq.com",
+                    "homepage": "https://github.com/zhengb302/",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A database operation library for PHP.",
+            "homepage": "https://github.com/zhengb302/LumengPHP-Db",
+            "keywords": [
+                "database operation library",
+                "library"
+            ],
+            "time": "2016-03-20 13:03:23"
         },
         {
             "name": "psr/log",
@@ -342,16 +382,16 @@
         },
         {
             "name": "symfony/polyfill-php54",
-            "version": "v1.1.0",
+            "version": "v1.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-php54.git",
-                "reference": "74663d5a2ff3c530c1bc0571500e0feec9094054"
+                "reference": "9ba741ca01c77282ecf5796c2c1d667f03454ffb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-php54/zipball/74663d5a2ff3c530c1bc0571500e0feec9094054",
-                "reference": "74663d5a2ff3c530c1bc0571500e0feec9094054",
+                "url": "https://api.github.com/repos/symfony/polyfill-php54/zipball/9ba741ca01c77282ecf5796c2c1d667f03454ffb",
+                "reference": "9ba741ca01c77282ecf5796c2c1d667f03454ffb",
                 "shasum": ""
             },
             "require": {
@@ -396,11 +436,11 @@
                 "portable",
                 "shim"
             ],
-            "time": "2016-01-20 09:13:37"
+            "time": "2016-01-25 19:13:00"
         },
         {
             "name": "symfony/polyfill-php55",
-            "version": "v1.1.0",
+            "version": "v1.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-php55.git",
@@ -533,7 +573,9 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "lumeng/lumeng-php-db": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],

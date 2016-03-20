@@ -120,4 +120,19 @@ class ServiceContainer {
         return $rawArg;
     }
 
+    /**
+     * 注册服务<br />
+     * 如果服务容器中已经存在名称相同的服务，则会覆盖原来的服务对象
+     * @param string $serviceName 服务名称
+     * @param mixed $serviceInstance 服务对象
+     */
+    public function registerService($serviceName, $serviceInstance) {
+        if (isset($this->services[$serviceName])) {
+            $this->services[$serviceName] = null;
+            unset($this->services[$serviceName]);
+        }
+
+        $this->services[$serviceName] = $serviceInstance;
+    }
+
 }

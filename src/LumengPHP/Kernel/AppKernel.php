@@ -55,7 +55,7 @@ class AppKernel implements HttpKernelInterface, TerminableInterface {
      * 初始化
      */
     private function initialize() {
-        $serviceContainer = new ServiceContainer($this->appConfig->get('services'));
+        $serviceContainer = $this->initServiceContainer();
         $appContext = new AppContextImpl($this->appConfig, $serviceContainer);
 
         $routes = $this->loadRoutes();
@@ -77,6 +77,30 @@ class AppKernel implements HttpKernelInterface, TerminableInterface {
 
         $resolver = new ControllerResolver();
         $this->kernel = new HttpKernel($dispatcher, $resolver, $requestStack);
+    }
+
+    /**
+     * 初始化并返回服务容器实例
+     * @return ServiceContainer
+     */
+    private function initServiceContainer() {
+        $serviceConfigs = $this->appConfig->get('services');
+
+        //服务配置要不不存在，要不就是个数组
+        assert(is_array($serviceConfigs) || is_null($serviceConfigs));
+
+        if (is_null($serviceConfigs)) {
+            $serviceConfigs = array();
+        }
+
+        $serviceContainer = new ServiceContainer($serviceConfigs);
+
+        $dbConfigs = $this->appConfig->get('database');
+        if ($dbConfigs) {
+            
+        }
+
+        return $serviceContainer;
     }
 
     /**

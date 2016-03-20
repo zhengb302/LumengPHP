@@ -13,5 +13,7 @@ return array(
     ),
     //服务配置
     'services' => require(__DIR__ . '/services.php'),
+    //数据库配置
+    'database' => require(__DIR__ . '/database.php'),
 );
 

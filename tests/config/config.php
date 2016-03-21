@@ -14,7 +14,7 @@ return array(
         'filter' => require(__DIR__ . '/filter.php'),
         //服务配置
         'services' => require(__DIR__ . '/services.php'),
-        //扩展配置
+        //扩展列表
         'extensions' => require(__DIR__ . '/extensions.php'),
     ),
     //数据库配置

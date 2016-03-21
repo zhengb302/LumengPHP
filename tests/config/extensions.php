@@ -1,9 +1,10 @@
 <?php
 
 /*
- * 扩展配置
+ * 扩展列表
  */
 
 return array(
-    
+    'tests\Extensions\DatabaseExtension',
+    'tests\Extensions\LoggerExtension',
 );

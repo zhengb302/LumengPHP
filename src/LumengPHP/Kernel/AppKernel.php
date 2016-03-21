@@ -18,6 +18,7 @@ use LumengPHP\Kernel\ControllerResolver;
 use LumengPHP\Kernel\EventListener\CommandInitializationListener;
 use LumengPHP\Kernel\EventListener\FilterListener;
 use LumengPHP\DependencyInjection\ServiceContainer;
+use LumengPHP\Extension\Extension;
 
 /**
  * AppKernel convert a Request object to a Response one.
@@ -32,32 +33,54 @@ class AppKernel implements HttpKernelInterface, TerminableInterface {
     private $appConfig;
 
     /**
+     * @var ServiceContainer 服务容器
+     */
+    private $serviceContainer;
+
+    /**
+     * @var AppContext 
+     */
+    private $appContext;
+
+    /**
      * @var HttpKernel 
      */
     private $kernel;
 
     public function __construct($configFilepath) {
         $this->appConfig = new AppConfig(require($configFilepath));
-    }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function handle(Request $request, $type = self::MASTER_REQUEST, $catch = true) {
+        $this->initServiceContainer();
+
+        $this->appContext = new AppContextImpl($this->appConfig, $this->serviceContainer);
+
         //初始化
         $this->initialize();
 
-        //处理请求
-        return $this->kernel->handle($request, $type, $catch);
+        //加载扩展
+        $this->loadExtensions();
+    }
+
+    /**
+     * 初始化服务容器
+     */
+    private function initServiceContainer() {
+        $serviceConfigs = $this->appConfig->get('framework.services');
+
+        //服务配置要不不存在，要不就是个数组
+        assert(is_array($serviceConfigs) || is_null($serviceConfigs));
+
+        if (is_null($serviceConfigs)) {
+            $serviceConfigs = array();
+        }
+
+        $this->serviceContainer = new ServiceContainer($serviceConfigs);
     }
 
     /**
      * 初始化
      */
     private function initialize() {
-        $serviceContainer = $this->initServiceContainer();
-        $appContext = new AppContextImpl($this->appConfig, $serviceContainer);
-
         $routes = $this->loadRoutes();
         $matcher = new UrlMatcher($routes, new RequestContext());
 
@@ -68,39 +91,15 @@ class AppKernel implements HttpKernelInterface, TerminableInterface {
         $routerListener = new RouterListener($matcher, $requestStack);
         $dispatcher->addSubscriber($routerListener);
 
-        $cmdInitListener = new CommandInitializationListener($appContext);
+        $cmdInitListener = new CommandInitializationListener($this->appContext);
         $dispatcher->addSubscriber($cmdInitListener);
 
         $filterConfig = $this->appConfig->get('framework.filter');
-        $filterListener = new FilterListener($filterConfig, $appContext);
+        $filterListener = new FilterListener($filterConfig, $this->appContext);
         $dispatcher->addSubscriber($filterListener);
 
         $resolver = new ControllerResolver();
         $this->kernel = new HttpKernel($dispatcher, $resolver, $requestStack);
-    }
-
-    /**
-     * 初始化并返回服务容器实例
-     * @return ServiceContainer
-     */
-    private function initServiceContainer() {
-        $serviceConfigs = $this->appConfig->get('services');
-
-        //服务配置要不不存在，要不就是个数组
-        assert(is_array($serviceConfigs) || is_null($serviceConfigs));
-
-        if (is_null($serviceConfigs)) {
-            $serviceConfigs = array();
-        }
-
-        $serviceContainer = new ServiceContainer($serviceConfigs);
-
-        $dbConfigs = $this->appConfig->get('database');
-        if ($dbConfigs) {
-            
-        }
-
-        return $serviceContainer;
     }
 
     /**
@@ -122,6 +121,36 @@ class AppKernel implements HttpKernelInterface, TerminableInterface {
         }
 
         return $routes;
+    }
+
+    /**
+     * 加载扩展
+     */
+    private function loadExtensions() {
+        $extensions = $this->appConfig->get('framework.extensions');
+
+        //扩展配置要不不存在，要不就是个数组
+        assert(is_array($extensions) || is_null($extensions));
+
+        if (is_null($extensions)) {
+            $extensions = array();
+        }
+
+        foreach ($extensions as $extensionClass) {
+            $extension = new $extensionClass();
+
+            assert($extension instanceof Extension);
+
+            $extension->load($this->appContext, $this->serviceContainer);
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function handle(Request $request, $type = self::MASTER_REQUEST, $catch = true) {
+        //处理请求
+        return $this->kernel->handle($request, $type, $catch);
     }
 
     /**

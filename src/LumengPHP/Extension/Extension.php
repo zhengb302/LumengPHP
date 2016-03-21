@@ -15,6 +15,12 @@ use LumengPHP\DependencyInjection\ServiceContainer;
 interface Extension {
 
     /**
+     * 返回扩展名称
+     * @return string 扩展名称
+     */
+    public function getName();
+
+    /**
      * 加载扩展
      * @param AppContext $appContext
      * @param ServiceContainer $serviceContainer

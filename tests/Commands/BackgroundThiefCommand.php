@@ -3,7 +3,7 @@
 namespace tests\Commands;
 
 use LumengPHP\Kernel\AppContext;
-use LumengPHP\Command\Command;
+use LumengPHP\Kernel\Command\Command;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 

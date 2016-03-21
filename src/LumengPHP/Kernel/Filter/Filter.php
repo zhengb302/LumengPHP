@@ -1,6 +1,6 @@
 <?php
 
-namespace LumengPHP\Filter;
+namespace LumengPHP\Kernel\Filter;
 
 use LumengPHP\Kernel\AppContext;
 use Symfony\Component\HttpFoundation\Request;

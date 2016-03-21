@@ -2,7 +2,7 @@
 
 namespace tests\Filters;
 
-use LumengPHP\Filter\Filter;
+use LumengPHP\Kernel\Filter\Filter;
 use LumengPHP\Kernel\AppContext;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

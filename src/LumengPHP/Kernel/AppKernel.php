@@ -18,7 +18,7 @@ use LumengPHP\Kernel\ControllerResolver;
 use LumengPHP\Kernel\EventListener\CommandInitializationListener;
 use LumengPHP\Kernel\EventListener\FilterListener;
 use LumengPHP\DependencyInjection\ServiceContainer;
-use LumengPHP\Extension\Extension;
+use LumengPHP\Kernel\Extension\Extension;
 
 /**
  * AppKernel convert a Request object to a Response one.

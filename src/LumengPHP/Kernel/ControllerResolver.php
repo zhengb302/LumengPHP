@@ -4,7 +4,7 @@ namespace LumengPHP\Kernel;
 
 use Symfony\Component\HttpKernel\Controller\ControllerResolverInterface;
 use Symfony\Component\HttpFoundation\Request;
-use LumengPHP\Command\Command;
+use LumengPHP\Kernel\Command\Command;
 
 /**
  * 

@@ -5,6 +5,6 @@
  */
 
 return array(
-    'tests\Extensions\DatabaseExtension',
-    'tests\Extensions\LoggerExtension',
+    'LumengPHP\Extensions\DatabaseExtension',
+    'LumengPHP\Extensions\LoggerExtension',
 );

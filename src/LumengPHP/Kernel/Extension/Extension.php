@@ -1,6 +1,6 @@
 <?php
 
-namespace LumengPHP\Extension;
+namespace LumengPHP\Kernel\Extension;
 
 use LumengPHP\Kernel\AppContext;
 use LumengPHP\DependencyInjection\ServiceContainer;

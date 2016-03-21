@@ -1,6 +1,6 @@
 <?php
 
-namespace LumengPHP\Command;
+namespace LumengPHP\Kernel\Command;
 
 use LumengPHP\Kernel\AppContext;
 use Symfony\Component\HttpFoundation\Request;

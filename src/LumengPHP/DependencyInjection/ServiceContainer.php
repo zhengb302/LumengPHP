@@ -37,19 +37,28 @@ class ServiceContainer {
      * @return mixed|null 一个服务对象。如果服务不存在，返回null
      */
     public function get($serviceName) {
-        if (!isset($this->configs[$serviceName])) {
-            return null;
+        if (isset($this->services[$serviceName])) {
+            return $this->services[$serviceName];
         }
 
-        if (!isset($this->services[$serviceName])) {
+        if (isset($this->configs[$serviceName])) {
             $this->buildService($serviceName);
+            return $this->services[$serviceName];
         }
 
-        return $this->services[$serviceName];
+        return null;
     }
 
     private function buildService($serviceName) {
         $serviceConfig = $this->configs[$serviceName];
+
+        //服务配置可以是一个回调函数，如果服务配置是一个回调函数...
+        if (is_callable($serviceConfig)) {
+            $callback = $serviceConfig;
+            $this->services[$serviceName] = $callback($this);
+            return;
+        }
+
         $parsedArgs = isset($serviceConfig['arguments']) ?
                 $this->parseArgs($serviceConfig['arguments']) : null;
 
@@ -124,15 +133,31 @@ class ServiceContainer {
      * 注册服务<br />
      * 如果服务容器中已经存在名称相同的服务，则会覆盖原来的服务对象
      * @param string $serviceName 服务名称
-     * @param mixed $serviceInstance 服务对象
+     * @param mixed $serviceInstance 服务对象、服务配置或者是一个回调
+     * @throws InvalidServiceException
      */
     public function registerService($serviceName, $serviceInstance) {
-        if (isset($this->services[$serviceName])) {
-            $this->services[$serviceName] = null;
-            unset($this->services[$serviceName]);
+        if (is_callable($serviceInstance) || is_array($serviceInstance)) {
+            //unset the old one
+            $this->configs[$serviceName] = null;
+            unset($this->configs[$serviceName]);
+
+            //set the new one
+            $this->configs[$serviceName] = $serviceInstance;
+            return;
         }
 
-        $this->services[$serviceName] = $serviceInstance;
+        if (is_object($serviceInstance)) {
+            //unset the old one
+            $this->services[$serviceName] = null;
+            unset($this->services[$serviceName]);
+
+            //set the new one
+            $this->services[$serviceName] = $serviceInstance;
+            return;
+        }
+
+        throw new InvalidServiceException("{$serviceName} is not a valid service.");
     }
 
 }

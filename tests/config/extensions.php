@@ -6,5 +6,6 @@
 
 return array(
     'LumengPHP\Extensions\DatabaseExtension',
+    'LumengPHP\Extensions\TwigExtension',
     'LumengPHP\Extensions\LoggerExtension',
 );

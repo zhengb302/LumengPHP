@@ -55,13 +55,16 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/zhengb302/LumengPHP-Db.git",
-                "reference": "fc76bd918bc25b74624e318890c38ccd2c13e962"
+                "reference": "baefe6f35926eb28e74a38eeea72bfe7bf1c89a8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zhengb302/LumengPHP-Db/zipball/fc76bd918bc25b74624e318890c38ccd2c13e962",
-                "reference": "fc76bd918bc25b74624e318890c38ccd2c13e962",
+                "url": "https://api.github.com/repos/zhengb302/LumengPHP-Db/zipball/baefe6f35926eb28e74a38eeea72bfe7bf1c89a8",
+                "reference": "baefe6f35926eb28e74a38eeea72bfe7bf1c89a8",
                 "shasum": ""
+            },
+            "require": {
+                "psr/log": "^1.0"
             },
             "type": "library",
             "autoload": {
@@ -87,7 +90,7 @@
                 "database operation library",
                 "library"
             ],
-            "time": "2016-03-20 13:03:23"
+            "time": "2016-03-24 13:16:21"
         },
         {
             "name": "psr/log",

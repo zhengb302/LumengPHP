@@ -19,7 +19,7 @@ use LumengPHP\Kernel\EventListener\CommandInitializationListener;
 use LumengPHP\Kernel\EventListener\FilterListener;
 use LumengPHP\DependencyInjection\ServiceContainer;
 use LumengPHP\Kernel\Extension\Extension;
-use LumengPHP\App;
+use LumengPHP\Kernel\Facade\Facade;
 
 /**
  * AppKernel convert a Request object to a Response one.
@@ -36,7 +36,7 @@ class AppKernel implements HttpKernelInterface, TerminableInterface {
     /**
      * @var ServiceContainer 服务容器
      */
-    private $serviceContainer;
+    private $container;
 
     /**
      * @var AppContext 
@@ -53,9 +53,11 @@ class AppKernel implements HttpKernelInterface, TerminableInterface {
 
         $this->initServiceContainer();
 
-        $this->appContext = new AppContextImpl($this->appConfig, $this->serviceContainer);
+        $this->appContext = new AppContextImpl($this->appConfig, $this->container);
 
-        App::$context = $this->appContext;
+        $this->container->registerService('appContext', $this->appContext);
+
+        Facade::setAppContext($this->appContext);
 
         //初始化
         $this->initialize();
@@ -77,7 +79,7 @@ class AppKernel implements HttpKernelInterface, TerminableInterface {
             $serviceConfigs = array();
         }
 
-        $this->serviceContainer = new ServiceContainer($serviceConfigs);
+        $this->container = new ServiceContainer($serviceConfigs);
     }
 
     /**
@@ -144,7 +146,7 @@ class AppKernel implements HttpKernelInterface, TerminableInterface {
 
             assert($extension instanceof Extension);
 
-            $extension->load($this->appContext, $this->serviceContainer);
+            $extension->load($this->appContext, $this->container);
         }
     }
 

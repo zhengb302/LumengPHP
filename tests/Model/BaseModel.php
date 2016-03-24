@@ -3,7 +3,7 @@
 namespace tests\Model;
 
 use LumengPHP\Db\Model;
-use LumengPHP\App;
+use LumengPHP\Facades\App;
 
 /**
  * Model基类
@@ -13,7 +13,7 @@ use LumengPHP\App;
 abstract class BaseModel extends Model {
 
     public function __construct() {
-        $connManager = App::$context->getService('connManager');
+        $connManager = App::getService('connManager');
         parent::__construct($connManager);
     }
 

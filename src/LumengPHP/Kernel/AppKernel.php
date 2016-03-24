@@ -132,8 +132,8 @@ class AppKernel implements HttpKernelInterface, TerminableInterface {
         //扩展配置要不不存在，要不就是个数组
         assert(is_array($extensions) || is_null($extensions));
 
-        if (is_null($extensions)) {
-            $extensions = array();
+        if (empty($extensions)) {
+            return;
         }
 
         foreach ($extensions as $extensionClass) {

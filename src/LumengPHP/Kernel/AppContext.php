@@ -5,7 +5,7 @@ namespace LumengPHP\Kernel;
 use LumengPHP\DependencyInjection\ServiceContainer;
 
 /**
- * 应用环境接口
+ * 应用程序上下文接口
  *
  * @author zhengluming <luming.zheng@baozun.cn>
  */

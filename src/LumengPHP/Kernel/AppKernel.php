@@ -19,6 +19,7 @@ use LumengPHP\Kernel\EventListener\CommandInitializationListener;
 use LumengPHP\Kernel\EventListener\FilterListener;
 use LumengPHP\DependencyInjection\ServiceContainer;
 use LumengPHP\Kernel\Extension\Extension;
+use LumengPHP\App;
 
 /**
  * AppKernel convert a Request object to a Response one.
@@ -53,6 +54,8 @@ class AppKernel implements HttpKernelInterface, TerminableInterface {
         $this->initServiceContainer();
 
         $this->appContext = new AppContextImpl($this->appConfig, $this->serviceContainer);
+
+        App::$context = $this->appContext;
 
         //初始化
         $this->initialize();

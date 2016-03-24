@@ -6,6 +6,7 @@ use LumengPHP\Kernel\AppContext;
 use LumengPHP\DependencyInjection\ServiceContainer;
 use LumengPHP\Kernel\Extension\Extension;
 use LumengPHP\Db\ConnectionManager;
+use LumengPHP\Db\Misc\ShortcutFunctionHelper;
 
 /**
  * 数据库扩展
@@ -26,14 +27,19 @@ class DatabaseExtension implements Extension {
             return;
         }
 
-        ConnectionManager::create($dbConfigs);
+        //加载快捷函数
+        require_once(ShortcutFunctionHelper::getPath());
+
+        //把连接管理器注册为服务
+        $serviceContainer->registerService('connManager', function($container) use ($dbConfigs) {
+            $logger = $container->get('logger');
+            return new ConnectionManager($dbConfigs, $logger);
+        });
 
         //把各个连接注册为服务，服务名为连接名
         foreach (array_keys($dbConfigs) as $connName) {
             $serviceContainer->registerService($connName, function($container) use ($connName) {
-                $logger = $container->get('logger');
-                return ConnectionManager::getInstance()
-                                ->getConnection($connName, $logger);
+                return $container->getService('connManager')->getConnection($connName);
             });
         }
     }

@@ -19,5 +19,7 @@ return array(
     ),
     //数据库配置
     'database' => require(__DIR__ . '/database.php'),
+    //应用配置参数
+    'parameters' => require(__DIR__ . '/parameters.php'),
 );
 

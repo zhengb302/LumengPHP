@@ -20,6 +20,13 @@ interface AppContext {
     public function getConfig($key);
 
     /**
+     * 取得应用配置参数
+     * @param string $key 参数key
+     * @return string|null
+     */
+    public function getParameter($key);
+
+    /**
      * 取得服务对象实例
      * @see ServiceContainer
      * @param string $serviceName 服务名称

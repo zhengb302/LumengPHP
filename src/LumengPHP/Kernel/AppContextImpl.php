@@ -36,6 +36,13 @@ class AppContextImpl implements AppContext {
     /**
      * {@inheritdoc}
      */
+    public function getParameter($key) {
+        return $this->appConfig->get("parameters.{$key}");
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getService($serviceName) {
         return $this->serviceContainer->get($serviceName);
     }

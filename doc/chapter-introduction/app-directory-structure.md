@@ -1,0 +1,31 @@
+应用目录结构
+----------
+
+bin/
+    some scripts here
+app/
+    config/
+    views/
+src/
+    Vendor/
+        Project/
+            Commands/
+                HomeCommand.php
+            Models/
+                UserModel.php
+            Foo.php
+vendor/
+    composer/
+    lumeng/
+    psr/
+    symfony/
+    autoload.php
+web/
+    static/
+        js/
+        css/
+        images/
+    index.php
+var/
+    cache/
+    logs/

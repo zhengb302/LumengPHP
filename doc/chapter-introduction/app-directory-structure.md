@@ -1,6 +1,7 @@
 应用目录结构
 ----------
 
+```
 bin/
     some scripts here
 app/
@@ -29,3 +30,4 @@ web/
 var/
     cache/
     logs/
+```

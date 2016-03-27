@@ -59,9 +59,6 @@ class AppKernel implements HttpKernelInterface, TerminableInterface {
 
         Facade::setAppContext($this->appContext);
 
-        //初始化
-        $this->initialize();
-
         //加载扩展
         $this->loadExtensions();
     }
@@ -80,6 +77,38 @@ class AppKernel implements HttpKernelInterface, TerminableInterface {
         }
 
         $this->container = new ServiceContainer($serviceConfigs);
+    }
+
+    /**
+     * 加载扩展
+     */
+    private function loadExtensions() {
+        $extensions = $this->appConfig->get('framework.extensions');
+
+        //扩展配置要不不存在，要不就是个数组
+        assert(is_array($extensions) || is_null($extensions));
+
+        if (empty($extensions)) {
+            return;
+        }
+
+        foreach ($extensions as $extensionClass) {
+            $extension = new $extensionClass();
+
+            assert($extension instanceof Extension);
+
+            $extension->load($this->appContext, $this->container);
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function handle(Request $request, $type = self::MASTER_REQUEST, $catch = true) {
+        //初始化
+        $this->initialize();
+        //处理请求
+        return $this->kernel->handle($request, $type, $catch);
     }
 
     /**
@@ -126,36 +155,6 @@ class AppKernel implements HttpKernelInterface, TerminableInterface {
         }
 
         return $routes;
-    }
-
-    /**
-     * 加载扩展
-     */
-    private function loadExtensions() {
-        $extensions = $this->appConfig->get('framework.extensions');
-
-        //扩展配置要不不存在，要不就是个数组
-        assert(is_array($extensions) || is_null($extensions));
-
-        if (empty($extensions)) {
-            return;
-        }
-
-        foreach ($extensions as $extensionClass) {
-            $extension = new $extensionClass();
-
-            assert($extension instanceof Extension);
-
-            $extension->load($this->appContext, $this->container);
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function handle(Request $request, $type = self::MASTER_REQUEST, $catch = true) {
-        //处理请求
-        return $this->kernel->handle($request, $type, $catch);
     }
 
     /**

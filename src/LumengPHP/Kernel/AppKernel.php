@@ -48,8 +48,8 @@ class AppKernel implements HttpKernelInterface, TerminableInterface {
      */
     private $kernel;
 
-    public function __construct($configFilepath) {
-        $this->appConfig = new AppConfig(require($configFilepath));
+    public function __construct($configFilePath) {
+        $this->appConfig = new AppConfig(require($configFilePath));
 
         $this->initServiceContainer();
 

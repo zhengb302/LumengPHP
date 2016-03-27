@@ -26,6 +26,10 @@ abstract class Facade {
         self::$appContext = $appContext;
     }
 
+    /**
+     * 返回Facade所对应的服务名称
+     * @return string Facade所对应的服务名称
+     */
     abstract protected static function getServiceName();
 
     public static function __callStatic($name, $arguments) {

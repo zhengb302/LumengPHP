@@ -37,9 +37,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase {
     }
 
     public function testRead() {
-        $userModel = new UserModel($this->connManager);
-        $user = $userModel->where(array('id' => 1))->find();
-        $this->assertNotFalse($user);
+        
     }
 
 }

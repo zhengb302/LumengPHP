@@ -39,7 +39,7 @@ class DatabaseExtension implements Extension {
         //把各个连接注册为服务，服务名为连接名
         foreach (array_keys($dbConfigs) as $connName) {
             $serviceContainer->registerService($connName, function($container) use ($connName) {
-                return $container->getService('connManager')->getConnection($connName);
+                return $container->get('connManager')->getConnection($connName);
             });
         }
     }

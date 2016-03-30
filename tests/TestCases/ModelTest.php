@@ -8,7 +8,6 @@ use LumengPHP\Kernel\AppContextImpl;
 use LumengPHP\Extensions\DatabaseExtension;
 use LumengPHP\Db\ConnectionManager;
 use tests\Misc\DumpLogger;
-use tests\Model\UserModel;
 
 /**
  * 数据库Model测试

@@ -2,6 +2,8 @@
 
 namespace LumengPHP\DependencyInjection;
 
+use LumengPHP\Exceptions\InvalidServiceException;
+
 /**
  * 依赖注入服务容器<br />
  * Usage:

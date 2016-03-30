@@ -3,7 +3,7 @@
 namespace LumengPHP\Kernel\Facade;
 
 use LumengPHP\Kernel\AppContext;
-use LumengPHP\DependencyInjection\ServiceNotExistException;
+use LumengPHP\Exceptions\ServiceNotExistException;
 
 /**
  * Facade基类

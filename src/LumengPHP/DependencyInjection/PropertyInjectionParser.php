@@ -18,14 +18,21 @@ class PropertyInjectionParser {
     private $reflection;
 
     /**
-     * @var array "容器-属性名称"对
+     * @var array "属性-容器-key"对
      */
     private $containerPropertyPairs;
 
+    /**
+     * 构造一个属性注入解析器
+     * @param mixed $argument (全限定的)类名，或者一个对象
+     */
     public function __construct($argument) {
         $this->reflection = new ReflectionClass($argument);
     }
 
+    /**
+     * 解析并生成结果，之后可以调用dump方法导出结果
+     */
     public function parse() {
         $properties = $this->reflection->getProperties();
         foreach ($properties as $property) {
@@ -54,8 +61,14 @@ class PropertyInjectionParser {
         );
     }
 
+    /**
+     * 把解析结果dump到$target参数所指定的文件中
+     * @param string $target 目标文件路径
+     */
     public function dump($target) {
-        var_dump($this->containerPropertyPairs);
+        $export = var_export($this->containerPropertyPairs, true);
+        $content = "<?php\nreturn {$export};";
+        file_put_contents($target, $content);
     }
 
 }

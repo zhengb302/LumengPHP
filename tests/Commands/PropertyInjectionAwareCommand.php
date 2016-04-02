@@ -11,25 +11,25 @@ class PropertyInjectionAwareCommand {
 
     /**
      * @var int 用户id
-     * @query(user_id)
+     * @from(query[user_id])
      */
     private $uid;
 
     /**
      * @var string 用户名
-     * @request
+     * @from(request)
      */
     private $name;
 
     /**
      * @var string 密码
-     * @request
+     * @from(request)
      */
     private $password;
 
     /**
      * @var int 年龄
-     * @request
+     * @from(request[userAge])
      */
     private $age;
 
@@ -40,7 +40,7 @@ class PropertyInjectionAwareCommand {
 
     /**
      * @var Logger 日志组件
-     * @service
+     * @from(service)
      */
     private $logger;
 

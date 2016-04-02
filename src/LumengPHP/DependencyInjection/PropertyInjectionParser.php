@@ -36,19 +36,21 @@ class PropertyInjectionParser {
     private function parsePropertyDocComment(ReflectionProperty $property) {
         $docComment = $property->getDocComment();
 
-        $pattern = '#@(query|request|service)(\(([a-zA-Z][a-zA-Z0-9_]*)\))?#';
+        $pattern = '#@from\(([a-zA-Z][a-zA-Z0-9_]*)(\[([a-zA-Z][a-zA-Z0-9_]*)\])?\)#';
         $matches = array();
         preg_match($pattern, $docComment, $matches);
         if (empty($matches)) {
             return;
         }
 
+        $propertyName = $property->getName();
         $containerName = $matches[1];
-        $propertyName = isset($matches[3]) ? $matches[3] : $property->getName();
+        $key = isset($matches[3]) ? $matches[3] : $propertyName;
 
         $this->containerPropertyPairs[] = array(
-            'container' => $containerName,
             'property' => $propertyName,
+            'container' => $containerName,
+            'key' => $key,
         );
     }
 

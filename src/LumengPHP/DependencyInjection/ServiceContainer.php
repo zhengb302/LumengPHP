@@ -14,7 +14,7 @@ use LumengPHP\Exceptions\InvalidServiceException;
  * 
  * @author Lumeng <zhengb302@163.com>
  */
-class ServiceContainer {
+class ServiceContainer implements ContainerInterface {
 
     /**
      *
@@ -31,6 +31,16 @@ class ServiceContainer {
     public function __construct(array $configs) {
         $this->configs = $configs;
         $this->services = array();
+    }
+
+    /**
+     * 根据服务名称检查服务容器中是否存在相应的服务对象
+     * @param string $serviceName 服务名称
+     * @return boolean 存在则返回true，不存在则返回false
+     */
+    public function has($serviceName) {
+        return isset($this->services[$serviceName]) ||
+                isset($this->configs[$serviceName]);
     }
 
     /**

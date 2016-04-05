@@ -2,6 +2,8 @@
 
 namespace LumengPHP\DependencyInjection\PropertyInjection;
 
+use LumengPHP\DependencyInjection\ContainerCollection;
+
 /**
  * 属性注射器
  *
@@ -10,17 +12,22 @@ namespace LumengPHP\DependencyInjection\PropertyInjection;
 class PropertyInjector {
 
     /**
+     * @var ContainerCollection 
+     */
+    private $containerCollection;
+
+    /**
      * @var PropertyInjectionAwareInterface 
      */
     private $propertyInjectionAware;
 
     /**
-     *
      * @var array 属性注入元数据
      */
     private $metadataList;
 
-    public function __construct(PropertyInjectionAwareInterface $propertyInjectionAware, array $metadataList) {
+    public function __construct(ContainerCollection $containerCollection, PropertyInjectionAwareInterface $propertyInjectionAware, array $metadataList) {
+        $this->containerCollection = $containerCollection;
         $this->propertyInjectionAware = $propertyInjectionAware;
         $this->metadataList = $metadataList;
     }
@@ -28,9 +35,14 @@ class PropertyInjector {
     public function doInject() {
         foreach ($this->metadataList as $metadata) {
             $containerName = $metadata['container'];
-            $container = '';
-            $value = $container->get($metadata['key']);
+            $container = $this->containerCollection->get($containerName);
 
+            $key = $metadata['key'];
+            if (!$container->has($key)) {
+                continue;
+            }
+
+            $value = $container->get($key);
             $propertyName = $metadata['property'];
             $this->propertyInjectionAware->setProperty($propertyName, $value);
         }

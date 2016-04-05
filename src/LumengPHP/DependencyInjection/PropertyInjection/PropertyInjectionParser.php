@@ -1,6 +1,6 @@
 <?php
 
-namespace LumengPHP\DependencyInjection;
+namespace LumengPHP\DependencyInjection\PropertyInjection;
 
 use ReflectionClass;
 use ReflectionProperty;

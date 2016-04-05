@@ -1,6 +1,6 @@
 <?php
 
-namespace LumengPHP\DependencyInjection;
+namespace LumengPHP\DependencyInjection\PropertyInjection;
 
 /**
  * 属性注射器

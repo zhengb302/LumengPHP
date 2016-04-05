@@ -2,7 +2,7 @@
 
 namespace tests\TestCases;
 
-use LumengPHP\DependencyInjection\PropertyInjectionParser;
+use LumengPHP\DependencyInjection\PropertyInjection\PropertyInjectionParser;
 
 /**
  * 属性注入解析程序测试
@@ -15,7 +15,7 @@ class PropertyInjectionParserTest extends \PHPUnit_Framework_TestCase {
         $class = 'tests\Commands\PropertyInjectionAwareCommand';
         $parser = new PropertyInjectionParser($class);
         $parser->parse();
-        $parser->dump('');
+        //$parser->dump('');
     }
 
 }

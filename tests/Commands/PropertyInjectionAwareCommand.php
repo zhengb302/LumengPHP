@@ -2,12 +2,17 @@
 
 namespace tests\Commands;
 
+use LumengPHP\DependencyInjection\PropertyInjection\PropertyInjectionAwareInterface;
+use LumengPHP\DependencyInjection\PropertyInjection\PropertyInjectionAwareTrait;
+
 /**
  * 可注入属性的Command
  *
  * @author Lumeng <zhengb302@163.com>
  */
-class PropertyInjectionAwareCommand {
+class PropertyInjectionAwareCommand implements PropertyInjectionAwareInterface {
+
+    use PropertyInjectionAwareTrait;
 
     /**
      * @var int 用户id

@@ -41,6 +41,12 @@ class PropertyInjectionParserTest extends \PHPUnit_Framework_TestCase {
         $parser->dump($this->dumpPath);
 
         $this->assertFileExists($this->dumpPath);
+
+        $expectedMetadataList = require(TEST_ROOT . '/resources/property-injection-aware-command-dump.php');
+
+        $metadataList = require($this->dumpPath);
+
+        $this->assertEquals($expectedMetadataList, $metadataList);
     }
 
 }

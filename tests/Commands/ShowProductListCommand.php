@@ -3,7 +3,7 @@
 namespace tests\Commands;
 
 use LumengPHP\Kernel\Command\Command;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use LumengPHP\Misc\JsonResponse;
 
 /**
  * 显示产品列表命令

@@ -8,7 +8,7 @@ use LumengPHP\Kernel\AppContextImpl;
 use LumengPHP\DependencyInjection\ServiceContainer;
 use LumengPHP\Kernel\Extension\Extension;
 use LumengPHP\Kernel\Facade\Facade;
-use Symfony\Component\HttpFoundation\Request;
+use LumengPHP\Kernel\Request;
 
 /**
  * 测试工作室
@@ -48,8 +48,10 @@ class TestStudio {
     public static function invokeCommand($command, array $query = array(), array $post = array(), array $attributes = array(), array $cookies = array(), array $files = array(), array $server = array()) {
         $request = new Request($query, $post, $attributes, $cookies, $files, $server);
         $cmd = new $command();
-        $cmd->init(self::$studio->appContext);
-        $response = $cmd->execute($request);
+        $cmd->setAppContext(self::$studio->appContext);
+        $cmd->setRequest($request);
+        $cmd->init();
+        $response = $cmd->execute();
         return new TestResponse($response);
     }
 

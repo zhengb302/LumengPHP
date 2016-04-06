@@ -2,33 +2,43 @@
 
 namespace LumengPHP\Kernel\Command;
 
+use LumengPHP\DependencyInjection\PropertyInjection\PropertyInjectionAwareTrait;
 use LumengPHP\Kernel\AppContext;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Exception;
+use LumengPHP\Kernel\Request;
 
 /**
  * 命令接口<br />
  * 命令是封装用户请求的地方
  * @author zhengluming <luming.zheng@baozun.cn>
  */
-interface Command {
+abstract class Command implements CommandInterface {
+
+    use PropertyInjectionAwareTrait;
 
     /**
-     * 初始化方法<br />
-     * execute方法执行之前，init方法会被框架调用。
-     * 在这里可以进行一些初始化操作
-     * 
-     * @param AppContext $appContext 应用环境对象
+     * @var AppContext AppContext实例
      */
-    public function init(AppContext $appContext);
+    protected $appContext;
 
     /**
-     * 执行命令并返回Response
-     * 
-     * @param Request $request 请求对象
-     * @return Response
-     * @throws Exception
+     * @var Request Request实例
      */
-    public function execute(Request $request);
+    protected $request;
+
+    public function setAppContext(AppContext $appContext) {
+        $this->appContext = $appContext;
+    }
+
+    public function setRequest(Request $request) {
+        $this->request = $request;
+    }
+
+    /**
+     * init方法默认实现
+     * @see CommandInterface::init
+     */
+    public function init() {
+        
+    }
+
 }

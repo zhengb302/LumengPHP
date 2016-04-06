@@ -2,7 +2,7 @@
 
 namespace tests\TestCases;
 
-use Symfony\Component\HttpFoundation\Request;
+use LumengPHP\Kernel\Request;
 use LumengPHP\Kernel\AppKernel;
 
 /**

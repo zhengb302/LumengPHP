@@ -2,7 +2,7 @@
 
 namespace LumengPHP\Test;
 
-use Symfony\Component\HttpFoundation\Response;
+use LumengPHP\Kernel\Response;
 
 /**
  * 测试用的Response

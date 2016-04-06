@@ -14,8 +14,6 @@ use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\HttpKernel\EventListener\RouterListener;
-use LumengPHP\Kernel\ControllerResolver;
-use LumengPHP\Kernel\EventListener\CommandInitializationListener;
 use LumengPHP\Kernel\EventListener\FilterListener;
 use LumengPHP\DependencyInjection\ServiceContainer;
 use LumengPHP\Kernel\Extension\Extension;
@@ -125,14 +123,11 @@ class AppKernel implements HttpKernelInterface, TerminableInterface {
         $routerListener = new RouterListener($matcher, $requestStack);
         $dispatcher->addSubscriber($routerListener);
 
-        $cmdInitListener = new CommandInitializationListener($this->appContext);
-        $dispatcher->addSubscriber($cmdInitListener);
-
         $filterConfig = $this->appConfig->get('framework.filter');
         $filterListener = new FilterListener($filterConfig, $this->appContext);
         $dispatcher->addSubscriber($filterListener);
 
-        $resolver = new ControllerResolver();
+        $resolver = new ControllerResolver($this->appContext);
         $this->kernel = new HttpKernel($dispatcher, $resolver, $requestStack);
     }
 

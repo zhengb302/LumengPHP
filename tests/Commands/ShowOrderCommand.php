@@ -2,25 +2,19 @@
 
 namespace tests\Commands;
 
-use LumengPHP\Kernel\AppContext;
 use LumengPHP\Kernel\Command\Command;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
+use LumengPHP\Kernel\Response;
 
 /**
  * 显示订单明细命令
  *
  * @author Lumeng <zhengb302@163.com>
  */
-class ShowOrderCommand implements Command {
+class ShowOrderCommand extends Command {
 
-    public function init(AppContext $appContext) {
-        
-    }
-
-    public function execute(Request $request) {
-        $id = $request->attributes->get('id');
-        $name = $request->query->get('name');
+    public function execute() {
+        $id = $this->request->attributes->get('id');
+        $name = $this->request->query->get('name');
         return new Response("id is {$id}, name is {$name}");
     }
 

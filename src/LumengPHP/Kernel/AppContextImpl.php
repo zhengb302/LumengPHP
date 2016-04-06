@@ -47,4 +47,11 @@ class AppContextImpl implements AppContext {
         return $this->serviceContainer->get($serviceName);
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function getCacheDir() {
+        return $this->appConfig->get('framework.cacheDir');
+    }
+
 }

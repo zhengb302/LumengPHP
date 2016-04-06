@@ -33,4 +33,10 @@ interface AppContext {
      * @return mixed|null 一个服务对象。如果服务不存在，返回null
      */
     public function getService($serviceName);
+
+    /**
+     * 取得缓存目录路径
+     * @return string
+     */
+    public function getCacheDir();
 }

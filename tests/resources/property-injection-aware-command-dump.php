@@ -1,7 +1,7 @@
 <?php
 
 /*
- * "tests\Commands\PropertyInjectionAwareCommand"类的属性注入dump文件
+ * "tests\Commands\PropertyInjectionCommand"类的属性注入dump文件
  */
 
 return array(

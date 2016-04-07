@@ -2,7 +2,6 @@
 
 namespace LumengPHP\Kernel\Command;
 
-use LumengPHP\DependencyInjection\PropertyInjection\PropertyInjectionAwareInterface;
 use LumengPHP\Kernel\AppContext;
 use LumengPHP\Kernel\Request;
 use LumengPHP\Kernel\Response;
@@ -13,7 +12,7 @@ use Exception;
  * 命令是封装用户请求的地方
  * @author zhengluming <luming.zheng@baozun.cn>
  */
-interface CommandInterface extends PropertyInjectionAwareInterface {
+interface CommandInterface {
 
     /**
      * 此方法供外部程序注入AppContext实例

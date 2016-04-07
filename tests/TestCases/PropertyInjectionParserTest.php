@@ -35,7 +35,7 @@ class PropertyInjectionParserTest extends \PHPUnit_Framework_TestCase {
     }
 
     public function testParse() {
-        $class = 'tests\Commands\PropertyInjectionAwareCommand';
+        $class = 'tests\Commands\PropertyInjectionCommand';
         $parser = new PropertyInjectionParser($class);
         $parser->parse();
         $parser->dump($this->dumpPath);

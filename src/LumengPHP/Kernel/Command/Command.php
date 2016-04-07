@@ -2,7 +2,6 @@
 
 namespace LumengPHP\Kernel\Command;
 
-use LumengPHP\DependencyInjection\PropertyInjection\PropertyInjectionAwareTrait;
 use LumengPHP\Kernel\AppContext;
 use LumengPHP\Kernel\Request;
 
@@ -12,8 +11,6 @@ use LumengPHP\Kernel\Request;
  * @author zhengluming <luming.zheng@baozun.cn>
  */
 abstract class Command implements CommandInterface {
-
-    use PropertyInjectionAwareTrait;
 
     /**
      * @var AppContext AppContext实例

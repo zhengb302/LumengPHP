@@ -3,6 +3,7 @@
 namespace LumengPHP\DependencyInjection\PropertyInjection;
 
 use LumengPHP\DependencyInjection\ContainerCollection;
+use ReflectionObject;
 
 /**
  * 属性注射器
@@ -17,18 +18,24 @@ class PropertyInjector {
     private $containerCollection;
 
     /**
-     * @var PropertyInjectionAwareInterface 
+     * @var mixed 
      */
-    private $propertyInjectionAware;
+    private $object;
+
+    /**
+     * @var ReflectionObject 
+     */
+    private $objectReflection;
 
     /**
      * @var array 属性注入元数据
      */
     private $metadataList;
 
-    public function __construct(ContainerCollection $containerCollection, PropertyInjectionAwareInterface $propertyInjectionAware, array $metadataList) {
+    public function __construct(ContainerCollection $containerCollection, $object, array $metadataList) {
         $this->containerCollection = $containerCollection;
-        $this->propertyInjectionAware = $propertyInjectionAware;
+        $this->object = $object;
+        $this->objectReflection = new ReflectionObject($object);
         $this->metadataList = $metadataList;
     }
 
@@ -43,8 +50,14 @@ class PropertyInjector {
             }
 
             $value = $container->get($key);
+
             $propertyName = $metadata['property'];
-            $this->propertyInjectionAware->setProperty($propertyName, $value);
+            $property = $this->objectReflection->getProperty($propertyName);
+            if (!$property->isPublic()) {
+                $property->setAccessible(true);
+            }
+
+            $property->setValue($this->object, $value);
         }
     }
 

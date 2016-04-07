@@ -2,7 +2,7 @@
 
 namespace tests\TestCases;
 
-use tests\Commands\PropertyInjectionAwareCommand;
+use tests\Commands\PropertyInjectionCommand;
 use tests\Misc\MockContainer;
 use LumengPHP\DependencyInjection\ContainerCollection;
 use LumengPHP\DependencyInjection\PropertyInjection\PropertyInjector;
@@ -38,7 +38,7 @@ class PropertyInjectTest extends \PHPUnit_Framework_TestCase {
         $containerCollection->add('service', $serviceContainer);
 
         //可注入属性的对象
-        $cmd = new PropertyInjectionAwareCommand();
+        $cmd = new PropertyInjectionCommand();
 
         //属性注入元数据
         $metadataList = require(TEST_ROOT . '/resources/property-injection-aware-command-dump.php');

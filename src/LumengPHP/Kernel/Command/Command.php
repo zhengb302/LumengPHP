@@ -7,7 +7,7 @@ use LumengPHP\Kernel\AppContext;
 use LumengPHP\Kernel\Request;
 
 /**
- * 命令接口<br />
+ * 命令基类<br />
  * 命令是封装用户请求的地方
  * @author zhengluming <luming.zheng@baozun.cn>
  */

@@ -6,6 +6,7 @@ use Symfony\Component\HttpKernel\Controller\ControllerResolverInterface;
 use Symfony\Component\HttpFoundation\Request as BaseRequest;
 use LumengPHP\Kernel\Command\CommandInterface;
 use LumengPHP\DependencyInjection\PropertyInjection\PropertyInjectionParser;
+use LumengPHP\DependencyInjection\PropertyInjection\PropertyInjector;
 use LumengPHP\DependencyInjection\ContainerCollection;
 
 /**

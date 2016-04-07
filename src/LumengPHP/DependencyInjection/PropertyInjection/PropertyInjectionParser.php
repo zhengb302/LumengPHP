@@ -20,7 +20,7 @@ class PropertyInjectionParser {
     /**
      * @var array "属性-容器-key"对
      */
-    private $containerPropertyPairs;
+    private $containerPropertyPairs = array();
 
     /**
      * 构造一个属性注入解析器
@@ -31,7 +31,8 @@ class PropertyInjectionParser {
     }
 
     /**
-     * 解析并生成结果，之后可以调用dump方法导出结果
+     * 解析并生成结果，之后可以调用getResult方法返回结果，
+     * 或者调用dump方法导出结果
      */
     public function parse() {
         $properties = $this->reflection->getProperties();
@@ -59,6 +60,14 @@ class PropertyInjectionParser {
             'container' => $containerName,
             'key' => $key,
         );
+    }
+
+    /**
+     * 返回解析结果(元数据)
+     * @return array
+     */
+    public function getResult() {
+        return $this->containerPropertyPairs;
     }
 
     /**

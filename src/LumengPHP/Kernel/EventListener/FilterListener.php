@@ -6,7 +6,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
-use Symfony\Component\HttpFoundation\Response;
+use LumengPHP\Kernel\Response;
 use LumengPHP\Kernel\AppContext;
 
 /**
@@ -55,8 +55,11 @@ class FilterListener implements EventSubscriberInterface {
 
             $class = $preFilterConfig['class'];
             $filter = new $class();
-            $filter->init($this->appContext);
-            $response = $filter->doFilter($request, null);
+            $filter->setAppContext($this->appContext);
+            $filter->setRequest($request);
+            $filter->init();
+
+            $response = $filter->doFilter();
             if (!is_null($response) && $response instanceof Response) {
                 $event->setResponse($response);
                 return;
@@ -83,8 +86,12 @@ class FilterListener implements EventSubscriberInterface {
 
             $class = $postFilterConfig['class'];
             $filter = new $class();
-            $filter->init($this->appContext);
-            $filter->doFilter($request, $response);
+            $filter->setAppContext($this->appContext);
+            $filter->setRequest($request);
+            $filter->setResponse($response);
+            $filter->init();
+
+            $filter->doFilter();
         }
     }
 

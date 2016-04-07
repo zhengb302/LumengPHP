@@ -3,32 +3,49 @@
 namespace LumengPHP\Kernel\Filter;
 
 use LumengPHP\Kernel\AppContext;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
+use LumengPHP\Kernel\Request;
+use LumengPHP\Kernel\Response;
 
 /**
- * 过滤器接口
+ * 过滤器基类
  * @author Lumeng <zhengb302@163.com>
  */
-interface Filter {
+abstract class Filter implements FilterInterface {
 
     /**
-     * 初始化方法<br />
-     * doFilter方法执行之前，init方法会被框架调用。
-     * 在这里可以进行一些初始化操作
-     * 
-     * @param AppContext $appContext 应用环境对象
+     * @var AppContext AppContext实例
      */
-    public function init(AppContext $appContext);
+    protected $appContext;
 
     /**
-     * 执行过滤器动作<br />
-     * 如果返回一个Response，则会直接跳过后续filter及命令的执行，
-     * 做一些收尾动作之后结束执行
-     * 
-     * @param Request $request 请求对象
-     * @param Response $response 响应对象。在"pre filter"里此参数为null
-     * @return Response|null
+     * @var Request Request实例
      */
-    public function doFilter(Request $request, Response $response = null);
+    protected $request;
+
+    /**
+     * @var Response Response实例。在"pre filter"阶段，不会注入Response实例，
+     * 所以此属性为null。在"post filter"阶段，此属性为相应的Response实例。
+     */
+    protected $response;
+
+    public function setAppContext(AppContext $appContext) {
+        $this->appContext = $appContext;
+    }
+
+    public function setRequest(Request $request) {
+        $this->request = $request;
+    }
+
+    public function setResponse(Response $response) {
+        $this->response = $response;
+    }
+
+    /**
+     * init方法默认实现
+     * @see FilterInterface::init
+     */
+    public function init() {
+        
+    }
+
 }

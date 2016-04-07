@@ -9,6 +9,7 @@ use LumengPHP\DependencyInjection\ServiceContainer;
 use LumengPHP\Kernel\Extension\Extension;
 use LumengPHP\Kernel\Facade\Facade;
 use LumengPHP\Kernel\Request;
+use LumengPHP\Kernel\Response;
 
 /**
  * 测试工作室
@@ -43,7 +44,7 @@ class TestStudio {
      * @param array           $cookies    The COOKIE parameters
      * @param array           $files      The FILES parameters
      * @param array           $server     The SERVER parameters
-     * @return TestResponse
+     * @return Response
      */
     public static function invokeCommand($command, array $query = array(), array $post = array(), array $attributes = array(), array $cookies = array(), array $files = array(), array $server = array()) {
         $request = new Request($query, $post, $attributes, $cookies, $files, $server);
@@ -51,8 +52,7 @@ class TestStudio {
         $cmd->setAppContext(self::$studio->appContext);
         $cmd->setRequest($request);
         $cmd->init();
-        $response = $cmd->execute();
-        return new TestResponse($response);
+        return $cmd->execute();
     }
 
     /**

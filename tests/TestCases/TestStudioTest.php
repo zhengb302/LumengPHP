@@ -22,8 +22,8 @@ class TestStudioTest extends \PHPUnit_Framework_TestCase {
 
         //测试用例中通常都是像下面这个样子
         $command = 'tests\Commands\WhatTheFuckCommand';
-        $testResponse = TestStudio::invokeCommand($command, array('uid' => 3), array('username' => 'linda'));
-        $jsonContent = $testResponse->getJsonContent();
+        $response = TestStudio::invokeCommand($command, array('uid' => 3), array('username' => 'linda'));
+        $jsonContent = $response->getJsonContent();
         $this->assertNotNull($jsonContent);
 
         $expectedResult = array(

@@ -17,6 +17,12 @@ class WhatTheFuckCommand extends Command {
      */
     private $siteName;
 
+    /**
+     * @var int 
+     * @from(request[user_age])
+     */
+    private $age;
+
     public function init() {
         $this->siteName = $this->appContext->getParameter('siteName');
     }
@@ -25,6 +31,7 @@ class WhatTheFuckCommand extends Command {
         return new JsonResponse(array(
             'uid' => $this->request->query->get('uid'),
             'username' => $this->request->request->get('username'),
+            'age' => $this->age,
             'siteName' => $this->siteName,
         ));
     }

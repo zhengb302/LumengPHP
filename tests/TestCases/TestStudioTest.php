@@ -22,13 +22,14 @@ class TestStudioTest extends \PHPUnit_Framework_TestCase {
 
         //测试用例中通常都是像下面这个样子
         $command = 'tests\Commands\WhatTheFuckCommand';
-        $response = TestStudio::invokeCommand($command, array('uid' => 3), array('username' => 'linda'));
+        $response = TestStudio::invokeCommand($command, array('uid' => 3), array('username' => 'linda', 'user_age' => 18));
         $jsonContent = $response->getJsonContent();
         $this->assertNotNull($jsonContent);
 
         $expectedResult = array(
             'uid' => 3,
             'username' => 'linda',
+            'age' => 18,
             'siteName' => 'LumengPHP!',
         );
         $this->assertEquals($expectedResult, $jsonContent);

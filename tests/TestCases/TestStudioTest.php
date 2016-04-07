@@ -30,6 +30,7 @@ class TestStudioTest extends \PHPUnit_Framework_TestCase {
             'uid' => 3,
             'username' => 'linda',
             'age' => 18,
+            'sex' => 1,
             'siteName' => 'LumengPHP!',
         );
         $this->assertEquals($expectedResult, $jsonContent);

@@ -23,6 +23,14 @@ class WhatTheFuckCommand extends Command {
      */
     private $age;
 
+    /**
+     * 性别：1，男；0，女<br />
+     * 这里可以用于测试当容器中不存在此key的时候，会使用(或者说，"保留")默认值
+     * @var int
+     * @from(request)
+     */
+    private $sex = 1;
+
     public function init() {
         $this->siteName = $this->appContext->getParameter('siteName');
     }
@@ -32,6 +40,7 @@ class WhatTheFuckCommand extends Command {
             'uid' => $this->request->query->get('uid'),
             'username' => $this->request->request->get('username'),
             'age' => $this->age,
+            'sex' => $this->sex,
             'siteName' => $this->siteName,
         ));
     }

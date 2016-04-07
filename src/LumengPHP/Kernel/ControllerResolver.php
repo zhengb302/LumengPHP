@@ -39,9 +39,11 @@ class ControllerResolver implements ControllerResolverInterface {
             throw new \InvalidArgumentException($msg);
         }
 
+        //注入AppContext和Request
         $cmd->setAppContext($this->appContext);
         $cmd->setRequest($request);
 
+        //注入属性
         $this->injectProperty($cmdClass, $cmd);
 
         $cmd->init();
@@ -56,12 +58,16 @@ class ControllerResolver implements ControllerResolverInterface {
      * @param CommandInterface $cmd
      */
     private function injectProperty($cmdClass, CommandInterface $cmd) {
+        //元数据缓存目录
         $cacheDir = $this->appContext->getCacheDir() . '/property-injection';
         if (!is_dir($cacheDir)) {
             mkdir($cacheDir, 0777, true);
         }
 
-        $injectionMetadataFile = $cacheDir . '/' . str_replace('\\', '-', ltrim($cmdClass, '\\')) . '.php';
+        //元数据文件名：把全限定的类名中的反斜杠，改为横杠
+        $metadataFilename = str_replace('\\', '-', ltrim($cmdClass, '\\')) . '.php';
+
+        $injectionMetadataFile = "{$cacheDir}/{$metadataFilename}";
         if (!file_exists($injectionMetadataFile)) {
             $parser = new PropertyInjectionParser($cmd);
             $parser->parse();

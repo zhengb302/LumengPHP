@@ -6,7 +6,7 @@ use LumengPHP\Kernel\AppConfig;
 use LumengPHP\Kernel\AppContext;
 use LumengPHP\Kernel\AppContextImpl;
 use LumengPHP\DependencyInjection\ServiceContainer;
-use LumengPHP\Kernel\Extension\Extension;
+use LumengPHP\Kernel\Extension\ExtensionInterface;
 use LumengPHP\Kernel\Facade\Facade;
 use LumengPHP\Kernel\Request;
 use LumengPHP\Kernel\Response;
@@ -139,9 +139,14 @@ class TestStudio {
         foreach ($extensions as $extensionClass) {
             $extension = new $extensionClass();
 
-            assert($extension instanceof Extension);
+            assert($extension instanceof ExtensionInterface);
 
-            $extension->load($this->appContext, $this->container);
+            //注入AppContext和ServiceContainer
+            $extension->setAppContext($this->appContext);
+            $extension->setServiceContainer($this->container);
+
+            //加载扩展
+            $extension->load();
         }
     }
 

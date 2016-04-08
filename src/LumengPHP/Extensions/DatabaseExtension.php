@@ -20,10 +20,10 @@ class DatabaseExtension extends Extension {
     }
 
     public function load() {
-        $dbConfigs = $this->appContext->getConfig('database');
+        $dbConfig = $this->appContext->getConfig('database');
 
         //如果数据库配置为空，则表示不需要数据库，退出
-        if (empty($dbConfigs)) {
+        if (empty($dbConfig)) {
             return;
         }
 
@@ -32,16 +32,17 @@ class DatabaseExtension extends Extension {
 
         //把连接管理器注册为服务
         $this->container->registerService('connManager', function($container) {
+            //获取日志服务
             $appContext = $container->get('appContext');
-            $dbConfigs = $appContext->getConfig('database');
+            $dbConfig = $appContext->getConfig('database');
+            $loggerName = $dbConfig['loggerName'];
+            $logger = $loggerName ? $container->get($loggerName) : null;
 
-            $logger = $container->get('logger');
-
-            return new ConnectionManager($dbConfigs, $logger);
+            return new ConnectionManager($dbConfig['connections'], $logger);
         });
 
         //把各个连接注册为服务，服务名为连接名
-        foreach (array_keys($dbConfigs) as $connName) {
+        foreach (array_keys($dbConfig['connections']) as $connName) {
             $this->container->registerService($connName, function($container) use ($connName) {
                 return $container->get('connManager')->getConnection($connName);
             });

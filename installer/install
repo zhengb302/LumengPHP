@@ -11,10 +11,12 @@ function print_usage() {
     echo "Usage:\n";
     echo "    mkdir <project-name>\n";
     echo "    cd <project-name>\n";
+    echo "    composer require lumeng/lumeng-php\n";
     echo "    php install <VendorName>/<ProjectName>\n";
     echo "Example:\n";
     echo "    mkdir blog\n";
     echo "    cd blog\n";
+    echo "    composer require lumeng/lumeng-php\n";
     echo "    php install Apache/Blog\n";
 }
 

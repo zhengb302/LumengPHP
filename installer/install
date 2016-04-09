@@ -21,7 +21,7 @@ function print_usage() {
 }
 
 //应用根目录
-$appDir = dirname(dirname(dirname(dir(__DIR__))));
+$appDir = dirname(dirname(dirname(dirname(__DIR__))));
 
 if ($_SERVER['argc'] <> 2) {
     echo "参数错误！\n";

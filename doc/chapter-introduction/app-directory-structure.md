@@ -3,10 +3,19 @@
 
 ```
 bin/
-    some scripts here
-app/
-    config/
+    console
+config/
+    config.php
+    database.php
+    extensions.php
+    filter.php
+    parameters.php
+    routing.php
+    services.php
+resources/
     views/
+        base.html.twig
+        index.html.twig
 src/
     Vendor/
         Project/
@@ -27,6 +36,10 @@ web/
         css/
         images/
     index.php
+tests/
+    config/
+    TestCases/
+    bootstrap.php
 var/
     cache/
     logs/

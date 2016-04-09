@@ -1,8 +1,69 @@
 #!/usr/bin/env php
 <?php
-
 /*
  * 安装及初始化LumengPHP应用
  */
 
+/**
+ * 打印使用方式
+ */
+function print_usage() {
+    echo "Usage:\n";
+    echo "    mkdir <project-name>\n";
+    echo "    cd <project-name>\n";
+    echo "    php install <VendorName>/<ProjectName>\n";
+    echo "Example:\n";
+    echo "    mkdir blog\n";
+    echo "    cd blog\n";
+    echo "    php install Apache/Blog\n";
+}
 
+//应用根目录
+$appDir = getcwd();
+
+if ($_SERVER['argc'] <> 2) {
+    echo "参数错误！\n";
+    print_usage();
+    exit(-1);
+}
+
+list($vendorName, $projectName) = explode('/', $_SERVER['argv'][1]);
+if (empty($vendorName) || empty($projectName)) {
+    echo "参数错误！\n";
+    print_usage();
+    exit(-1);
+}
+
+$vendorName = ucfirst($vendorName);
+$projectName = ucfirst($projectName);
+
+//目录权限
+$mode = 0777;
+
+//要创建的目录列表
+$makingDirList = array(
+    "{$appDir}/bin",
+    "{$appDir}/config",
+    "{$appDir}/resources",
+    "{$appDir}/resources/views",
+    "{$appDir}/src",
+    "{$appDir}/src/{$vendorName}",
+    "{$appDir}/src/{$vendorName}/$projectName",
+    "{$appDir}/src/{$vendorName}/$projectName/Commands",
+    "{$appDir}/src/{$vendorName}/$projectName/Models",
+    "{$appDir}/web",
+    "{$appDir}/web/static",
+    "{$appDir}/web/static/js",
+    "{$appDir}/web/static/css",
+    "{$appDir}/web/static/images",
+    "{$appDir}/tests",
+    "{$appDir}/tests/config",
+    "{$appDir}/tests/TestCases",
+    "{$appDir}/var",
+    "{$appDir}/var/cache",
+    "{$appDir}/var/logs",
+);
+
+foreach ($makingDirList as $makingDir) {
+    mkdir($makingDir, $mode);
+}

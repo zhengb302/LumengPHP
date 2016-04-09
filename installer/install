@@ -89,11 +89,19 @@ foreach ($copyingFiles as $copyingFile) {
     $src = $tplDir . $copyingFile;
 
     $targetFile = $copyingFile;
-    if (strpos($copyingFile, '/src')) {
-        $targetFile = str_replace(array('VendorName', 'ProjectName'), array($vendorName, $projectName), $copyingFile);
+    if (strpos($copyingFile, '/src') === 0) {
+        $targetFile = str_replace('/VendorName/ProjectName', "/{$vendorName}/{$projectName}", $copyingFile);
     }
 
     $target = $appDir . $targetFile;
 
     copy($src, $target);
+
+    if ($targetFile == '/config/routing.php' || strpos($targetFile, '/src') === 0) {
+        $content = file_get_contents($target);
+        $actualContent = str_replace('VendorName\ProjectName', "{$vendorName}\\{$projectName}", $content);
+        file_put_contents($target, $actualContent);
+    }
 }
+
+echo "应用创建成功！\n";

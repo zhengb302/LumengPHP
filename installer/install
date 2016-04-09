@@ -67,3 +67,33 @@ $makingDirList = array(
 foreach ($makingDirList as $makingDir) {
     mkdir($makingDir, $mode);
 }
+
+//安装程序模板文件目录
+$tplDir = __DIR__ . '/templates';
+
+//待复制的模板文件
+$copyingFiles = array(
+    '/config/config.php',
+    '/config/database.php',
+    '/config/extensions.php',
+    '/config/filter.php',
+    '/config/parameters.php',
+    '/config/routing.php',
+    '/config/services.php',
+    '/src/VendorName/ProjectName/Commands/HomeCommand.php',
+    '/web/.htaccess',
+    '/web/index.php',
+);
+
+foreach ($copyingFiles as $copyingFile) {
+    $src = $tplDir . $copyingFile;
+
+    $targetFile = $copyingFile;
+    if (strpos($copyingFile, '/src')) {
+        $targetFile = str_replace(array('VendorName', 'ProjectName'), array($vendorName, $projectName), $copyingFile);
+    }
+
+    $target = $appDir . $targetFile;
+
+    copy($src, $target);
+}

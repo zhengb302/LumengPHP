@@ -17,8 +17,8 @@ resources/
         base.html.twig
         index.html.twig
 src/
-    Vendor/
-        Project/
+    VendorName/
+        ProjectName/
             Commands/
                 HomeCommand.php
             Models/
@@ -35,6 +35,7 @@ web/
         js/
         css/
         images/
+    .htaccess
     index.php
 tests/
     config/

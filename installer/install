@@ -110,7 +110,7 @@ foreach ($copyingFiles as $copyingFile) {
 $composerJsonPath = $appDir . '/composer.json';
 $composerJson = json_decode(file_get_contents($composerJsonPath), true);
 $composerJson['autoload']['psr-4']["{$vendorName}\\{$projectName}\\"] = "src/{$vendorName}/{$projectName}/";
-file_put_contents($composerJsonPath, json_encode($composerJson, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+file_put_contents($composerJsonPath, json_encode($composerJson, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n");
 
 //更新autoload
 $cmd = "composer --working-dir={$appDir} dump-autoload";

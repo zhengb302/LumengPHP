@@ -10,16 +10,20 @@
 # 创建并进入应用目录
 mkdir blog
 cd blog
+
 # 安装框架
 composer require lumeng/lumeng-php
+
 # 创建应用
 php vendor/lumeng/lumeng-php/installer/install Apache/Blog
+
 # 编辑composer.json，把Apache\Blog名称空间加入到composer的autoload中
 "autoload": {
     "psr-4": {
         "Apache\\Blog\\": "src/Apache/Blog/"
     }
 }
+
 # 更新autoload
 composer dump-autoload
 ```

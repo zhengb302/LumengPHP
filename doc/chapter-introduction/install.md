@@ -1,7 +1,8 @@
 创建应用
 -------
 
-创建应用很简单，只需要执行几个命令就能完成。这里以创建博客程序为例。
+创建应用很简单，只需要执行几个命令就能完成。应用名称空间最好遵循"VendorName/ProjectName"的形式，然而并非一定要这么做。
+这里以创建Apache公司的Blog程序为例，展示如何创建应用。
 
 步骤：
 ```bash
@@ -22,4 +23,4 @@ php vendor/lumeng/lumeng-php/installer/install Apache/Blog
 composer dump-autoload
 ```
 
-完成以上步骤之后，把应用目录下的web目录配置为web服务器的"document root"即可。
+完成以上步骤之后，把blog目录下的web目录配置为web服务器的"document root"即可。

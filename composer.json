@@ -23,15 +23,5 @@
         "psr-4": {
             "LumengPHP\\": "src/LumengPHP/"
         }
-    },
-    "scripts": {
-        "post-package-install": [
-            "php -r 'echo \"hello world\n\";'",
-            "php installer/check_installation.php"
-        ],
-        "post-package-cmd": [
-            "php -r 'echo \"hello world\n\";'",
-            "php installer/check_installation.php"
-        ]
     }
 }

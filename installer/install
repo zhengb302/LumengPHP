@@ -21,7 +21,7 @@ function print_usage() {
 }
 
 //应用根目录
-$appDir = getcwd();
+$appDir = dirname(dirname(dirname(dir(__DIR__))));
 
 if ($_SERVER['argc'] <> 2) {
     echo "参数错误！\n";
@@ -40,7 +40,7 @@ $vendorName = ucfirst($vendorName);
 $projectName = ucfirst($projectName);
 
 //目录权限
-$mode = 0777;
+$mode = 0755;
 
 //要创建的目录列表
 $makingDirList = array(

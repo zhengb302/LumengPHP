@@ -13,6 +13,7 @@
         }
     ],
     "require": {
+        "php": ">=5.4.0",
         "symfony/http-kernel": "^2.8",
         "symfony/routing": "^2.8",
         "psr/log": "^1.0",
@@ -22,5 +23,10 @@
         "psr-4": {
             "LumengPHP\\": "src/LumengPHP/"
         }
+    },
+    "scripts": {
+        "post-package-install": [
+            "php installer/check_installation.php"
+        ]
     }
 }

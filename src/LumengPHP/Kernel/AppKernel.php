@@ -4,7 +4,7 @@ namespace LumengPHP\Kernel;
 
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\TerminableInterface;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Request as BaseRequest;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -114,7 +114,7 @@ class AppKernel implements HttpKernelInterface, TerminableInterface {
     /**
      * {@inheritdoc}
      */
-    public function handle(Request $request, $type = self::MASTER_REQUEST, $catch = true) {
+    public function handle(BaseRequest $request, $type = self::MASTER_REQUEST, $catch = true) {
         //初始化容器集合
         $this->initContainerCollection($request);
 
@@ -127,9 +127,9 @@ class AppKernel implements HttpKernelInterface, TerminableInterface {
 
     /**
      * 初始化容器集合
-     * @param Request $request
+     * @param BaseRequest $request
      */
-    private function initContainerCollection(Request $request) {
+    private function initContainerCollection(BaseRequest $request) {
         $this->containerCollection = new ContainerCollection();
         $this->containerCollection->add('query', new ParameterContainer($request->query));
         $this->containerCollection->add('request', new ParameterContainer($request->request));
@@ -182,7 +182,7 @@ class AppKernel implements HttpKernelInterface, TerminableInterface {
     /**
      * {@inheritdoc}
      */
-    public function terminate(Request $request, Response $response) {
+    public function terminate(BaseRequest $request, Response $response) {
         return $this->kernel->terminate($request, $response);
     }
 

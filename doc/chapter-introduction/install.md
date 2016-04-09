@@ -1,8 +1,9 @@
 创建应用
 -------
 
-创建应用很简单，只需要执行几个命令就能完成。应用名称空间最好遵循"VendorName/ProjectName"的形式，然而并非一定要这么做。
-这里以创建Apache公司的Blog程序为例，展示如何创建应用。
+创建应用很简单，只需要执行几个命令就能完成。应用名称空间最好遵循"VendorName/ProjectName"的形式，
+然而并非一定要这么做，只要满足composer的autoload机制即可。这里以创建Apache公司的Blog程序为例，
+展示如何创建应用。
 
 步骤：
 ```bash

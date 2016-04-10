@@ -5,7 +5,6 @@ namespace LumengPHP\Console\Commands;
 use LumengPHP\Console\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -34,6 +33,10 @@ class CommandCreateCommand extends Command {
         }
 
         $nsRoot = trim($this->getNamespaceRoot(), '\\');
+        $namespace = $nsRoot . '\\Commands';
+        if (strpos($name, '/')) {
+            $namespace = $namespace . '\\' . str_replace('/', '\\', dirname($name));
+        }
 
         $nsRootDir = trim($this->getNamespaceRootDir(), '/');
         if ($nsRootDir) {
@@ -42,11 +45,10 @@ class CommandCreateCommand extends Command {
             $filePath = $this->getAppRootDir() . "/Commands/{$name}.php";
         }
 
-
         $stub = file_get_contents($this->getStubDir() . '/command.stub');
 
         $content = str_replace(
-                array('{NamespaceRoot}', '{CommandName}'), array($nsRoot, $commandName), $stub
+                array('{{namespace}}', '{{CommandName}}'), array($namespace, $commandName), $stub
         );
 
         file_put_contents($filePath, $content);

@@ -1,0 +1,41 @@
+<?php
+
+namespace tests\TestCases;
+
+use LumengPHP\Test\TestStudio;
+
+/**
+ * 
+ */
+class {{TestName}} extends BaseDatabaseTestCase {
+
+    protected function getDataSet() {
+        $fixtureFiles = array(
+            //fixture files
+        );
+        return $this->createCompositeMySQLXMLDataSet($fixtureFiles);
+    }
+
+    /**
+     * 
+     */
+    public function testNormal() {
+        //GET参数
+        $query = array(
+            //param => value
+        );
+
+        //POST参数
+        $post = array(
+            //param => value
+        );
+
+        $command = '{{command}}';
+        $response = TestStudio::invokeCommand($command, $query, $post);
+        $result = $response->getJsonContent();
+
+        $this->assertNotNull($result);
+        $this->assertEquals(200, $result['returnCode']);
+    }
+
+}

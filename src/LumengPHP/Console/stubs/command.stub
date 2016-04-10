@@ -1,6 +1,6 @@
 <?php
 
-namespace {NamespaceRoot}\Commands;
+namespace {{namespace}};
 
 use LumengPHP\Kernel\Command\Command;
 use LumengPHP\Kernel\Response;
@@ -8,9 +8,8 @@ use LumengPHP\Kernel\Response;
 /**
  * 
  */
-class {CommandName} extends Command {
+class {{CommandName}} extends Command {
 
-    
     public function init() {
         
     }

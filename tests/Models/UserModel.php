@@ -1,6 +1,6 @@
 <?php
 
-namespace tests\Model;
+namespace tests\Models;
 
 use LumengPHP\Db\Model;
 

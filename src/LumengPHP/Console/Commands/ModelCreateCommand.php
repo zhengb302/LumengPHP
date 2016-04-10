@@ -5,7 +5,6 @@ namespace LumengPHP\Console\Commands;
 use LumengPHP\Console\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -24,18 +23,28 @@ class ModelCreateCommand extends Command {
     }
 
     protected function execute(InputInterface $input, OutputInterface $output) {
+        // eg. GoodsModel、UserModel
         $name = $input->getArgument('name');
-        if ($name) {
-            $text = 'Hello ' . $name;
+
+        $nsRoot = trim($this->getNamespaceRoot(), '\\');
+        $namespace = $nsRoot . '\\Models';
+
+        $nsRootDir = trim($this->getNamespaceRootDir(), '/');
+        if ($nsRootDir) {
+            $filePath = $this->getAppRootDir() . '/' . $nsRootDir . "/Models/{$name}.php";
         } else {
-            $text = 'Hello';
+            $filePath = $this->getAppRootDir() . "/Models/{$name}.php";
         }
 
-        if ($input->getOption('yell')) {
-            $text = strtoupper($text);
-        }
+        $stub = file_get_contents($this->getStubDir() . '/model.stub');
 
-        $output->writeln($text);
+        $content = str_replace(
+                array('{{namespace}}', '{{ModelName}}'), array($namespace, $name), $stub
+        );
+
+        file_put_contents($filePath, $content);
+
+        $output->writeln('创建成功！');
     }
 
 }

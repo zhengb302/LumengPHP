@@ -111,7 +111,7 @@ class TestStudio {
      * 初始化服务容器
      */
     private function initServiceContainer() {
-        $serviceConfigs = $this->appConfig->get('framework.services');
+        $serviceConfigs = $this->appConfig->get('app.services');
 
         //服务配置要不不存在，要不就是个数组
         assert(is_array($serviceConfigs) || is_null($serviceConfigs));
@@ -127,7 +127,7 @@ class TestStudio {
      * 加载扩展
      */
     private function loadExtensions() {
-        $extensions = $this->appConfig->get('framework.extensions');
+        $extensions = $this->appConfig->get('app.extensions');
 
         //扩展配置要不不存在，要不就是个数组
         assert(is_array($extensions) || is_null($extensions));

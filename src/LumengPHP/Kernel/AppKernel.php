@@ -72,7 +72,7 @@ class AppKernel implements HttpKernelInterface, TerminableInterface {
      * 初始化服务容器
      */
     private function initServiceContainer() {
-        $serviceConfigs = $this->appConfig->get('framework.services');
+        $serviceConfigs = $this->appConfig->get('app.services');
 
         //服务配置要不不存在，要不就是个数组
         assert(is_array($serviceConfigs) || is_null($serviceConfigs));
@@ -88,7 +88,7 @@ class AppKernel implements HttpKernelInterface, TerminableInterface {
      * 加载扩展
      */
     private function loadExtensions() {
-        $extensions = $this->appConfig->get('framework.extensions');
+        $extensions = $this->appConfig->get('app.extensions');
 
         //扩展配置要不不存在，要不就是个数组
         assert(is_array($extensions) || is_null($extensions));
@@ -150,7 +150,7 @@ class AppKernel implements HttpKernelInterface, TerminableInterface {
         $routerListener = new RouterListener($matcher, $requestStack);
         $dispatcher->addSubscriber($routerListener);
 
-        $filterConfig = $this->appConfig->get('framework.filter');
+        $filterConfig = $this->appConfig->get('app.filter');
         $filterListener = new FilterListener($filterConfig, $this->appContext);
         $dispatcher->addSubscriber($filterListener);
 
@@ -164,7 +164,7 @@ class AppKernel implements HttpKernelInterface, TerminableInterface {
      */
     private function loadRoutes() {
         $routes = new RouteCollection();
-        $routeConfigs = $this->appConfig->get('framework.router');
+        $routeConfigs = $this->appConfig->get('app.router');
         foreach ($routeConfigs as $name => $routeConfig) {
             $path = $routeConfig['path'];
             $defaults = $routeConfig;

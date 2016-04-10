@@ -50,8 +50,15 @@ class AppContextImpl implements AppContext {
     /**
      * {@inheritdoc}
      */
+    public function getRootDir() {
+        $this->appConfig->get('app.rootDir');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getCacheDir() {
-        return $this->appConfig->get('framework.cacheDir');
+        return $this->appConfig->get('app.cacheDir');
     }
 
 }

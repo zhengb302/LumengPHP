@@ -18,7 +18,7 @@ class HomepageCommand extends Command {
     private $defaultLocale;
 
     public function init() {
-        $this->defaultLocale = $this->appContext->getConfig('framework.defaultLocale');
+        $this->defaultLocale = $this->appContext->getConfig('app.defaultLocale');
     }
 
     public function execute() {

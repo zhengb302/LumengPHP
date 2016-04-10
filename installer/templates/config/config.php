@@ -7,8 +7,8 @@
 return array(
     //应用配置参数
     'parameters' => require(__DIR__ . '/parameters.php'),
-    //框架配置
-    'framework' => array(
+    //应用核心配置
+    'app' => array(
         //路由配置
         'router' => require(__DIR__ . '/routing.php'),
         //过滤器配置
@@ -17,6 +17,8 @@ return array(
         'services' => require(__DIR__ . '/services.php'),
         //扩展列表
         'extensions' => require(__DIR__ . '/extensions.php'),
+        //应用根目录
+        'rootDir' => dirname(__DIR__),
         //缓存目录路径
         'cacheDir' => dirname(__DIR__) . '/var/cache',
     ),

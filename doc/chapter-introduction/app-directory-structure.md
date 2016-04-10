@@ -2,8 +2,6 @@
 ----------
 
 ```
-bin/
-    console
 config/
     config.php
     database.php
@@ -44,4 +42,8 @@ tests/
 var/
     cache/
     logs/
+console
+app.setting.json
+composer.json
+composer.lock
 ```

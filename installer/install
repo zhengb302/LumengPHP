@@ -38,7 +38,6 @@ $mode = 0755;
 
 //要创建的目录列表
 $makingDirList = array(
-    "{$appDir}/bin",
     "{$appDir}/config",
     "{$appDir}/resources",
     "{$appDir}/resources/views",
@@ -55,6 +54,7 @@ $makingDirList = array(
     "{$appDir}/tests",
     "{$appDir}/tests/config",
     "{$appDir}/tests/TestCases",
+    "{$appDir}/tests/resources",
     "{$appDir}/var",
     "{$appDir}/var/cache",
     "{$appDir}/var/logs",
@@ -79,8 +79,14 @@ $copyingFiles = array(
     '/src/VendorName/ProjectName/Commands/HomeCommand.php',
     '/web/.htaccess',
     '/web/index.php',
+    '/tests/bootstrap.php',
+    '/tests/config/config.php',
+    '/tests/TestCases/BaseDatabaseTestCase.php',
+    '/console',
+    '/app.setting.json',
 );
 
+//复制各文件
 foreach ($copyingFiles as $copyingFile) {
     $src = $tplDir . $copyingFile;
 
@@ -95,10 +101,17 @@ foreach ($copyingFiles as $copyingFile) {
 
     if ($targetFile == '/config/routing.php' || strpos($targetFile, '/src') === 0) {
         $content = file_get_contents($target);
-        $actualContent = str_replace('VendorName\ProjectName', "{$vendorName}\\{$projectName}", $content);
+        $actualContent = str_replace('VendorName\\ProjectName', "{$vendorName}\\{$projectName}", $content);
         file_put_contents($target, $actualContent);
     }
 }
+
+//更新app.setting.json，设置实际的根命名空间及其目录路径
+$settingPath = $appDir . '/app.setting.json';
+$setting = json_decode(file_get_contents($settingPath), true);
+$setting['namespace-root'] = "{$vendorName}\\{$projectName}\\";
+$setting['namespace-root-dir'] = "src/{$vendorName}/{$projectName}/";
+file_put_contents($settingPath, json_encode($setting, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n");
 
 //更新composer.json文件，增加autoload配置
 $composerJsonPath = $appDir . '/composer.json';

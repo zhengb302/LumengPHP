@@ -1,0 +1,4 @@
+{
+    "namespace-root": "VendorName\\ProjectName\\",
+    "namespace-root-dir": "src/VendorName/ProjectName/"
+}

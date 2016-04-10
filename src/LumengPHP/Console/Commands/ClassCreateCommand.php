@@ -33,7 +33,7 @@ abstract class ClassCreateCommand extends Command {
     }
 
     protected function getStubDir() {
-        return __DIR__ . '/stubs';
+        return dirname(__DIR__) . '/stubs';
     }
 
 }

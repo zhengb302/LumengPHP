@@ -50,6 +50,11 @@ class CommandCreateCommand extends ClassCreateCommand {
                 array('{{namespace}}', '{{CommandName}}'), array($namespace, $commandName), $stub
         );
 
+        $commandDir = dirname($filePath);
+        if (!is_dir($commandDir)) {
+            mkdir($commandDir, 0755, true);
+        }
+
         file_put_contents($filePath, $content);
 
         $output->writeln('创建成功！');

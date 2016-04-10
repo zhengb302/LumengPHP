@@ -9,7 +9,7 @@ require(dirname(__DIR__) . '/vendor/autoload.php');
 use LumengPHP\Console\Application;
 use LumengPHP\Console\Commands\CommandCreateCommand;
 
-$app = new Application();
+$app = new Application(__DIR__ . '/config/config.php');
 
 $app->add(new CommandCreateCommand());
 

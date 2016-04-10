@@ -1,0 +1,26 @@
+<?php
+
+namespace {NamespaceRoot}\Commands;
+
+use LumengPHP\Kernel\Command\Command;
+use LumengPHP\Kernel\Response;
+
+/**
+ * 
+ */
+class {CommandName} extends Command {
+
+    
+    public function init() {
+        
+    }
+
+    /**
+     * 命令执行入口
+     * @return Response
+     */
+    public function execute() {
+        return new Response('Hello world!');
+    }
+
+}

@@ -24,18 +24,34 @@ class CommandCreateCommand extends Command {
     }
 
     protected function execute(InputInterface $input, OutputInterface $output) {
+        // eg. HomeCommand、User/UserRegisterCommand
         $name = $input->getArgument('name');
-        if ($name) {
-            $text = 'Hello ' . $name;
+
+        // eg. HomeCommand、UserRegisterCommand
+        $commandName = $name;
+        if (strpos($name, '/')) {
+            $commandName = basename($name);
+        }
+
+        $nsRoot = trim($this->getNamespaceRoot(), '\\');
+
+        $nsRootDir = trim($this->getNamespaceRootDir(), '/');
+        if ($nsRootDir) {
+            $filePath = $this->getAppRootDir() . '/' . $nsRootDir . "/Commands/{$name}.php";
         } else {
-            $text = 'Hello';
+            $filePath = $this->getAppRootDir() . "/Commands/{$name}.php";
         }
 
-        if ($input->getOption('yell')) {
-            $text = strtoupper($text);
-        }
 
-        $output->writeln($text);
+        $stub = file_get_contents($this->getStubDir() . '/command.stub');
+
+        $content = str_replace(
+                array('{NamespaceRoot}', '{CommandName}'), array($nsRoot, $commandName), $stub
+        );
+
+        file_put_contents($filePath, $content);
+
+        $output->writeln('创建成功！');
     }
 
 }

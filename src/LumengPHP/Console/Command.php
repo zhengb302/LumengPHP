@@ -28,29 +28,4 @@ class Command extends SymfonyCommand {
         return $this->getApplication()->getAppContext();
     }
 
-    protected function getAppRootDir() {
-        return $this->getAppContext()->getRootDir();
-    }
-
-    protected function getAppSetting() {
-        $settingFile = $this->getAppRootDir() . '/app.setting.json';
-
-        $settingContent = file_get_contents($settingFile);
-        return json_decode($settingContent, true);
-    }
-
-    protected function getNamespaceRoot() {
-        $appSetting = $this->getAppSetting();
-        return $appSetting['namespace-root'];
-    }
-
-    protected function getNamespaceRootDir() {
-        $appSetting = $this->getAppSetting();
-        return $appSetting['namespace-root-dir'];
-    }
-
-    protected function getStubDir() {
-        return __DIR__ . '/stubs';
-    }
-
 }

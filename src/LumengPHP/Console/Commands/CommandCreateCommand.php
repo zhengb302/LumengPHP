@@ -2,7 +2,6 @@
 
 namespace LumengPHP\Console\Commands;
 
-use LumengPHP\Console\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -12,11 +11,11 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @author Lumeng <zhengb302@163.com>
  */
-class CommandCreateCommand extends Command {
+class CommandCreateCommand extends ClassCreateCommand {
 
     protected function configure() {
         $this->setName('create:command');
-        $this->setDescription('Create a new command class.');
+        $this->setDescription('Create a new command');
         $this->addArgument(
                 'name', InputArgument::REQUIRED, 'The command name you want to create.'
         );

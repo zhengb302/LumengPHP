@@ -1,0 +1,17 @@
+#!/usr/bin/env php
+<?php
+/*
+ * 控制台入口
+ */
+
+require(dirname(__DIR__) . '/vendor/autoload.php');
+
+use LumengPHP\Console\Application;
+use LumengPHP\Console\Commands\CommandCreateCommand;
+
+$app = new Application();
+
+$app->add(new CommandCreateCommand());
+
+$app->run();
+

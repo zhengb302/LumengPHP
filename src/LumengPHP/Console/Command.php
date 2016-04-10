@@ -11,6 +11,14 @@ use Symfony\Component\Console\Command\Command as SymfonyCommand;
  */
 class Command extends SymfonyCommand {
 
+    /**
+     * 
+     * @return Application
+     */
+    public function getApplication() {
+        return parent::getApplication();
+    }
+
     public function getStubDir() {
         return __DIR__ . '/stubs';
     }

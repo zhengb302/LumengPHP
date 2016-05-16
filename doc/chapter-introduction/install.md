@@ -10,6 +10,8 @@
 # 使用Composer下载LumengPHP安装程序
 composer global require lumeng/lumeng-php-installer
 
+# 确保已经把"~/.composer/vendor/bin"(或者"~/.config/composer/vendor/bin")目录放入到"PATH"路径中
+
 # 创建并进入应用目录
 mkdir blog
 cd blog

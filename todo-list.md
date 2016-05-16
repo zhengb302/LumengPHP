@@ -3,12 +3,15 @@
 * 命令行工具的编写，包括：自动生成command及其对应的测试用例
 * 集成Logger组件
 * 集成Cache组件
-* ~~app.setting.json中的配置合并到composer.json文件中~~
-* installer独立出来，单独列为一个项目
-* ~~更新关于“安装”部分的文档~~
 * 代码优化
 * 编撰开发者使用手册
 * 集成Twig组件
+
+#### 2016-05-16
+
+* ~~app.setting.json中的配置合并到composer.json文件中~~
+* ~~installer独立出来，单独列为一个项目~~
+* ~~更新关于“安装”部分的文档~~
 
 #### 2016-04-07
 

@@ -16,7 +16,7 @@ abstract class ClassCreateCommand extends Command {
     }
 
     protected function getAppSetting() {
-        $settingFile = $this->getAppRootDir() . '/app.setting.json';
+        $settingFile = $this->getAppRootDir() . '/composer.json';
 
         $settingContent = file_get_contents($settingFile);
         return json_decode($settingContent, true);

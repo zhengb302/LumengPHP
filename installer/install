@@ -9,21 +9,27 @@
  */
 function print_usage() {
     echo "Usage:\n";
-    echo "    php install <VendorName>/<ProjectName>\n";
+    echo "    lumeng-php new <VendorName>/<ProjectName>\n";
     echo "Example:\n";
-    echo "    php install Apache/Blog\n";
+    echo "    lumeng-php new Apache/Blog\n";
 }
 
 //应用根目录
-$appDir = dirname(dirname(dirname(dirname(__DIR__))));
+$appDir = getcwd();
 
-if ($_SERVER['argc'] <> 2) {
+if ($_SERVER['argc'] <> 3) {
     echo "参数错误！\n";
     print_usage();
     exit(-1);
 }
 
-list($vendorName, $projectName) = explode('/', $_SERVER['argv'][1]);
+if ($_SERVER['argv'][1] <> 'new') {
+    echo "参数错误！\n";
+    print_usage();
+    exit(-1);
+}
+
+list($vendorName, $projectName) = explode('/', $_SERVER['argv'][2]);
 if (empty($vendorName) || empty($projectName)) {
     echo "参数错误！\n";
     print_usage();
@@ -83,7 +89,6 @@ $copyingFiles = array(
     '/tests/config/config.php',
     '/tests/TestCases/BaseDatabaseTestCase.php',
     '/console',
-    '/app.setting.json',
 );
 
 //复制各文件

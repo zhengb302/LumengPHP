@@ -43,7 +43,6 @@ var/
     cache/
     logs/
 console
-app.setting.json
 composer.json
 composer.lock
 ```

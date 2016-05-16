@@ -7,15 +7,15 @@
 
 步骤：
 ```bash
+# 使用Composer下载LumengPHP安装程序
+composer global require lumeng/lumeng-php-installer
+
 # 创建并进入应用目录
 mkdir blog
 cd blog
 
-# 安装框架
-composer require lumeng/lumeng-php
-
 # 创建应用
-php vendor/lumeng/lumeng-php/installer/install Apache/Blog
+lumeng-php new Apache/Blog
 ```
 
 完成以上步骤之后，把blog目录下的web目录配置为web服务器的"document root"即可。

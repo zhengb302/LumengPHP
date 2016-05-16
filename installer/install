@@ -109,17 +109,15 @@ foreach ($copyingFiles as $copyingFile) {
 //设置console文件为可执行
 chmod($appDir . '/console', 0755);
 
-//更新app.setting.json，设置实际的根命名空间及其目录路径
-$settingPath = $appDir . '/app.setting.json';
-$setting = json_decode(file_get_contents($settingPath), true);
-$setting['namespace-root'] = "{$vendorName}\\{$projectName}\\";
-$setting['namespace-root-dir'] = "src/{$vendorName}/{$projectName}/";
-file_put_contents($settingPath, json_encode($setting, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n");
-
-//更新composer.json文件，增加autoload配置
+//更新composer.json文件，
 $composerJsonPath = $appDir . '/composer.json';
 $composerJson = json_decode(file_get_contents($composerJsonPath), true);
+//增加autoload配置
 $composerJson['autoload']['psr-4']["{$vendorName}\\{$projectName}\\"] = "src/{$vendorName}/{$projectName}/";
+//设置实际的根命名空间及其目录路径
+$composerJson['namespace-root'] = "{$vendorName}\\{$projectName}\\";
+$composerJson['namespace-root-dir'] = "src/{$vendorName}/{$projectName}/";
+//保存更改
 file_put_contents($composerJsonPath, json_encode($composerJson, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n");
 
 //更新autoload

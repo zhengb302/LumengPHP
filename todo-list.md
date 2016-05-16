@@ -1,8 +1,9 @@
 # todo list
 
 * 命令行工具的编写，包括：自动生成command及其对应的测试用例
-* 集成Logger组件
+* 集成Queue组件
 * 集成Cache组件
+* 集成Logger组件
 * 代码优化
 * 编撰开发者使用手册
 * 集成Twig组件

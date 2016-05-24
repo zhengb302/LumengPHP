@@ -3,10 +3,9 @@
 namespace LumengPHP\Queue;
 
 /**
- * Task基类
- *
+ * 队列接口
  * @author Lumeng <zhengb302@163.com>
  */
-abstract class Task implements TaskInterface {
+interface QueueInterface {
     
 }

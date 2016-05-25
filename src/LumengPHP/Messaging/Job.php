@@ -1,6 +1,6 @@
 <?php
 
-namespace LumengPHP\Queue;
+namespace LumengPHP\Messaging;
 
 /**
  * Job基类

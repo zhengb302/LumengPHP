@@ -1,6 +1,6 @@
 <?php
 
-namespace LumengPHP\Queue;
+namespace LumengPHP\Messaging;
 
 /**
  * Job派发程序
@@ -8,11 +8,6 @@ namespace LumengPHP\Queue;
  * @author Lumeng <zhengb302@163.com>
  */
 class JobDispatcher {
-
-    /**
-     * @var QueueInterface 队列
-     */
-    private $queue;
 
     public function dispatch(JobInterface $job) {
         

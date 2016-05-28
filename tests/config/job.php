@@ -12,11 +12,11 @@ return array(
             // 消息代理连接名称
             'connectionName' => 'redis',
             //队列名称
-            'queueName' => '',
+            'queueName' => 'job-queue',
         ),
         'rabbitmqChannel' => array(
             'connectionName' => 'rabbitmq',
-            'queueName' => '',
+            'queueName' => 'job-queue',
         ),
     ),
     // 定义特定的job所使用的通道，未在这里出现的job，则会使用默认通道(即第一个通道)

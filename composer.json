@@ -18,7 +18,8 @@
         "symfony/routing": "^2.8",
         "symfony/console": "^2.8",
         "psr/log": "^1.0",
-        "lumeng/lumeng-php-db": "^1.0"
+        "lumeng/lumeng-php-db": "^1.0",
+        "lumeng/lumeng-php-messaging": "master-dev"
     },
     "autoload": {
         "psr-4": {

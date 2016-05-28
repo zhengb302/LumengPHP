@@ -17,9 +17,18 @@ class JobDispatcher {
      */
     private $messagingConn;
 
+    /**
+     * @var string 队列名称
+     */
+    private $queue;
+
+    public function __construct(ConnectionInterface $messagingConn, $queue) {
+        $this->messagingConn = $messagingConn;
+        $this->queue = $queue;
+    }
+
     public function dispatch(JobInterface $job) {
-        $msg = new Message($job);
-        $this->messagingConn->send($queue, $msg);
+        $this->messagingConn->send($this->queue, new Message($job));
     }
 
 }

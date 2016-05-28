@@ -25,5 +25,8 @@ return array(
     ),
     //数据库配置
     'database' => require(__DIR__ . '/database.php'),
+    //消息代理配置
+    'messaging' => require(__DIR__ . '/messaging.php'),
+    //job配置
+    'job' => require(__DIR__ . '/job.php'),
 );
-

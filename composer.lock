@@ -98,12 +98,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/zhengb302/LumengPHP-Messaging.git",
-                "reference": "482d7b063a93cc444af109ac7c389761b2369b27"
+                "reference": "ade478e056feaff5b9f69fa2ac03dc04978d4a9c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zhengb302/LumengPHP-Messaging/zipball/482d7b063a93cc444af109ac7c389761b2369b27",
-                "reference": "482d7b063a93cc444af109ac7c389761b2369b27",
+                "url": "https://api.github.com/repos/zhengb302/LumengPHP-Messaging/zipball/ade478e056feaff5b9f69fa2ac03dc04978d4a9c",
+                "reference": "ade478e056feaff5b9f69fa2ac03dc04978d4a9c",
                 "shasum": ""
             },
             "require": {
@@ -134,7 +134,7 @@
                 "library",
                 "message broker client library"
             ],
-            "time": "2016-05-28 02:57:21"
+            "time": "2016-05-28 13:28:09"
         },
         {
             "name": "php-amqplib/php-amqplib",

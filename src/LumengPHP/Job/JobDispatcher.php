@@ -2,7 +2,7 @@
 
 namespace LumengPHP\Job;
 
-use LumengPHP\Messaging\Connection\ConnectionInterface;
+use LumengPHP\Messaging\Connection\ConnectionManager;
 use LumengPHP\Messaging\Message;
 
 /**
@@ -17,14 +17,8 @@ class JobDispatcher {
      */
     private $messagingConn;
 
-    /**
-     * @var string 队列名称
-     */
-    private $queue;
-
-    public function __construct(ConnectionInterface $messagingConn, $queue) {
+    public function __construct(ConnectionManager $messagingConn) {
         $this->messagingConn = $messagingConn;
-        $this->queue = $queue;
     }
 
     public function dispatch(JobInterface $job) {

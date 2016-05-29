@@ -10,10 +10,6 @@ use LumengPHP\Kernel\Extension\ExtensionInterface;
 use LumengPHP\Kernel\Facade\Facade;
 use LumengPHP\Kernel\Request;
 use LumengPHP\Kernel\Response;
-use LumengPHP\DependencyInjection\PropertyInjection\PropertyInjectionParser;
-use LumengPHP\DependencyInjection\PropertyInjection\PropertyInjector;
-use LumengPHP\DependencyInjection\ContainerCollection;
-use LumengPHP\Misc\ParameterContainer;
 
 /**
  * 测试工作室
@@ -58,19 +54,6 @@ class TestStudio {
         //注入AppContext和Request
         $cmd->setAppContext(self::$studio->appContext);
         $cmd->setRequest($request);
-
-        //注入属性
-        $parser = new PropertyInjectionParser($cmd);
-        $parser->parse();
-        $injectionMetadataList = $parser->getResult();
-        if (!empty($injectionMetadataList)) {
-            $containerCollection = new ContainerCollection();
-            $containerCollection->add('query', new ParameterContainer($request->query));
-            $containerCollection->add('request', new ParameterContainer($request->request));
-            $containerCollection->add('service', self::$studio->container);
-            $injector = new PropertyInjector($containerCollection, $cmd, $injectionMetadataList);
-            $injector->doInject();
-        }
 
         $cmd->init();
 

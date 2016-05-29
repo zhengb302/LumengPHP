@@ -2,7 +2,7 @@
 
 namespace LumengPHP\Job;
 
-use LumengPHP\Messaging\Connection\ConnectionManager;
+use LumengPHP\Messaging\ConnectionManager;
 use LumengPHP\Messaging\Message;
 
 /**

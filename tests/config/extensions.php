@@ -6,5 +6,7 @@
 
 return array(
     'LumengPHP\Extensions\DatabaseExtension',
+    'LumengPHP\Extensions\MessagingExtension',
+    'LumengPHP\Extensions\JobExtension',
     //any other extensions here
 );

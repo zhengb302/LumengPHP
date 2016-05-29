@@ -2,8 +2,6 @@
 
 namespace LumengPHP\Extensions;
 
-use LumengPHP\Kernel\AppContext;
-use LumengPHP\DependencyInjection\ServiceContainer;
 use LumengPHP\Kernel\Extension\Extension;
 use LumengPHP\Db\ConnectionManager;
 use LumengPHP\Db\Misc\ShortcutFunctionHelper;

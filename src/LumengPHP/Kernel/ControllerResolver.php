@@ -3,7 +3,7 @@
 namespace LumengPHP\Kernel;
 
 use Symfony\Component\HttpKernel\Controller\ControllerResolverInterface;
-use Symfony\Component\HttpFoundation\Request as BaseRequest;
+use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 use LumengPHP\Kernel\Command\CommandInterface;
 use InvalidArgumentException;
 
@@ -23,7 +23,7 @@ class ControllerResolver implements ControllerResolverInterface {
         $this->appContext = $appContext;
     }
 
-    public function getController(BaseRequest $request) {
+    public function getController(SymfonyRequest $request) {
         $cmdClass = $request->attributes->get('_cmd');
 
         $cmd = new $cmdClass();
@@ -42,7 +42,7 @@ class ControllerResolver implements ControllerResolverInterface {
         return $callable;
     }
 
-    public function getArguments(BaseRequest $request, $controller) {
+    public function getArguments(SymfonyRequest $request, $controller) {
         return array();
     }
 

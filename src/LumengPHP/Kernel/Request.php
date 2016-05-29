@@ -2,13 +2,13 @@
 
 namespace LumengPHP\Kernel;
 
-use Symfony\Component\HttpFoundation\Request as BaseRequest;
+use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 
 /**
  * Request represents an request.
  *
  * @author Lumeng <zhengb302@163.com>
  */
-class Request extends BaseRequest {
+class Request extends SymfonyRequest {
     
 }

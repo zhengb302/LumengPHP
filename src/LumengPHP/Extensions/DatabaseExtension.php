@@ -30,9 +30,11 @@ class DatabaseExtension extends Extension {
 
         //把连接管理器注册为服务
         $this->container->registerService('connManager', function($container) {
-            //获取日志服务
+            //获取数据库配置
             $appContext = $container->get('appContext');
             $dbConfig = $appContext->getConfig('database');
+
+            //获取日志服务
             $loggerName = $dbConfig['loggerName'];
             $logger = $loggerName ? $container->get($loggerName) : null;
 

@@ -7,15 +7,11 @@
 require(dirname(__DIR__) . '/vendor/autoload.php');
 
 use LumengPHP\Console\Application;
-use LumengPHP\Console\Commands\CommandCreateCommand;
-use LumengPHP\Console\Commands\ModelCreateCommand;
-use LumengPHP\Console\Commands\CommandTestCreateCommand;
+use LumengPHP\Console\Commands\JobWorkerCommand;
 
 $app = new Application(__DIR__ . '/config/config.php');
 
-$app->add(new CommandCreateCommand());
-$app->add(new ModelCreateCommand());
-$app->add(new CommandTestCreateCommand());
+$app->add(new JobWorkerCommand());
 
 $app->run();
 

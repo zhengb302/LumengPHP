@@ -10,10 +10,6 @@ return array(
     //应用核心配置
     'app' => array(
         'defaultLocale' => 'zh',
-        //路由配置
-        'router' => require(__DIR__ . '/routing.php'),
-        //过滤器配置
-        'filter' => require(__DIR__ . '/filter.php'),
         //服务配置
         'services' => require(__DIR__ . '/services.php'),
         //扩展列表
@@ -29,4 +25,11 @@ return array(
     'messaging' => require(__DIR__ . '/messaging.php'),
     //job配置
     'job' => require(__DIR__ . '/job.php'),
+    //http配置
+    'httpKernel' => array(
+        //路由配置
+        'router' => require(__DIR__ . '/routing.php'),
+        //过滤器配置
+        'filter' => require(__DIR__ . '/filter.php'),
+    ),
 );

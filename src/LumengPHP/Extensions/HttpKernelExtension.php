@@ -36,7 +36,7 @@ class HttpKernelExtension extends Extension {
         $routerListener = new RouterListener($matcher, $requestStack);
         $dispatcher->addSubscriber($routerListener);
 
-        $filterConfig = $this->appContext->getConfig('app.filter');
+        $filterConfig = $this->appContext->getConfig('httpKernel.filter');
         $filterListener = new FilterListener($filterConfig, $this->appContext);
         $dispatcher->addSubscriber($filterListener);
 
@@ -53,7 +53,7 @@ class HttpKernelExtension extends Extension {
      */
     private function loadRoutes() {
         $routes = new RouteCollection();
-        $routeConfigs = $this->appContext->getConfig('app.router');
+        $routeConfigs = $this->appContext->getConfig('httpKernel.router');
         foreach ($routeConfigs as $name => $routeConfig) {
             $path = $routeConfig['path'];
             $defaults = $routeConfig;

@@ -4,9 +4,7 @@ namespace LumengPHP\Console;
 
 use Symfony\Component\Console\Application as SymfonyApplication;
 use LumengPHP\Kernel\AppContextInterface;
-use LumengPHP\Kernel\AppContext;
-use LumengPHP\Kernel\AppConfig;
-use LumengPHP\DependencyInjection\ServiceContainer;
+use LumengPHP\Kernel\Bootstrap;
 
 /**
  * 命令行应用
@@ -23,9 +21,10 @@ class Application extends SymfonyApplication {
     public function __construct($configFilePath) {
         parent::__construct();
 
-        $appConfig = new AppConfig(require($configFilePath));
-        $container = new ServiceContainer(array());
-        $this->appContext = new AppContext($appConfig, $container);
+        $bootstrap = new Bootstrap();
+        $bootstrap->boot($configFilePath);
+
+        $this->appContext = $bootstrap->getAppContext();
     }
 
     /**

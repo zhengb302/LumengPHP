@@ -8,5 +8,6 @@ return array(
     'LumengPHP\Extensions\DatabaseExtension',
     'LumengPHP\Extensions\MessagingExtension',
     'LumengPHP\Extensions\JobExtension',
+    'LumengPHP\Extensions\HttpKernelExtension',
     //any other extensions here
 );

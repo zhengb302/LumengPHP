@@ -37,7 +37,7 @@ class AppKernel implements HttpKernelInterface, TerminableInterface {
     private $container;
 
     /**
-     * @var AppContext 
+     * @var AppContextInterface 
      */
     private $appContext;
 
@@ -51,7 +51,7 @@ class AppKernel implements HttpKernelInterface, TerminableInterface {
 
         $this->initServiceContainer();
 
-        $this->appContext = new AppContextImpl($this->appConfig, $this->container);
+        $this->appContext = new AppContext($this->appConfig, $this->container);
 
         $this->container->registerService('appContext', $this->appContext);
 

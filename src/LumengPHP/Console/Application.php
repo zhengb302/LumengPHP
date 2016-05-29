@@ -3,8 +3,8 @@
 namespace LumengPHP\Console;
 
 use Symfony\Component\Console\Application as SymfonyApplication;
+use LumengPHP\Kernel\AppContextInterface;
 use LumengPHP\Kernel\AppContext;
-use LumengPHP\Kernel\AppContextImpl;
 use LumengPHP\Kernel\AppConfig;
 use LumengPHP\DependencyInjection\ServiceContainer;
 
@@ -16,7 +16,7 @@ use LumengPHP\DependencyInjection\ServiceContainer;
 class Application extends SymfonyApplication {
 
     /**
-     * @var AppContext AppContext实例
+     * @var AppContextInterface AppContext实例
      */
     private $appContext;
 
@@ -25,12 +25,12 @@ class Application extends SymfonyApplication {
 
         $appConfig = new AppConfig(require($configFilePath));
         $container = new ServiceContainer(array());
-        $this->appContext = new AppContextImpl($appConfig, $container);
+        $this->appContext = new AppContext($appConfig, $container);
     }
 
     /**
      * 返回AppContext实例
-     * @return AppContext
+     * @return AppContextInterface
      */
     public function getAppContext() {
         return $this->appContext;

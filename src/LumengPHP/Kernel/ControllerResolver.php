@@ -15,11 +15,11 @@ use InvalidArgumentException;
 class ControllerResolver implements ControllerResolverInterface {
 
     /**
-     * @var AppContext AppContext实例
+     * @var AppContextInterface AppContext实例
      */
     private $appContext;
 
-    public function __construct(AppContext $appContext) {
+    public function __construct(AppContextInterface $appContext) {
         $this->appContext = $appContext;
     }
 

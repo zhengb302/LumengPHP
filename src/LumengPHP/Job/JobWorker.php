@@ -2,7 +2,7 @@
 
 namespace LumengPHP\Job;
 
-use LumengPHP\Kernel\AppContext;
+use LumengPHP\Kernel\AppContextInterface;
 use LumengPHP\Messaging\Connection\Connection;
 
 /**
@@ -28,7 +28,7 @@ class JobWorker {
     private $queueName;
 
     /**
-     * @var AppContext 应用程序上下文
+     * @var AppContextInterface 应用程序上下文
      */
     private $appContext;
 
@@ -36,9 +36,9 @@ class JobWorker {
      * 构造一个JobWorker实例
      * @param string $channelName 通道名称
      * @param array $channelConfig 通道配置
-     * @param AppContext $appContext 应用程序上下文
+     * @param AppContextInterface $appContext 应用程序上下文
      */
-    public function __construct($channelName, $channelConfig, AppContext $appContext) {
+    public function __construct($channelName, $channelConfig, AppContextInterface $appContext) {
         $this->channelName = $channelName;
         $this->appContext = $appContext;
 

@@ -2,7 +2,7 @@
 
 namespace LumengPHP\Kernel\Filter;
 
-use LumengPHP\Kernel\AppContext;
+use LumengPHP\Kernel\AppContextInterface;
 use LumengPHP\Kernel\Request;
 use LumengPHP\Kernel\Response;
 
@@ -14,9 +14,9 @@ interface FilterInterface {
 
     /**
      * 此方法供外部程序注入AppContext实例
-     * @param AppContext $appContext
+     * @param AppContextInterface $appContext
      */
-    public function setAppContext(AppContext $appContext);
+    public function setAppContext(AppContextInterface $appContext);
 
     /**
      * 此方法供外部程序注入Request实例

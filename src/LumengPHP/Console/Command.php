@@ -3,7 +3,7 @@
 namespace LumengPHP\Console;
 
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
-use LumengPHP\Kernel\AppContext;
+use LumengPHP\Kernel\AppContextInterface;
 
 /**
  * 命令行命令
@@ -22,7 +22,7 @@ class Command extends SymfonyCommand {
 
     /**
      * 返回AppContext实例
-     * @return AppContext
+     * @return AppContextInterface
      */
     protected function getAppContext() {
         return $this->getApplication()->getAppContext();

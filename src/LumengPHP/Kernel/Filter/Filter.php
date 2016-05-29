@@ -2,7 +2,7 @@
 
 namespace LumengPHP\Kernel\Filter;
 
-use LumengPHP\Kernel\AppContext;
+use LumengPHP\Kernel\AppContextInterface;
 use LumengPHP\Kernel\Request;
 use LumengPHP\Kernel\Response;
 
@@ -13,7 +13,7 @@ use LumengPHP\Kernel\Response;
 abstract class Filter implements FilterInterface {
 
     /**
-     * @var AppContext AppContext实例
+     * @var AppContextInterface AppContext实例
      */
     protected $appContext;
 
@@ -28,7 +28,7 @@ abstract class Filter implements FilterInterface {
      */
     protected $response;
 
-    public function setAppContext(AppContext $appContext) {
+    public function setAppContext(AppContextInterface $appContext) {
         $this->appContext = $appContext;
     }
 

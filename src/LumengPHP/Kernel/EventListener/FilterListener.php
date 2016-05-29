@@ -7,7 +7,7 @@ use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use LumengPHP\Kernel\Response;
-use LumengPHP\Kernel\AppContext;
+use LumengPHP\Kernel\AppContextInterface;
 
 /**
  * Filter组件相关事件
@@ -22,11 +22,11 @@ class FilterListener implements EventSubscriberInterface {
     private $filterConfig;
 
     /**
-     * @var AppContext 
+     * @var AppContextInterface 
      */
     private $appContext;
 
-    public function __construct(array $filterConfig, AppContext $appContext) {
+    public function __construct(array $filterConfig, AppContextInterface $appContext) {
         $this->filterConfig = $filterConfig;
         $this->appContext = $appContext;
     }

@@ -5,44 +5,60 @@ namespace LumengPHP\Kernel;
 use LumengPHP\DependencyInjection\ServiceContainer;
 
 /**
- * 应用程序上下文接口
+ * AppContext接口实现
  *
- * @author zhengluming <luming.zheng@baozun.cn>
+ * @author Lumeng <zhengb302@163.com>
  */
-interface AppContext {
+class AppContext implements AppContextInterface {
 
     /**
-     * 取得应用配置数据
-     * @see AppConfig
-     * @param string $key 配置key
-     * @return mixed|null 
+     * @var AppConfig 
      */
-    public function getConfig($key);
+    private $appConfig;
 
     /**
-     * 取得应用配置参数
-     * @param string $key 参数key
-     * @return string|null
+     * @var ServiceContainer 服务容器
      */
-    public function getParameter($key);
+    private $serviceContainer;
+
+    public function __construct(AppConfig $appConfig, ServiceContainer $serviceContainer) {
+        $this->appConfig = $appConfig;
+        $this->serviceContainer = $serviceContainer;
+    }
 
     /**
-     * 取得服务对象实例
-     * @see ServiceContainer
-     * @param string $serviceName 服务名称
-     * @return mixed|null 一个服务对象。如果服务不存在，返回null
+     * {@inheritdoc}
      */
-    public function getService($serviceName);
+    public function getConfig($key) {
+        return $this->appConfig->get($key);
+    }
 
     /**
-     * 取得应用根目录路径
-     * @return string
+     * {@inheritdoc}
      */
-    public function getRootDir();
+    public function getParameter($key) {
+        return $this->appConfig->get("parameters.{$key}");
+    }
 
     /**
-     * 取得缓存目录路径
-     * @return string
+     * {@inheritdoc}
      */
-    public function getCacheDir();
+    public function getService($serviceName) {
+        return $this->serviceContainer->get($serviceName);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getRootDir() {
+        return $this->appConfig->get('app.rootDir');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCacheDir() {
+        return $this->appConfig->get('app.cacheDir');
+    }
+
 }

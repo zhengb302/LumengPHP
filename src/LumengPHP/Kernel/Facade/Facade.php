@@ -2,7 +2,7 @@
 
 namespace LumengPHP\Kernel\Facade;
 
-use LumengPHP\Kernel\AppContext;
+use LumengPHP\Kernel\AppContextInterface;
 use LumengPHP\Exceptions\ServiceNotExistException;
 
 /**
@@ -13,7 +13,7 @@ use LumengPHP\Exceptions\ServiceNotExistException;
 abstract class Facade {
 
     /**
-     * @var AppContext 应用程序上下文对象
+     * @var AppContextInterface 应用程序上下文对象
      */
     private static $appContext;
 
@@ -22,7 +22,7 @@ abstract class Facade {
      */
     private static $serviceMap = array();
 
-    public static function setAppContext(AppContext $appContext) {
+    public static function setAppContext(AppContextInterface $appContext) {
         self::$appContext = $appContext;
     }
 

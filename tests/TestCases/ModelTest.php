@@ -4,7 +4,7 @@ namespace tests\TestCases;
 
 use LumengPHP\Kernel\AppConfig;
 use LumengPHP\DependencyInjection\ServiceContainer;
-use LumengPHP\Kernel\AppContextImpl;
+use LumengPHP\Kernel\AppContext;
 use LumengPHP\Extensions\DatabaseExtension;
 use LumengPHP\Db\ConnectionManager;
 use tests\Misc\DumpLogger;
@@ -25,7 +25,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase {
         $configs = require(TEST_ROOT . '/config/config.php');
         $appConfig = new AppConfig($configs);
         $serviceContainer = new ServiceContainer(array());
-        $appContext = new AppContextImpl($appConfig, $serviceContainer);
+        $appContext = new AppContext($appConfig, $serviceContainer);
 
         $serviceContainer->registerService('appContext', $appContext);
 

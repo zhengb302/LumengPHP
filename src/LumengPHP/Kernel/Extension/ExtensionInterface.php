@@ -2,7 +2,7 @@
 
 namespace LumengPHP\Kernel\Extension;
 
-use LumengPHP\Kernel\AppContext;
+use LumengPHP\Kernel\AppContextInterface;
 use LumengPHP\DependencyInjection\ServiceContainer;
 
 /**
@@ -16,9 +16,9 @@ interface ExtensionInterface {
 
     /**
      * 向扩展中注入AppContext实例
-     * @param AppContext $appContext
+     * @param AppContextInterface $appContext
      */
-    public function setAppContext(AppContext $appContext);
+    public function setAppContext(AppContextInterface $appContext);
 
     /**
      * 向扩展中注入ServiceContainer实例

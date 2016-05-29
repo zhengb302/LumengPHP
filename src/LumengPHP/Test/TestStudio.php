@@ -3,8 +3,8 @@
 namespace LumengPHP\Test;
 
 use LumengPHP\Kernel\AppConfig;
+use LumengPHP\Kernel\AppContextInterface;
 use LumengPHP\Kernel\AppContext;
-use LumengPHP\Kernel\AppContextImpl;
 use LumengPHP\DependencyInjection\ServiceContainer;
 use LumengPHP\Kernel\Extension\ExtensionInterface;
 use LumengPHP\Kernel\Facade\Facade;
@@ -29,7 +29,7 @@ class TestStudio {
 
     /**
      * 返回测试用的AppContext实例
-     * @return AppContext
+     * @return AppContextInterface
      */
     public static function getAppContext() {
         return self::$studio->appContext;
@@ -71,7 +71,7 @@ class TestStudio {
     private $container;
 
     /**
-     * @var AppContext 
+     * @var AppContextInterface 
      */
     private $appContext;
 
@@ -80,7 +80,7 @@ class TestStudio {
 
         $this->initServiceContainer();
 
-        $this->appContext = new AppContextImpl($this->appConfig, $this->container);
+        $this->appContext = new AppContext($this->appConfig, $this->container);
 
         $this->container->registerService('appContext', $this->appContext);
 

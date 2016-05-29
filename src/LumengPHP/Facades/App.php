@@ -2,13 +2,13 @@
 
 namespace LumengPHP\Facades;
 
-use LumengPHP\Kernel\AppContext;
+use LumengPHP\Kernel\AppContextInterface;
 use LumengPHP\Kernel\Facade\Facade;
 
 /**
  * facade of AppContext
  *
- * @see AppContext
+ * @see AppContextInterface
  * @author Lumeng <zhengb302@163.com>
  */
 class App extends Facade {

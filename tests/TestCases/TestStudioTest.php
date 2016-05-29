@@ -15,14 +15,14 @@ class TestStudioTest extends \PHPUnit_Framework_TestCase {
         //此句用在测试环境的bootstrap中
         TestStudio::initialize(TEST_ROOT . '/config/config.php');
 
-        //这段代码纯粹只是为了测试
-        $appContext = TestStudio::getAppContext();
-        $this->assertNotNull($appContext);
-        $this->assertInstanceOf('LumengPHP\Kernel\AppContext', $appContext);
-
         //测试用例中通常都是像下面这个样子
         $command = 'tests\Commands\WhatTheFuckCommand';
-        $response = TestStudio::invokeCommand($command, array('uid' => 3), array('username' => 'linda', 'user_age' => 18));
+
+        $query = array('uid' => 3);
+        $post = array('username' => 'linda', 'user_age' => 18);
+
+        $response = TestStudio::invokeCommand($command, $query, $post);
+
         $jsonContent = $response->getJsonContent();
         $this->assertNotNull($jsonContent);
 

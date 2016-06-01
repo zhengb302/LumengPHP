@@ -5,6 +5,7 @@ namespace LumengPHP\Extensions;
 use LumengPHP\Kernel\Extension\Extension;
 use LumengPHP\Db\ConnectionManager;
 use LumengPHP\Db\Misc\ShortcutFunctionHelper;
+use LumengPHP\Exceptions\InvalidConfigurationException;
 
 /**
  * 数据库扩展
@@ -20,9 +21,9 @@ class DatabaseExtension extends Extension {
     public function load() {
         $dbConfig = $this->appContext->getConfig('database');
 
-        //如果数据库配置为空，则表示不需要数据库，退出
+        //如果数据库配置为空，抛出异常
         if (empty($dbConfig)) {
-            return;
+            throw new InvalidConfigurationException('missing database config.');
         }
 
         //加载快捷函数

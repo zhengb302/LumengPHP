@@ -4,6 +4,7 @@ namespace LumengPHP\Extensions;
 
 use LumengPHP\Kernel\Extension\Extension;
 use LumengPHP\Messaging\ConnectionManager;
+use LumengPHP\Exceptions\InvalidConfigurationException;
 
 /**
  * 消息服务代理扩展
@@ -19,9 +20,9 @@ class MessagingExtension extends Extension {
     public function load() {
         $messagingConfig = $this->appContext->getConfig('messaging');
 
-        //如果消息服务配置为空，则表示不需要消息服务，退出
+        //如果消息服务配置为空，抛出异常
         if (empty($messagingConfig)) {
-            return;
+            throw new InvalidConfigurationException('missing messaging config.');
         }
 
         //把连接管理器注册为服务

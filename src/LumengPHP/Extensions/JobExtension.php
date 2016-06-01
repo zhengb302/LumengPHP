@@ -4,6 +4,7 @@ namespace LumengPHP\Extensions;
 
 use LumengPHP\Kernel\Extension\Extension;
 use LumengPHP\Job\JobDispatcher;
+use LumengPHP\Exceptions\InvalidConfigurationException;
 
 /**
  * job扩展
@@ -19,9 +20,9 @@ class JobExtension extends Extension {
     public function load() {
         $jobConfig = $this->appContext->getConfig('job');
 
-        //如果job配置为空，则表示不需要job，退出
+        //如果job配置为空，抛出异常
         if (empty($jobConfig)) {
-            return;
+            throw new InvalidConfigurationException('missing job config.');
         }
 
         //把job转发器注册为服务

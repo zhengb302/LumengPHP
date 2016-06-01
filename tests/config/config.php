@@ -25,11 +25,4 @@ return array(
     'messaging' => require(__DIR__ . '/messaging.php'),
     //job配置
     'job' => require(__DIR__ . '/job.php'),
-    //http配置
-    'httpKernel' => array(
-        //路由配置
-        'router' => require(__DIR__ . '/routing.php'),
-        //过滤器配置
-        'filter' => require(__DIR__ . '/filter.php'),
-    ),
 );

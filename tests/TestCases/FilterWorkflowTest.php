@@ -14,7 +14,7 @@ use tests\Filters\HitCounterFilter;
 class FilterWorkflowTest extends \PHPUnit_Framework_TestCase {
 
     public function testPreFilter() {
-        $kernel = new AppKernel(TEST_ROOT . '/config/config.php');
+        $kernel = new AppKernel(TEST_ROOT . '/config/config_http.php');
 
         //第一个请求
         $request = Request::create('/backgroundThief', 'GET');
@@ -39,7 +39,7 @@ class FilterWorkflowTest extends \PHPUnit_Framework_TestCase {
     }
 
     public function testPreFilterWithRouteLimit() {
-        $kernel = new AppKernel(TEST_ROOT . '/config/config.php');
+        $kernel = new AppKernel(TEST_ROOT . '/config/config_http.php');
 
         //第一个请求，正确的key
         $request = Request::create('/product/?key=123456', 'GET');
@@ -69,7 +69,7 @@ class FilterWorkflowTest extends \PHPUnit_Framework_TestCase {
     }
 
     public function testPostFilter() {
-        $kernel = new AppKernel(TEST_ROOT . '/config/config.php');
+        $kernel = new AppKernel(TEST_ROOT . '/config/config_http.php');
 
         //第一个请求，copyright-appender过滤器有作用到此路径上，响应内容有被修改
         $request = Request::create('/about-us', 'GET');

@@ -23,7 +23,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase {
     private $connManager;
 
     public function setUp() {
-        $configFilePath = TEST_ROOT . '/config/config.php';
+        $configFilePath = TEST_ROOT . '/config/config_http.php';
         $configLoader = new ConfigLoader();
         $config = $configLoader->load($configFilePath);
         $appConfig = new AppConfig($config);

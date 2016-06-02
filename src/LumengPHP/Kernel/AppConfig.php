@@ -16,10 +16,33 @@ class AppConfig {
     /**
      * @var array 配置数据，关联数组
      */
-    private $configs;
+    private $config;
 
-    public function __construct(array $configs) {
-        $this->configs = $configs;
+    public function __construct(array $config) {
+        $this->config = $this->parse($config);
+    }
+
+    private function parse(array $config) {
+        if (!isset($config['extends'])) {
+            return $config;
+        }
+
+        $rawBaseConfig = require($config['extends']);
+        $baseConfig = $this->parse($rawBaseConfig);
+
+        return $this->merge($baseConfig, $config);
+    }
+
+    private function merge($baseConfig, $config) {
+        if (!is_array($baseConfig) || !is_array($config)) {
+            return $config;
+        }
+
+        foreach ($config AS $key => $value) {
+            $baseConfig[$key] = $this->merge($baseConfig[$key], $value);
+        }
+
+        return $baseConfig;
     }
 
     /**
@@ -35,7 +58,7 @@ class AppConfig {
             return $this->deepSearch($key);
         }
 
-        return isset($this->configs[$key]) ? $this->configs[$key] : null;
+        return isset($this->config[$key]) ? $this->config[$key] : null;
     }
 
     /**
@@ -45,7 +68,7 @@ class AppConfig {
      * @return mixed|null
      */
     private function deepSearch($key) {
-        $last = $this->configs;
+        $last = $this->config;
 
         $keyComponents = explode('.', $key);
         foreach ($keyComponents as $component) {

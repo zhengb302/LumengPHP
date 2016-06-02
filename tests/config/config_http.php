@@ -5,10 +5,8 @@
  */
 
 return array(
-    //导入其他配置文件；当前文件中的配置的优先级高于被导入文件中的配置的优先级。
-    'imports' => array(
-        __DIR__ . '/config.php',
-    ),
+    //继承其他配置文件，只支持单根继承
+    'extends' => __DIR__ . '/config.php',
     //应用核心配置
     'app' => array(
         'extensions' => array(

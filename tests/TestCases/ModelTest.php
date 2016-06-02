@@ -2,6 +2,7 @@
 
 namespace tests\TestCases;
 
+use LumengPHP\Kernel\ConfigLoader;
 use LumengPHP\Kernel\AppConfig;
 use LumengPHP\DependencyInjection\ServiceContainer;
 use LumengPHP\Kernel\AppContext;
@@ -22,9 +23,13 @@ class ModelTest extends \PHPUnit_Framework_TestCase {
     private $connManager;
 
     public function setUp() {
-        $configs = require(TEST_ROOT . '/config/config.php');
-        $appConfig = new AppConfig($configs);
+        $configFilePath = TEST_ROOT . '/config/config.php';
+        $configLoader = new ConfigLoader();
+        $config = $configLoader->load($configFilePath);
+        $appConfig = new AppConfig($config);
+
         $serviceContainer = new ServiceContainer(array());
+
         $appContext = new AppContext($appConfig, $serviceContainer);
 
         $serviceContainer->registerService('appContext', $appContext);

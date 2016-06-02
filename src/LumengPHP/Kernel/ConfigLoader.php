@@ -26,7 +26,10 @@ class ConfigLoader {
             return $config;
         }
 
-        $rawBaseConfig = require($config['extends']);
+        $baseConfigFilePath = $config['extends'];
+        unset($config['extends']);
+
+        $rawBaseConfig = require($baseConfigFilePath);
         $baseConfig = $this->parse($rawBaseConfig);
 
         return $this->mergeRecursive($baseConfig, $config);
@@ -49,14 +52,15 @@ class ConfigLoader {
         }
 
         foreach ($derivedConfig AS $key => $value) {
-            $baseConfig[$key] = $this->mergeRecursive($baseConfig[$key], $value);
+            $baseValue = isset($baseConfig[$key]) ? $baseConfig[$key] : null;
+            $baseConfig[$key] = $this->mergeRecursive($baseValue, $value);
         }
 
         return $baseConfig;
     }
 
     /**
-     * 是否数组是下标数组
+     * 判断数组是否为下标数组
      * @param array $array
      * @return boolean
      */

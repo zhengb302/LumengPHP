@@ -19,45 +19,7 @@ class AppConfig {
     private $config;
 
     public function __construct(array $config) {
-        $this->config = $this->parse($config);
-    }
-
-    private function parse(array $config) {
-        if (!isset($config['extends'])) {
-            return $config;
-        }
-
-        $rawBaseConfig = require($config['extends']);
-        $baseConfig = $this->parse($rawBaseConfig);
-
-        return $this->mergerecursive($baseConfig, $config);
-    }
-
-    private function mergerecursive($baseConfig, $derivedConfig) {
-        if (!is_array($baseConfig) || !is_array($derivedConfig)) {
-            return $derivedConfig;
-        }
-
-        //如果两个都是下标数组，则合并再去重
-        if ($this->isArrayIndexed($baseConfig) &&
-                $this->isArrayIndexed($derivedConfig)) {
-            return array_unique(array_merge($baseConfig, $derivedConfig));
-        }
-
-        foreach ($derivedConfig AS $key => $value) {
-            $baseConfig[$key] = $this->mergerecursive($baseConfig[$key], $value);
-        }
-
-        return $baseConfig;
-    }
-
-    /**
-     * 是否数组是下标数组
-     * @param array $array
-     * @return boolean
-     */
-    private function isArrayIndexed($array) {
-        return array_keys($array) === range(0, count($array) - 1);
+        $this->config = $config;
     }
 
     /**

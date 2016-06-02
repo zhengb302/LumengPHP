@@ -40,7 +40,12 @@ class ConfigLoader {
         //如果两个都是下标数组，则合并再去重
         if ($this->isArrayIndexed($baseConfig) &&
                 $this->isArrayIndexed($derivedConfig)) {
-            return array_unique(array_merge($baseConfig, $derivedConfig));
+
+            //合并再去重
+            $arr = array_unique(array_merge($baseConfig, $derivedConfig));
+
+            //Re-index numeric array keys
+            return array_values($arr);
         }
 
         foreach ($derivedConfig AS $key => $value) {

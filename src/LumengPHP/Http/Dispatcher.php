@@ -2,6 +2,7 @@
 
 namespace LumengPHP\Http;
 
+use LumengPHP\Kernel\AppContextInterface;
 use LumengPHP\Kernel\AppConfig;
 use Exception;
 use Djj\Result\Failed;
@@ -14,9 +15,16 @@ use Djj\Result\Failed;
 class Dispatcher {
 
     /**
+     * @var AppContextInterface
+     */
+    private $appContext;
+
+    /**
      * @var AppConfig 
      */
     private $appConfig;
+    
+
 
     /**
      * @var string 当前请求的uri
@@ -29,9 +37,13 @@ class Dispatcher {
     private $bags;
 
     /**
-     * @var string 当前请求的服务类的全限定名称
+     * @var string 当前请求的控制器类的全限定名称
      */
-    private $serviceClass;
+    private $controllerClass;
+
+    public function __construct(AppContextInterface $appContext) {
+        $this->appContext = $appContext;
+    }
 
     public function setAppConfig(AppConfigInterface $appConfig) {
         $this->appConfig = $appConfig;
@@ -45,14 +57,17 @@ class Dispatcher {
         $this->bags = $bags;
     }
 
-    public function doDispatcher($controllerName, $actionName) {
+    public function doDispatcher(Request $request) {
         try {
+            $router= $this->appContext->getService('httpRouter');
+            $router->route($request);
+            
             $this->verifyServiceComponentName($controllerName);
             $this->verifyServiceComponentName($actionName);
 
-            $this->serviceClass = "Service\\{$controllerName}\\{$actionName}";
-            if (!class_exists($this->serviceClass)) {
-                throw new Exception('您请求的服务不存在~');
+            $this->controllerClass = "Service\\{$controllerName}\\{$actionName}";
+            if (!class_exists($this->controllerClass)) {
+                throw new Exception('您请求的控制器不存在~');
             }
 
             //调用拦截器
@@ -63,8 +78,8 @@ class Dispatcher {
                 mkdir($metaDataCacheDir, 0755);
             }
 
-            $serviceInvoker = new ServiceInvoker($this->serviceClass, $metaDataCacheDir, $this->bags);
-            $result = $serviceInvoker->invoke();
+            $controllerInvoker = new ControllerInvoker($this->controllerClass, $metaDataCacheDir, $this->bags);
+            $result = $controllerInvoker->invoke();
         } catch (Exception $ex) {
             //@todo 实现开发者可配置的异常处理器，以实现更精细的异常控制。
             $result = new Failed($ex->getMessage());
@@ -96,7 +111,7 @@ class Dispatcher {
         foreach ($interceptors as $interceptor) {
             $interceptorObj = new $interceptor();
             $interceptorObj->setUri($this->uri);
-            $interceptorObj->setServiceClass($this->serviceClass);
+            $interceptorObj->setServiceClass($this->controllerClass);
             $interceptorObj->execute();
         }
     }

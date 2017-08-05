@@ -2,6 +2,8 @@
 
 namespace LumengPHP\Http;
 
+use LumengPHP\Kernel\Bootstrap;
+
 /**
  * HTTP应用
  *
@@ -18,11 +20,12 @@ class Application {
         $bootstrap = new Bootstrap();
         $bootstrap->boot($configFilePath);
 
-        $this->dispatcher = new Dispatcher();
+        $appContext = $bootstrap->getAppContext();
+        $this->dispatcher = new Dispatcher($appContext);
     }
 
-    public function handle() {
-        $this->dispatcher->doDispatcher($controllerName, $actionName);
+    public function handle(Request $request) {
+        $this->dispatcher->doDispatcher($request);
     }
 
 }

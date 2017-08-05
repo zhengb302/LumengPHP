@@ -10,7 +10,7 @@ return array(
     //应用核心配置
     'app' => array(
         'extensions' => array(
-            'LumengPHP\Extensions\HttpKernelExtension',
+            \LumengPHP\Extensions\HttpExtension::class,
         ),
     ),
     //http配置

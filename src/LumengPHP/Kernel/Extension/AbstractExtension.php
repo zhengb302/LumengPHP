@@ -6,10 +6,10 @@ use LumengPHP\Kernel\AppContextInterface;
 use LumengPHP\DependencyInjection\ServiceContainer;
 
 /**
- * 扩展基类
+ * 一个简单的Extension实现
  * @author Lumeng <zhengb302@163.com>
  */
-abstract class Extension implements ExtensionInterface {
+abstract class AbstractExtension implements ExtensionInterface {
 
     /**
      * @var AppContextInterface AppContext实例

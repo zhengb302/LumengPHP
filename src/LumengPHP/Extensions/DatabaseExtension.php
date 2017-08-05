@@ -2,7 +2,7 @@
 
 namespace LumengPHP\Extensions;
 
-use LumengPHP\Kernel\Extension\Extension;
+use LumengPHP\Kernel\Extension\AbstractExtension;
 use LumengPHP\Db\ConnectionManager;
 use LumengPHP\Db\Misc\ShortcutFunctionHelper;
 use LumengPHP\Exceptions\InvalidConfigurationException;
@@ -12,7 +12,7 @@ use LumengPHP\Exceptions\InvalidConfigurationException;
  *
  * @author Lumeng <zhengb302@163.com>
  */
-class DatabaseExtension extends Extension {
+class DatabaseExtension extends AbstractExtension {
 
     public function getName() {
         return 'LumengPHP-Db';

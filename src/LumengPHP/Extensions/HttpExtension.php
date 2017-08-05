@@ -2,7 +2,7 @@
 
 namespace LumengPHP\Extensions;
 
-use LumengPHP\Kernel\Extension\Extension;
+use LumengPHP\Kernel\Extension\AbstractExtension;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpKernel\HttpKernel;
@@ -15,14 +15,14 @@ use LumengPHP\Kernel\EventListener\FilterListener;
 use LumengPHP\Kernel\ControllerResolver;
 
 /**
- * Http核心扩展
+ * HTTP扩展
  *
  * @author Lumeng <zhengb302@163.com>
  */
-class HttpKernelExtension extends Extension {
+class HttpExtension extends AbstractExtension {
 
     public function getName() {
-        return 'LumengPHP-HttpKernel';
+        return 'LumengPHP-Http';
     }
 
     public function load() {
@@ -44,7 +44,7 @@ class HttpKernelExtension extends Extension {
         $httpKernel = new HttpKernel($dispatcher, $resolver, $requestStack);
 
         //把HttpKernel对象注册为服务
-        $this->container->registerService('httpKernel', $httpKernel);
+        $this->container->registerService('http', $httpKernel);
     }
 
     /**

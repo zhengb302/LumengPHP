@@ -2,7 +2,7 @@
 
 namespace LumengPHP\Extensions;
 
-use LumengPHP\Kernel\Extension\Extension;
+use LumengPHP\Kernel\Extension\AbstractExtension;
 use LumengPHP\Messaging\ConnectionManager;
 use LumengPHP\Exceptions\InvalidConfigurationException;
 
@@ -11,7 +11,7 @@ use LumengPHP\Exceptions\InvalidConfigurationException;
  *
  * @author Lumeng <zhengb302@163.com>
  */
-class MessagingExtension extends Extension {
+class MessagingExtension extends AbstractExtension {
 
     public function getName() {
         return 'LumengPHP-Messaging';

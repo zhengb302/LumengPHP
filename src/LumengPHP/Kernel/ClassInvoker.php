@@ -63,8 +63,8 @@ class ClassInvoker {
         $this->classObject = new $class();
         $this->reflectionObj = new ReflectionClass($class);
 
-        //初始化
-        $this->init();
+        //加载类元数据
+        $this->loadClassMetadata();
 
         //属性注入
         $propertyMetadata = $this->classMetadata['propertyAnnotationMetaData'];
@@ -83,15 +83,26 @@ class ClassInvoker {
         return $result;
     }
 
-    private function init() {
-        $metaDataCacheDir = RUNTIME_PATH . 'class-metadata';
-        if (!is_dir($metaDataCacheDir)) {
-            mkdir($metaDataCacheDir, 0755);
+    /**
+     * 加载类元数据
+     */
+    private function loadClassMetadata() {
+        $metadataCacheDir = $this->appContext->getCacheDir() . '/class-metadata';
+        if (!is_dir($metadataCacheDir)) {
+            mkdir($metadataCacheDir, 0755);
         }
 
+        //最后修改时间
         $classFilePath = $this->reflectionObj->getFileName();
-        $classLastModifiedTime = filemtime($classFilePath);
-        $cacheFilePath = $metaDataCacheDir . '/' . strtolower(str_replace('\\', '_', $this->reflectionObj->getName())) . "_{$classLastModifiedTime}.php";
+        $lastModifiedTime = filemtime($classFilePath);
+
+        //类的全限定名称
+        $classFullName = $this->reflectionObj->getName();
+
+        //类元数据缓存文件名及路径
+        $cacheFileName = str_replace('\\', '.', $classFullName) . ".{$lastModifiedTime}.php";
+        $cacheFilePath = $metadataCacheDir . '/' . $cacheFileName;
+
         if (is_file($cacheFilePath)) {
             $this->classMetadata = require($cacheFilePath);
         } else {

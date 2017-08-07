@@ -35,13 +35,15 @@ interface AppContextInterface {
     public function getService($serviceName);
 
     /**
-     * 取得应用根目录路径
+     * 取得应用根目录路径<br />
+     * 注意：结尾不带斜杠“/”
      * @return string
      */
     public function getRootDir();
 
     /**
-     * 取得缓存目录路径
+     * 取得缓存目录路径<br />
+     * 注意：结尾不带斜杠“/”
      * @return string
      */
     public function getCacheDir();

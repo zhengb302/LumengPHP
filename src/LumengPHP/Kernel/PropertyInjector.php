@@ -1,6 +1,6 @@
 <?php
 
-namespace Djj\Core;
+namespace LumengPHP\Kernel;
 
 use ReflectionClass;
 use Exception;

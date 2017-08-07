@@ -1,6 +1,6 @@
 <?php
 
-namespace LumengPHP\Http;
+namespace LumengPHP\Kernel;
 
 use ReflectionClass;
 use Djj\Result\Result;
@@ -8,11 +8,11 @@ use Djj\Result\Success;
 use LumengPHP\Kernel\Annotation\ClassAnnotationDumper;
 
 /**
- * 控制器调用者
+ * 类调用者
  *
  * @author zhengluming <luming.zheng@shandjj.com>
  */
-class ControllerInvoker {
+class ClassInvoker {
 
     /**
      * @var string 入口方法名称
@@ -20,9 +20,9 @@ class ControllerInvoker {
     private $entryMethod = 'execute';
 
     /**
-     * @var mixed 服务对象
+     * @var mixed 要调用的对象
      */
-    private $serviceObject;
+    private $classObject;
 
     /**
      * @var ReflectionClass 
@@ -35,6 +35,11 @@ class ControllerInvoker {
     private $classAnnotation;
 
     /**
+     * @var AppContextInterface
+     */
+    private $appContext;
+
+    /**
      * @var array 
      */
     private $bags;
@@ -44,21 +49,32 @@ class ControllerInvoker {
      */
     private $camelCase = false;
 
-    public function __construct($serviceClass, $cacheDir, $bags) {
-        $this->serviceObject = new $serviceClass();
-        $this->reflectionObj = new ReflectionClass($serviceClass);
+    public function __construct($class, AppContextInterface $appContext, $bags) {
+        $this->classObject = new $class();
+        $this->reflectionObj = new ReflectionClass($class);
 
-        $serviceFilePath = $this->reflectionObj->getFileName();
-        $serviceLastModifiedTime = filemtime($serviceFilePath);
-        $cacheFilePath = $cacheDir . '/' . strtolower(str_replace('\\', '_', $this->reflectionObj->getName())) . "_{$serviceLastModifiedTime}.php";
+        $this->appContext = $appContext;
+
+        $this->bags = $bags;
+
+        $this->init();
+    }
+
+    private function init() {
+        $metaDataCacheDir = RUNTIME_PATH . 'class-metadata';
+        if (!is_dir($metaDataCacheDir)) {
+            mkdir($metaDataCacheDir, 0755);
+        }
+
+        $classFilePath = $this->reflectionObj->getFileName();
+        $classLastModifiedTime = filemtime($classFilePath);
+        $cacheFilePath = $metaDataCacheDir . '/' . strtolower(str_replace('\\', '_', $this->reflectionObj->getName())) . "_{$classLastModifiedTime}.php";
         if (is_file($cacheFilePath)) {
             $this->classAnnotation = require($cacheFilePath);
         } else {
             $classAnnotationDumper = new ClassAnnotationDumper($this->reflectionObj);
             $this->classAnnotation = $classAnnotationDumper->dump($cacheFilePath);
         }
-
-        $this->bags = $bags;
     }
 
     /**
@@ -68,17 +84,17 @@ class ControllerInvoker {
     public function invoke() {
         //属性注入
         $propertyAnnotationMetaData = $this->classAnnotation['propertyAnnotationMetaData'];
-        $propertyInjector = new PropertyInjector($this->serviceObject, $this->reflectionObj, $propertyAnnotationMetaData, $this->bags);
+        $propertyInjector = new PropertyInjector($this->classObject, $this->reflectionObj, $propertyAnnotationMetaData, $this->bags);
         $propertyInjector->inject();
 
         //如果有init方法，先执行init方法
         if ($this->reflectionObj->hasMethod('init')) {
-            $this->serviceObject->init();
+            $this->classObject->init();
         }
 
         //执行服务入口方法
         $method = $this->entryMethod;
-        $return = $this->serviceObject->$method();
+        $return = $this->classObject->$method();
         $result = $this->convertReturnToResult($return);
 
         //计算是否响应内容转驼峰，如果要下划线转驼峰，则转之

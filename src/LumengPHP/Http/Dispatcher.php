@@ -26,28 +26,28 @@ class Dispatcher {
     private $router;
 
     /**
-     * @var array 
+     * @var ClassInvoker 类调用者
      */
-    private $bags;
+    private $classInvoker;
 
     public function __construct(AppContextInterface $appContext, RouterInterface $router) {
         $this->appContext = $appContext;
         $this->router = $router;
     }
 
-    public function setBags($bags) {
-        $this->bags = $bags;
-    }
-
     public function doDispatcher(Request $request) {
+        $propertyInjector = new HttpPropertyInjector($request);
+        $this->classInvoker = new ClassInvoker($this->appContext, $propertyInjector);
+
         try {
             //调用拦截器
             $this->invokeInterceptor();
 
+            //路由
             $controllerClass = $this->router->route($request);
-            $propertyInjector = new HttpPropertyInjector($request);
-            $controllerInvoker = new ClassInvoker($controllerClass, $this->appContext, $propertyInjector);
-            $result = $controllerInvoker->invoke();
+
+            //调用控制器
+            $result = $this->classInvoker->invoke($controllerClass);
         } catch (Exception $ex) {
             //@todo 实现开发者可配置的异常处理器，以实现更精细的异常控制。
             $result = new Failed($ex->getMessage());
@@ -69,8 +69,12 @@ class Dispatcher {
      */
     private function invokeInterceptor() {
         $interceptors = $this->appContext->getConfig('interceptors');
-        foreach ($interceptors as $interceptor) {
-            $interceptorObj = new $interceptor();
+        foreach ($interceptors as $interceptorClass) {
+            if (!class_exists($interceptorClass)) {
+                throw new Exception("拦截器{$interceptorClass}不存在~");
+            }
+
+            $this->classInvoker->invoke($interceptorClass);
         }
     }
 

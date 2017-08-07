@@ -46,19 +46,41 @@ class ClassInvoker {
 
     /**
      * 构造一个<b>ClassInvoker</b>对象
-     * @param string $class 要调用的类的全限定名称
      * @param AppContextInterface $appContext 应用环境实例
      * @param PropertyInjectorInterface $propertyInjector 属性注入器实例
      */
-    public function __construct($class, AppContextInterface $appContext, PropertyInjectorInterface $propertyInjector) {
+    public function __construct(AppContextInterface $appContext, PropertyInjectorInterface $propertyInjector) {
+        $this->appContext = $appContext;
+        $this->propertyInjector = $propertyInjector;
+    }
+
+    /**
+     * 调用类并返回一个结果对象
+     * @param string $class 要调用的类的全限定名称
+     * @return type
+     */
+    public function invoke($class) {
         $this->classObject = new $class();
         $this->reflectionObj = new ReflectionClass($class);
 
-        $this->appContext = $appContext;
-
-        $this->propertyInjector = $propertyInjector;
-
+        //初始化
         $this->init();
+
+        //属性注入
+        $propertyMetadata = $this->classMetadata['propertyAnnotationMetaData'];
+        $this->propertyInjector->inject($this->classObject, $this->reflectionObj, $propertyMetadata);
+
+        //如果有init方法，先执行init方法
+        if ($this->reflectionObj->hasMethod('init')) {
+            $this->classObject->init();
+        }
+
+        //执行服务入口方法
+        $method = $this->entryMethod;
+        $return = $this->classObject->$method();
+        $result = $this->convertReturnToResult($return);
+
+        return $result;
     }
 
     private function init() {
@@ -76,28 +98,6 @@ class ClassInvoker {
             $classAnnotationDumper = new ClassAnnotationDumper($this->reflectionObj);
             $this->classMetadata = $classAnnotationDumper->dump($cacheFilePath);
         }
-    }
-
-    /**
-     * 调用服务并返回一个结果对象
-     * @return Result
-     */
-    public function invoke() {
-        //属性注入
-        $propertyMetadata = $this->classMetadata['propertyAnnotationMetaData'];
-        $this->propertyInjector->inject($this->classObject, $this->reflectionObj, $propertyMetadata);
-
-        //如果有init方法，先执行init方法
-        if ($this->reflectionObj->hasMethod('init')) {
-            $this->classObject->init();
-        }
-
-        //执行服务入口方法
-        $method = $this->entryMethod;
-        $return = $this->classObject->$method();
-        $result = $this->convertReturnToResult($return);
-
-        return $result;
     }
 
     /**

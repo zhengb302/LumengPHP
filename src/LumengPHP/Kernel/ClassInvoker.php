@@ -3,8 +3,6 @@
 namespace LumengPHP\Kernel;
 
 use ReflectionClass;
-use Djj\Result\Result;
-use Djj\Result\Success;
 use LumengPHP\Kernel\Annotation\ClassAnnotationDumper;
 
 /**
@@ -66,7 +64,7 @@ class ClassInvoker {
         //加载类元数据
         $this->loadClassMetadata();
 
-        //属性注入
+        //注入属性
         $propertyMetadata = $this->classMetadata['propertyAnnotationMetaData'];
         $this->propertyInjector->inject($this->classObject, $this->reflectionObj, $propertyMetadata);
 
@@ -75,12 +73,10 @@ class ClassInvoker {
             $this->classObject->init();
         }
 
-        //执行服务入口方法
+        //执行类入口方法并返回
         $method = $this->entryMethod;
         $return = $this->classObject->$method();
-        $result = $this->convertReturnToResult($return);
-
-        return $result;
+        return $return;
     }
 
     /**
@@ -109,28 +105,6 @@ class ClassInvoker {
             $classAnnotationDumper = new ClassAnnotationDumper($this->reflectionObj);
             $this->classMetadata = $classAnnotationDumper->dump($cacheFilePath);
         }
-    }
-
-    /**
-     * 转换服务方法返回结果为Result对象
-     * @param mixed $return
-     * @return Result
-     */
-    private function convertReturnToResult($return) {
-        //服务方法可以直接返回一个Result对象
-        if ($return instanceof Result) {
-            $result = $return;
-        }
-        //啥都没返回，或者返回null
-        elseif (is_null($return)) {
-            $result = new Success();
-        }
-        //或者直接返回一个数据，这是执行成功的一种表现
-        else {
-            $result = new Success('', $return);
-        }
-
-        return $result;
     }
 
 }

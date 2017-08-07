@@ -6,6 +6,8 @@ use LumengPHP\Kernel\AppContextInterface;
 use LumengPHP\Http\Routing\RouterInterface;
 use LumengPHP\Kernel\ClassInvoker;
 use Exception;
+use Djj\Result\Result;
+use Djj\Result\Success;
 use Djj\Result\Failed;
 
 /**
@@ -47,7 +49,8 @@ class Dispatcher {
             $controllerClass = $this->router->route($request);
 
             //调用控制器
-            $result = $this->classInvoker->invoke($controllerClass);
+            $return = $this->classInvoker->invoke($controllerClass);
+            $result = $this->convertReturnToResult($return);
         } catch (Exception $ex) {
             //@todo 实现开发者可配置的异常处理器，以实现更精细的异常控制。
             $result = new Failed($ex->getMessage());
@@ -76,6 +79,28 @@ class Dispatcher {
 
             $this->classInvoker->invoke($interceptorClass);
         }
+    }
+
+    /**
+     * 转换服务方法返回结果为Result对象
+     * @param mixed $return
+     * @return Result
+     */
+    private function convertReturnToResult($return) {
+        //服务方法可以直接返回一个Result对象
+        if ($return instanceof Result) {
+            $result = $return;
+        }
+        //啥都没返回，或者返回null
+        elseif (is_null($return)) {
+            $result = new Success();
+        }
+        //或者直接返回一个数据，这是执行成功的一种表现
+        else {
+            $result = new Success('', $return);
+        }
+
+        return $result;
     }
 
     private function outputJson($jsonString) {

@@ -9,28 +9,28 @@ use ArrayAccess;
  *
  * @author zhengluming <luming.zheng@shandjj.com>
  */
-class MetaData implements ArrayAccess {
+class Metadata implements ArrayAccess {
 
     /**
-     * @var array 元数据key=>value对
+     * @var array 元数据 key => value 对
      */
-    private $metaData = [];
+    private $metadata = [];
 
     /**
      * 添加元数据
      * @param string $name
      * @param mixed $value
      */
-    public function addMetaData($name, $value) {
-        $this->metaData[$name] = $value;
+    public function addMetadata($name, $value) {
+        $this->metadata[$name] = $value;
     }
 
     /**
      * 返回所有元数据
      * @return array 
      */
-    public function getAllMetaData() {
-        return $this->metaData;
+    public function getAllMetadata() {
+        return $this->metadata;
     }
 
     /**
@@ -39,7 +39,7 @@ class MetaData implements ArrayAccess {
      * @return bool
      */
     public function has($name) {
-        return isset($this->metaData[$name]);
+        return isset($this->metadata[$name]);
     }
 
     /**
@@ -48,23 +48,23 @@ class MetaData implements ArrayAccess {
      * @return mixed
      */
     public function get($name) {
-        return isset($this->metaData[$name]) ? $this->metaData[$name] : null;
+        return isset($this->metadata[$name]) ? $this->metadata[$name] : null;
     }
 
     public function offsetExists($offset) {
-        return isset($this->metaData[$offset]);
+        return isset($this->metadata[$offset]);
     }
 
     public function offsetGet($offset) {
-        return isset($this->metaData[$offset]) ? $this->metaData[$offset] : null;
+        return isset($this->metadata[$offset]) ? $this->metadata[$offset] : null;
     }
 
     public function offsetSet($offset, $value) {
-        $this->metaData[$offset] = $value;
+        $this->metadata[$offset] = $value;
     }
 
     public function offsetUnset($offset) {
-        unset($this->metaData[$offset]);
+        unset($this->metadata[$offset]);
     }
 
 }

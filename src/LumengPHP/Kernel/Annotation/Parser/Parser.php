@@ -66,7 +66,7 @@ class Parser {
     private function varTag() {
         $this->match(Token::T_VAR);
         $this->match(Token::T_ID, true);
-        $this->metaData->addMetaData('type', $this->lastToken->getText());
+        $this->metaData->addMetadata('type', $this->lastToken->getText());
     }
 
     /**
@@ -74,11 +74,11 @@ class Parser {
      */
     private function requestParamTag() {
         $this->match(Token::T_REQUEST_PARAM);
-        $this->metaData->addMetaData('source', ltrim($this->lastToken->getText(), '@'));
+        $this->metaData->addMetadata('source', ltrim($this->lastToken->getText(), '@'));
         if ($this->lookahead->getType() == Token::T_LEFT_PARENTHESIS) {
             $this->match(Token::T_LEFT_PARENTHESIS);
             $this->match(Token::T_ID);
-            $this->metaData->addMetaData('paramName', $this->lastToken->getText());
+            $this->metaData->addMetadata('paramName', $this->lastToken->getText());
             $this->match(Token::T_RIGHT_PARENTHESIS);
         }
 
@@ -93,7 +93,7 @@ class Parser {
      */
     private function camelCaseTag() {
         $this->match(Token::T_CAMEL_CASE, true);
-        $this->metaData->addMetaData('camelCase', true);
+        $this->metaData->addMetadata('camelCase', true);
     }
 
     /**

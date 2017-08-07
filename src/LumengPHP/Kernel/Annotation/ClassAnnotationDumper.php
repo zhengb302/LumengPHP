@@ -59,7 +59,7 @@ class ClassAnnotationDumper {
         foreach ($properties as $property) {
             $propertyName = $property->getName();
 
-            $metaData = new MetaData();
+            $metaData = new Metadata();
 
             $docComment = $property->getDocComment();
             $parser = new Parser(new Lexer($docComment), $metaData);
@@ -69,7 +69,7 @@ class ClassAnnotationDumper {
                 continue;
             }
 
-            $this->propertyAnnotationMetaData[$propertyName] = $metaData->getAllMetaData();
+            $this->propertyAnnotationMetaData[$propertyName] = $metaData->getAllMetadata();
         }
     }
 
@@ -81,13 +81,13 @@ class ClassAnnotationDumper {
         foreach ($methods as $method) {
             $methodName = $method->getName();
 
-            $metaData = new MetaData();
+            $metaData = new Metadata();
 
             $docComment = $method->getDocComment();
             $parser = new Parser(new Lexer($docComment), $metaData);
             $parser->parse();
 
-            $metaDataArray = $metaData->getAllMetaData();
+            $metaDataArray = $metaData->getAllMetadata();
             if (!empty($metaDataArray)) {
                 $this->methodAnnotationMetaData[$methodName] = $metaDataArray;
             }

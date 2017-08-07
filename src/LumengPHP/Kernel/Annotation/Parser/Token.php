@@ -30,7 +30,7 @@ class Token {
     const T_VAR = 3;
 
     /**
-     * 请求参数注入注解，有@get、@post、@request、@session
+     * 请求参数注入注解，有@get、@post、@request、@session、@container
      */
     const T_REQUEST_PARAM = 4;
 

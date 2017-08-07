@@ -2,6 +2,7 @@
 
 namespace LumengPHP\Http;
 
+use LumengPHP\Kernel\AppContextInterface;
 use ReflectionClass;
 use Exception;
 
@@ -13,19 +14,9 @@ use Exception;
 class HttpPropertyInjector {
 
     /**
-     * @var mixed 类对象
+     * @var AppContextInterface
      */
-    private $classObj;
-
-    /**
-     * @var ReflectionClass 
-     */
-    private $reflectionObj;
-
-    /**
-     * @var array 属性注解元数据，属性名称作为key 
-     */
-    private $metadatas;
+    private $appContext;
 
     /**
      * @var Request 
@@ -52,9 +43,25 @@ class HttpPropertyInjector {
      */
     private $session;
 
-    public function __construct(Request $request) {
-        $this->requestObj = $request;
+    /**
+     * @var mixed 类对象
+     */
+    private $classObj;
 
+    /**
+     * @var ReflectionClass 
+     */
+    private $reflectionObj;
+
+    /**
+     * @var array 属性注解元数据，属性名称作为key 
+     */
+    private $metadatas;
+
+    public function __construct(AppContextInterface $appContext, Request $request) {
+        $this->appContext = $appContext;
+
+        $this->requestObj = $request;
         $this->get = $this->requestObj->get;
         $this->post = $this->requestObj->post;
         $this->request = $this->requestObj->request;
@@ -88,8 +95,16 @@ class HttpPropertyInjector {
             case 'session':
                 $rawValue = $this->session[$paramName];
                 break;
+            case 'container':
+                $rawValue = $this->appContext->getService($paramName);
+                break;
         }
-        $value = $this->formatValue($metadata['type'], $rawValue);
+
+        if ($source == 'container') {
+            $value = $rawValue;
+        } else {
+            $value = $this->formatValue($metadata['type'], $rawValue);
+        }
 
         $property = $this->reflectionObj->getProperty($propertyName);
         $property->setAccessible(true);

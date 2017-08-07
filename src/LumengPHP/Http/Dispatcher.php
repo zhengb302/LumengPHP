@@ -38,7 +38,7 @@ class Dispatcher {
     }
 
     public function doDispatcher(Request $request) {
-        $propertyInjector = new HttpPropertyInjector($request);
+        $propertyInjector = new HttpPropertyInjector($this->appContext, $request);
         $this->classInvoker = new ClassInvoker($this->appContext, $propertyInjector);
 
         try {

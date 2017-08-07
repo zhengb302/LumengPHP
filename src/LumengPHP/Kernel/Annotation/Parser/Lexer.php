@@ -118,6 +118,7 @@ class Lexer {
             case '@post':
             case '@request':
             case '@session':
+            case '@container':
                 $tokenType = Token::T_REQUEST_PARAM;
                 break;
             default:

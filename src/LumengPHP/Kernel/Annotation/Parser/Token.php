@@ -35,19 +35,14 @@ class Token {
     const T_REQUEST_PARAM = 4;
 
     /**
-     * 响应内容下划线转驼峰注解，即：@camelCase
-     */
-    const T_CAMEL_CASE = 5;
-
-    /**
      * 左圆括号"("
      */
-    const T_LEFT_PARENTHESIS = 6;
+    const T_LEFT_PARENTHESIS = 5;
 
     /**
      * 右圆括号")"
      */
-    const T_RIGHT_PARENTHESIS = 7;
+    const T_RIGHT_PARENTHESIS = 6;
 
     /**
      * @var int token编号
@@ -75,8 +70,7 @@ class Token {
     public function isAnnotation() {
         return $this->type == self::T_UNKNOWN_ANNOTATION ||
                 $this->type == self::T_VAR ||
-                $this->type == self::T_REQUEST_PARAM ||
-                $this->type == self::T_CAMEL_CASE;
+                $this->type == self::T_REQUEST_PARAM;
     }
 
 }

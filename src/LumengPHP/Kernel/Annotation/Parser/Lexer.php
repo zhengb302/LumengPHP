@@ -120,9 +120,6 @@ class Lexer {
             case '@session':
                 $tokenType = Token::T_REQUEST_PARAM;
                 break;
-            case '@camelCase':
-                $tokenType = Token::T_CAMEL_CASE;
-                break;
             default:
                 $tokenType = Token::T_UNKNOWN_ANNOTATION;
         }

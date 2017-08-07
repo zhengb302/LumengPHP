@@ -50,8 +50,6 @@ class Parser {
                 $this->varTag();
             } elseif ($lookaheadTokenType == Token::T_REQUEST_PARAM) {
                 $this->requestParamTag();
-            } elseif ($lookaheadTokenType == Token::T_CAMEL_CASE) {
-                $this->camelCaseTag();
             } elseif ($lookaheadTokenType == Token::T_UNKNOWN_ANNOTATION) {
                 $this->unknownTag();
             } else {
@@ -86,14 +84,6 @@ class Parser {
             $this->lexer->gotoNextAnnotation();
             $this->consume();
         }
-    }
-
-    /**
-     * "@camelCase"注解
-     */
-    private function camelCaseTag() {
-        $this->match(Token::T_CAMEL_CASE, true);
-        $this->metadata->addMetadata('camelCase', true);
     }
 
     /**

@@ -119,7 +119,7 @@ class Lexer {
             case '@request':
             case '@session':
             case '@container':
-                $tokenType = Token::T_REQUEST_PARAM;
+                $tokenType = Token::T_PROPERTY_INJECTOR;
                 break;
             default:
                 $tokenType = Token::T_UNKNOWN_ANNOTATION;

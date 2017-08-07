@@ -30,9 +30,9 @@ class Token {
     const T_VAR = 3;
 
     /**
-     * 请求参数注入注解，有@get、@post、@request、@session、@container
+     * 属性注入注解，有@get、@post、@request、@session、@container
      */
-    const T_REQUEST_PARAM = 4;
+    const T_PROPERTY_INJECTOR = 4;
 
     /**
      * 左圆括号"("
@@ -70,7 +70,7 @@ class Token {
     public function isAnnotation() {
         return $this->type == self::T_UNKNOWN_ANNOTATION ||
                 $this->type == self::T_VAR ||
-                $this->type == self::T_REQUEST_PARAM;
+                $this->type == self::T_PROPERTY_INJECTOR;
     }
 
 }

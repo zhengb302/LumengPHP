@@ -48,8 +48,8 @@ class Parser {
             $lookaheadTokenType = $this->lookahead->getType();
             if ($lookaheadTokenType == Token::T_VAR) {
                 $this->varTag();
-            } elseif ($lookaheadTokenType == Token::T_REQUEST_PARAM) {
-                $this->requestParamTag();
+            } elseif ($lookaheadTokenType == Token::T_PROPERTY_INJECTOR) {
+                $this->propertyInjectorTag();
             } elseif ($lookaheadTokenType == Token::T_UNKNOWN_ANNOTATION) {
                 $this->unknownTag();
             } else {
@@ -68,10 +68,10 @@ class Parser {
     }
 
     /**
-     * "@get"、"@post"、"@request"、"@session"注解
+     * 属性注入注解："@get"、"@post"、"@request"、"@session"、"@container"
      */
-    private function requestParamTag() {
-        $this->match(Token::T_REQUEST_PARAM);
+    private function propertyInjectorTag() {
+        $this->match(Token::T_PROPERTY_INJECTOR);
         $this->metadata->addMetadata('source', ltrim($this->lastToken->getText(), '@'));
         if ($this->lookahead->getType() == Token::T_LEFT_PARENTHESIS) {
             $this->match(Token::T_LEFT_PARENTHESIS);

@@ -4,6 +4,7 @@ namespace LumengPHP\Http;
 
 use LumengPHP\Kernel\AppContextInterface;
 use LumengPHP\Kernel\AppConfig;
+use LumengPHP\Http\Routing\RouterInterface;
 use Exception;
 use Djj\Result\Failed;
 
@@ -25,6 +26,11 @@ class Dispatcher {
     private $appConfig;
 
     /**
+     * @var RouterInterface 路由器实例
+     */
+    private $router;
+
+    /**
      * @var string 当前请求的uri
      */
     private $uri;
@@ -39,8 +45,9 @@ class Dispatcher {
      */
     private $controllerClass;
 
-    public function __construct(AppContextInterface $appContext) {
+    public function __construct(AppContextInterface $appContext, RouterInterface $router) {
         $this->appContext = $appContext;
+        $this->router = $router;
     }
 
     public function setAppConfig(AppConfigInterface $appConfig) {
@@ -57,16 +64,7 @@ class Dispatcher {
 
     public function doDispatcher(Request $request) {
         try {
-            $router = $this->appContext->getService('httpRouter');
-            $router->route($request);
-
-            $this->verifyServiceComponentName($controllerName);
-            $this->verifyServiceComponentName($actionName);
-
-            $this->controllerClass = "Service\\{$controllerName}\\{$actionName}";
-            if (!class_exists($this->controllerClass)) {
-                throw new Exception('您请求的控制器不存在~');
-            }
+            $this->controllerClass = $this->router->route($request);
 
             //调用拦截器
             $this->invokeInterceptor();
@@ -91,13 +89,6 @@ class Dispatcher {
         $fuckingAppResult = array_merge($fuckingAppResultHead, (array) $result->getData());
 
         $this->outputJson(json_encode($fuckingAppResult));
-    }
-
-    private function verifyServiceComponentName($componentName) {
-        //大写英文字母开头，后边跟着一个或多个英文字母
-        if (!preg_match('/^[A-Z][A-Za-z]+$/', $componentName)) {
-            throw new Exception('服务名称非法→_→');
-        }
     }
 
     /**

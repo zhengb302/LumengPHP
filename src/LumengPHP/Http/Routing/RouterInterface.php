@@ -6,16 +6,16 @@ use LumengPHP\Http\Request;
 
 /**
  * <b>请求路由器</b>接口<br />
- * 一个“请求路由器”会把一个“请求”路由到一个“控制器”
+ * 一个“请求路由器”会把一个“请求”路由到一个“控制器”，并确保这个控制器在系统中存在
  *
  * @author zhengluming <luming.zheng@shandjj.com>
  */
 interface RouterInterface {
 
     /**
-     * 把一个“请求”路由到一个“控制器”，返回路由的结果
+     * 把一个“请求”路由到一个“控制器”，返回控制器类的全限定名称
      * @param Request $request
-     * @return array 路由结果数据
+     * @return string 控制器类的全限定名称
      */
     public function route(Request $request);
 }

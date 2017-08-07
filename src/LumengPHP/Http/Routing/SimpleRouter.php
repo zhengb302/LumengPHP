@@ -10,13 +10,22 @@ use Exception;
  *
  * @author zhengluming <luming.zheng@shandjj.com>
  */
-class SimpleRouter implements RouterInterface {
+class SimpleRouter extends AbstractRouter {
 
     public function route(Request $request) {
         $controllerName = ucfirst($request->get['c']);
         $actionName = ucfirst($request->get['a']);
-        
-        
+
+        $this->verifyComponentName($controllerName);
+        $this->verifyComponentName($actionName);
+
+        $parentNamespace = $this->appContext->getConfig('controllerParentNamespace');
+        $controllerClass = "{$parentNamespace}\\{$controllerName}\\{$actionName}";
+        if (!class_exists($controllerClass)) {
+            throw new Exception('您请求的控制器不存在~');
+        }
+
+        return $controllerClass;
     }
 
     private function verifyComponentName($componentName) {
@@ -25,4 +34,5 @@ class SimpleRouter implements RouterInterface {
             throw new Exception('控制器名称非法→_→');
         }
     }
+
 }

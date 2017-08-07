@@ -35,8 +35,7 @@ class Bootstrap {
     private $appContext;
 
     public function boot($configFilePath) {
-        $configLoader = new ConfigLoader();
-        $config = $configLoader->load($configFilePath);
+        $config = require($configFilePath);
         $this->appConfig = new AppConfig($config);
 
         $this->initServiceContainer();

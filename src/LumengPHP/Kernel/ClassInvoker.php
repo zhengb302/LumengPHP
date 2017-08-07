@@ -65,7 +65,7 @@ class ClassInvoker {
         $this->loadClassMetadata();
 
         //注入属性
-        $propertyMetadata = $this->classMetadata['propertyAnnotationMetaData'];
+        $propertyMetadata = $this->classMetadata['propertyMetadata'];
         $this->propertyInjector->inject($this->classObject, $this->reflectionObj, $propertyMetadata);
 
         //如果有init方法，先执行init方法

@@ -19,14 +19,14 @@ class ClassAnnotationDumper {
     private $reflectionObj;
 
     /**
-     * @var array 属性注解元数据，属性名称作为key
+     * @var array 属性元数据，属性名称作为key
      */
-    private $propertyAnnotationMetaData = [];
+    private $propertyMetadata = [];
 
     /**
-     * @var array 方法注解元数据，方法名称作为key
+     * @var array 方法元数据，方法名称作为key
      */
-    private $methodAnnotationMetaData = [];
+    private $methodMetadata = [];
 
     public function __construct(ReflectionClass $reflectionObj) {
         $this->reflectionObj = $reflectionObj;
@@ -41,14 +41,14 @@ class ClassAnnotationDumper {
         $this->parsePropertyAnnotation();
         $this->parseMethodAnnotation();
 
-        $classAnnotation = [
-            'propertyAnnotationMetaData' => $this->propertyAnnotationMetaData,
-            'methodAnnotationMetaData' => $this->methodAnnotationMetaData,
+        $classMetadata = [
+            'propertyMetadata' => $this->propertyMetadata,
+            'methodMetadata' => $this->methodMetadata,
         ];
 
-        file_put_contents($path, "<?php\nreturn " . var_export($classAnnotation, true) . ";\n");
+        file_put_contents($path, "<?php\nreturn " . var_export($classMetadata, true) . ";\n");
 
-        return $classAnnotation;
+        return $classMetadata;
     }
 
     /**
@@ -69,7 +69,7 @@ class ClassAnnotationDumper {
                 continue;
             }
 
-            $this->propertyAnnotationMetaData[$propertyName] = $metaData->getAllMetadata();
+            $this->propertyMetadata[$propertyName] = $metaData->getAllMetadata();
         }
     }
 
@@ -89,7 +89,7 @@ class ClassAnnotationDumper {
 
             $metaDataArray = $metaData->getAllMetadata();
             if (!empty($metaDataArray)) {
-                $this->methodAnnotationMetaData[$methodName] = $metaDataArray;
+                $this->methodMetadata[$methodName] = $metaDataArray;
             }
         }
     }

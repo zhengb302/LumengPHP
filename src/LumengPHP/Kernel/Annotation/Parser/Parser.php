@@ -3,7 +3,7 @@
 namespace LumengPHP\Kernel\Annotation\Parser;
 
 use Exception;
-use Djj\Annotation\MetaData;
+use LumengPHP\Kernel\Annotation\Metadata;
 
 /**
  * 语法分析器
@@ -18,9 +18,9 @@ class Parser {
     private $lexer;
 
     /**
-     * @var MetaData 用于保存语法分析过程中生成的元数据
+     * @var Metadata 用于保存语法分析过程中生成的元数据
      */
-    private $metaData;
+    private $metadata;
 
     /**
      * @var Token 超前一个token
@@ -32,9 +32,9 @@ class Parser {
      */
     private $lastToken;
 
-    public function __construct(Lexer $lexer, MetaData $metaData) {
+    public function __construct(Lexer $lexer, Metadata $metadata) {
         $this->lexer = $lexer;
-        $this->metaData = $metaData;
+        $this->metadata = $metadata;
 
         //忽略掉前面的注释，直达第一个注解
         $this->lexer->gotoNextAnnotation();
@@ -66,7 +66,7 @@ class Parser {
     private function varTag() {
         $this->match(Token::T_VAR);
         $this->match(Token::T_ID, true);
-        $this->metaData->addMetadata('type', $this->lastToken->getText());
+        $this->metadata->addMetadata('type', $this->lastToken->getText());
     }
 
     /**
@@ -74,11 +74,11 @@ class Parser {
      */
     private function requestParamTag() {
         $this->match(Token::T_REQUEST_PARAM);
-        $this->metaData->addMetadata('source', ltrim($this->lastToken->getText(), '@'));
+        $this->metadata->addMetadata('source', ltrim($this->lastToken->getText(), '@'));
         if ($this->lookahead->getType() == Token::T_LEFT_PARENTHESIS) {
             $this->match(Token::T_LEFT_PARENTHESIS);
             $this->match(Token::T_ID);
-            $this->metaData->addMetadata('paramName', $this->lastToken->getText());
+            $this->metadata->addMetadata('paramName', $this->lastToken->getText());
             $this->match(Token::T_RIGHT_PARENTHESIS);
         }
 
@@ -93,7 +93,7 @@ class Parser {
      */
     private function camelCaseTag() {
         $this->match(Token::T_CAMEL_CASE, true);
-        $this->metaData->addMetadata('camelCase', true);
+        $this->metadata->addMetadata('camelCase', true);
     }
 
     /**

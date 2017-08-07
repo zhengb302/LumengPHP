@@ -45,7 +45,8 @@ class Dispatcher {
             $this->invokeInterceptor();
 
             $controllerClass = $this->router->route($request);
-            $controllerInvoker = new ClassInvoker($controllerClass, $this->appContext, $this->bags);
+            $propertyInjector = new HttpPropertyInjector($request);
+            $controllerInvoker = new ClassInvoker($controllerClass, $this->appContext, $propertyInjector);
             $result = $controllerInvoker->invoke();
         } catch (Exception $ex) {
             //@todo 实现开发者可配置的异常处理器，以实现更精细的异常控制。

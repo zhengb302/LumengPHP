@@ -39,6 +39,11 @@ class Request {
      */
     public $server;
 
+    /**
+     * @var SessionInterface
+     */
+    private $session;
+
     public function __construct($get, $post, $request, $cookies, $files, $server) {
         $this->get = $get;
         $this->post = $post;
@@ -76,6 +81,22 @@ class Request {
      */
     public function getRequestScheme() {
         return $this->server['REQUEST_SCHEME'];
+    }
+
+    /**
+     * 返回<b>SessionInterface</b>实例
+     * @return SessionInterface
+     */
+    public function getSession() {
+        return $this->session;
+    }
+
+    /**
+     * 设置<b>SessionInterface</b>实例
+     * @param SessionInterface $session
+     */
+    public function setSession(SessionInterface $session) {
+        $this->session = $session;
     }
 
 }

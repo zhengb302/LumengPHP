@@ -25,7 +25,7 @@ class HttpPropertyInjector {
     /**
      * @var array 属性注解元数据，属性名称作为key 
      */
-    private $metaDatas;
+    private $metadatas;
 
     /**
      * @var Request 
@@ -52,27 +52,28 @@ class HttpPropertyInjector {
      */
     private $session;
 
-    public function __construct($classObj, $reflectionObj, $metaDatas, $bags) {
-        $this->classObj = $classObj;
-        $this->reflectionObj = $reflectionObj;
-        $this->metaDatas = $metaDatas;
+    public function __construct(Request $request) {
+        $this->requestObj = $request;
 
         $this->get = $this->requestObj->get;
         $this->post = $this->requestObj->post;
         $this->request = $this->requestObj->request;
-        $this->session = $bags['session'];
-        new \Symfony\Component\HttpFoundation\Request();
+        $this->session = $this->requestObj->getSession();
     }
 
-    public function inject() {
-        foreach ($this->metaDatas as $propertyName => $metaData) {
-            $this->doInject($propertyName, $metaData);
+    public function inject($classObj, ReflectionClass $reflectionObj, array $metadatas) {
+        $this->classObj = $classObj;
+        $this->reflectionObj = $reflectionObj;
+        $this->metadatas = $metadatas;
+
+        foreach ($this->metadatas as $propertyName => $metadata) {
+            $this->doInject($propertyName, $metadata);
         }
     }
 
-    private function doInject($propertyName, array $metaData) {
-        $source = $metaData['source'];
-        $paramName = isset($metaData['paramName']) ? $metaData['paramName'] : $propertyName;
+    private function doInject($propertyName, array $metadata) {
+        $source = $metadata['source'];
+        $paramName = isset($metadata['paramName']) ? $metadata['paramName'] : $propertyName;
 
         switch ($source) {
             case 'get':
@@ -88,7 +89,7 @@ class HttpPropertyInjector {
                 $rawValue = $this->session[$paramName];
                 break;
         }
-        $value = $this->formatValue($metaData['type'], $rawValue);
+        $value = $this->formatValue($metadata['type'], $rawValue);
 
         $property = $this->reflectionObj->getProperty($propertyName);
         $property->setAccessible(true);

@@ -32,7 +32,7 @@ class ClassInvoker {
     /**
      * @var array 类注解元数据
      */
-    private $classAnnotation;
+    private $classMetadata;
 
     /**
      * @var AppContextInterface
@@ -40,22 +40,23 @@ class ClassInvoker {
     private $appContext;
 
     /**
-     * @var array 
+     * @var PropertyInjectorInterface 属性注入器
      */
-    private $bags;
+    private $propertyInjector;
 
     /**
-     * @var bool 是否响应内容下划线转驼峰处理
+     * 构造一个<b>ClassInvoker</b>对象
+     * @param string $class 要调用的类的全限定名称
+     * @param AppContextInterface $appContext 应用环境实例
+     * @param PropertyInjectorInterface $propertyInjector 属性注入器实例
      */
-    private $camelCase = false;
-
-    public function __construct($class, AppContextInterface $appContext, $bags) {
+    public function __construct($class, AppContextInterface $appContext, PropertyInjectorInterface $propertyInjector) {
         $this->classObject = new $class();
         $this->reflectionObj = new ReflectionClass($class);
 
         $this->appContext = $appContext;
 
-        $this->bags = $bags;
+        $this->propertyInjector = $propertyInjector;
 
         $this->init();
     }
@@ -70,10 +71,10 @@ class ClassInvoker {
         $classLastModifiedTime = filemtime($classFilePath);
         $cacheFilePath = $metaDataCacheDir . '/' . strtolower(str_replace('\\', '_', $this->reflectionObj->getName())) . "_{$classLastModifiedTime}.php";
         if (is_file($cacheFilePath)) {
-            $this->classAnnotation = require($cacheFilePath);
+            $this->classMetadata = require($cacheFilePath);
         } else {
             $classAnnotationDumper = new ClassAnnotationDumper($this->reflectionObj);
-            $this->classAnnotation = $classAnnotationDumper->dump($cacheFilePath);
+            $this->classMetadata = $classAnnotationDumper->dump($cacheFilePath);
         }
     }
 
@@ -83,9 +84,8 @@ class ClassInvoker {
      */
     public function invoke() {
         //属性注入
-        $propertyAnnotationMetaData = $this->classAnnotation['propertyAnnotationMetaData'];
-        $propertyInjector = new PropertyInjector($this->classObject, $this->reflectionObj, $propertyAnnotationMetaData, $this->bags);
-        $propertyInjector->inject();
+        $propertyMetadata = $this->classMetadata['propertyAnnotationMetaData'];
+        $this->propertyInjector->inject($this->classObject, $this->reflectionObj, $propertyMetadata);
 
         //如果有init方法，先执行init方法
         if ($this->reflectionObj->hasMethod('init')) {
@@ -96,12 +96,6 @@ class ClassInvoker {
         $method = $this->entryMethod;
         $return = $this->classObject->$method();
         $result = $this->convertReturnToResult($return);
-
-        //计算是否响应内容转驼峰，如果要下划线转驼峰，则转之
-        $this->calcCamelCase();
-        if ($this->camelCase) {
-            $result->setData(camel_case($result->getData()));
-        }
 
         return $result;
     }
@@ -126,21 +120,6 @@ class ClassInvoker {
         }
 
         return $result;
-    }
-
-    /**
-     * 计算是否响应内容转驼峰
-     */
-    private function calcCamelCase() {
-        $methodAnnotationMetaData = $this->classAnnotation['methodAnnotationMetaData'];
-        if (!isset($methodAnnotationMetaData[$this->entryMethod])) {
-            return;
-        }
-
-        $metaData = $methodAnnotationMetaData[$this->entryMethod];
-        if (isset($metaData['camelCase'])) {
-            $this->camelCase = true;
-        }
     }
 
 }

@@ -1,21 +1,21 @@
 <?php
 
-namespace LumengPHP\Kernel;
+namespace LumengPHP\Http;
 
 use ReflectionClass;
 use Exception;
 
 /**
- * 属性注射器
+ * HTTP属性注射器
  *
  * @author zhengluming <luming.zheng@shandjj.com>
  */
-class PropertyInjector {
+class HttpPropertyInjector {
 
     /**
-     * @var mixed 服务对象
+     * @var mixed 类对象
      */
-    private $serviceObj;
+    private $classObj;
 
     /**
      * @var ReflectionClass 
@@ -26,6 +26,11 @@ class PropertyInjector {
      * @var array 属性注解元数据，属性名称作为key 
      */
     private $metaDatas;
+
+    /**
+     * @var Request 
+     */
+    private $requestObj;
 
     /**
      * @var array 
@@ -47,15 +52,16 @@ class PropertyInjector {
      */
     private $session;
 
-    public function __construct($serviceObj, $reflectionObj, $metaDatas, $bags) {
-        $this->serviceObj = $serviceObj;
+    public function __construct($classObj, $reflectionObj, $metaDatas, $bags) {
+        $this->classObj = $classObj;
         $this->reflectionObj = $reflectionObj;
         $this->metaDatas = $metaDatas;
 
-        $this->get = $bags['get'];
-        $this->post = $bags['post'];
-        $this->request = $bags['request'];
+        $this->get = $this->requestObj->get;
+        $this->post = $this->requestObj->post;
+        $this->request = $this->requestObj->request;
         $this->session = $bags['session'];
+        new \Symfony\Component\HttpFoundation\Request();
     }
 
     public function inject() {
@@ -86,7 +92,7 @@ class PropertyInjector {
 
         $property = $this->reflectionObj->getProperty($propertyName);
         $property->setAccessible(true);
-        $property->setValue($this->serviceObj, $value);
+        $property->setValue($this->classObj, $value);
     }
 
     private function formatValue($type, $value) {

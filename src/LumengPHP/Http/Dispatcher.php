@@ -23,8 +23,6 @@ class Dispatcher {
      * @var AppConfig 
      */
     private $appConfig;
-    
-
 
     /**
      * @var string 当前请求的uri
@@ -59,9 +57,9 @@ class Dispatcher {
 
     public function doDispatcher(Request $request) {
         try {
-            $router= $this->appContext->getService('httpRouter');
+            $router = $this->appContext->getService('httpRouter');
             $router->route($request);
-            
+
             $this->verifyServiceComponentName($controllerName);
             $this->verifyServiceComponentName($actionName);
 

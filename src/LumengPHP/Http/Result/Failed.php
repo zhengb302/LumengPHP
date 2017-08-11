@@ -3,7 +3,8 @@
 namespace LumengPHP\Http\Result;
 
 /**
- * 失败的结果
+ * 失败的结果<br />
+ * 当一个<b>Result</b>对象的status小于或等于0时，则表示失败
  *
  * @author zhengluming <luming.zheng@shandjj.com>
  */

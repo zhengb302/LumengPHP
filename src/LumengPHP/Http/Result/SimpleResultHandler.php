@@ -2,6 +2,8 @@
 
 namespace LumengPHP\Http\Result;
 
+use Exception;
+
 /**
  * 简单的结果处理器
  *
@@ -9,7 +11,35 @@ namespace LumengPHP\Http\Result;
  */
 class SimpleResultHandler implements ResultHandlerInterface {
 
-    public function handle(Result $result) {
+    public function handleReturn($return) {
+        //控制器方法可以直接返回一个Result对象
+        if ($return instanceof Result) {
+            $result = $return;
+        }
+        //啥都没返回，或者返回null
+        elseif (is_null($return)) {
+            $result = new Success();
+        }
+        //或者直接返回一个数据，这是执行成功的一种表现
+        else {
+            $result = new Success('', $return);
+        }
+
+        return $result;
+    }
+
+    public function handleException(Exception $ex) {
+        $result = new Failed($ex->getMessage());
+
+        $exCode = $ex->getCode();
+        if ($exCode < 0) {
+            $result->setStatus($exCode);
+        }
+
+        return $result;
+    }
+
+    public function handleResult(Result $result) {
         header('Content-Type:application/json; charset=utf-8');
         echo $result;
     }

@@ -3,7 +3,9 @@
 namespace LumengPHP\Http\Result;
 
 /**
- * 成功的结果
+ * 成功的结果<br />
+ * 当一个<b>Result</b>对象的status等于1时，则表示成功
+ * 
  * @author zhengluming <luming.zheng@shandjj.com>
  */
 class Success extends Result {

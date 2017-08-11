@@ -7,9 +7,6 @@ use LumengPHP\Http\Routing\RouterInterface;
 use LumengPHP\Http\Result\ResultHandlerInterface;
 use LumengPHP\Kernel\ClassInvoker;
 use Exception;
-use LumengPHP\Http\Result\Result;
-use LumengPHP\Http\Result\Success;
-use LumengPHP\Http\Result\Failed;
 
 /**
  * HTTP请求派发器
@@ -57,16 +54,16 @@ class Dispatcher {
 
             //调用控制器
             $return = $this->classInvoker->invoke($controllerClass);
-            $result = $this->convertReturnToResult($return);
+
+            //处理控制器返回
+            $result = $this->resultHandler->handleReturn($return);
         } catch (Exception $ex) {
-            //@todo 实现开发者可配置的异常处理器，以实现更精细的异常控制。
-            $result = new Failed($ex->getMessage());
-            if ($ex->getCode() < 0) {
-                $result->setStatus($ex->getCode());
-            }
+            //处理异常
+            $result = $this->resultHandler->handleException($ex);
         }
 
-        $this->resultHandler->handle($result);
+        //处理最终的结果
+        $this->resultHandler->handleResult($result);
     }
 
     /**
@@ -82,28 +79,6 @@ class Dispatcher {
 
             $this->classInvoker->invoke($interceptorClass);
         }
-    }
-
-    /**
-     * 转换控制器方法返回结果为Result对象
-     * @param mixed $return
-     * @return Result
-     */
-    private function convertReturnToResult($return) {
-        //控制器方法可以直接返回一个Result对象
-        if ($return instanceof Result) {
-            $result = $return;
-        }
-        //啥都没返回，或者返回null
-        elseif (is_null($return)) {
-            $result = new Success();
-        }
-        //或者直接返回一个数据，这是执行成功的一种表现
-        else {
-            $result = new Success('', $return);
-        }
-
-        return $result;
     }
 
 }

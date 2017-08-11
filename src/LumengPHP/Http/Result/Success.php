@@ -25,7 +25,7 @@ class Success extends Result {
      * @param array $data (携带的)数据
      */
     public function __construct($msg = '', array $data = []) {
-        parent::__construct(self::SUCCESS, $msg, $data);
+        parent::__construct(1, $msg, $data);
     }
 
 }

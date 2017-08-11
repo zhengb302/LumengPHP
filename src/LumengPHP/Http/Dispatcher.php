@@ -61,6 +61,9 @@ class Dispatcher {
         } catch (Exception $ex) {
             //@todo 实现开发者可配置的异常处理器，以实现更精细的异常控制。
             $result = new Failed($ex->getMessage());
+            if ($ex->getCode() < 0) {
+                $result->setStatus($ex->getCode());
+            }
         }
 
         $this->resultHandler->handle($result);

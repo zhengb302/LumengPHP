@@ -21,8 +21,8 @@ class Application {
         $bootstrap->boot($configFilePath);
 
         $appContext = $bootstrap->getAppContext();
-        $router = $appContext->getService('httpRouter');
-        $resultHandler = $appContext->getService('resultHandler');
+        $router = $appContext->getService('http.router');
+        $resultHandler = $appContext->getService('http.resultHandler');
         $this->dispatcher = new Dispatcher($appContext, $router, $resultHandler);
     }
 

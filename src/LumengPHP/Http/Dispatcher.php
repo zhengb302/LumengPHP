@@ -4,11 +4,12 @@ namespace LumengPHP\Http;
 
 use LumengPHP\Kernel\AppContextInterface;
 use LumengPHP\Http\Routing\RouterInterface;
+use LumengPHP\Http\Result\ResultHandlerInterface;
 use LumengPHP\Kernel\ClassInvoker;
 use Exception;
-use Djj\Result\Result;
-use Djj\Result\Success;
-use Djj\Result\Failed;
+use LumengPHP\Http\Result\Result;
+use LumengPHP\Http\Result\Success;
+use LumengPHP\Http\Result\Failed;
 
 /**
  * HTTP请求派发器
@@ -28,13 +29,19 @@ class Dispatcher {
     private $router;
 
     /**
+     * @var ResultHandlerInterface 结果处理器
+     */
+    private $resultHandler;
+
+    /**
      * @var ClassInvoker 类调用者
      */
     private $classInvoker;
 
-    public function __construct(AppContextInterface $appContext, RouterInterface $router) {
+    public function __construct(AppContextInterface $appContext, RouterInterface $router, ResultHandlerInterface $resultHandler) {
         $this->appContext = $appContext;
         $this->router = $router;
+        $this->resultHandler = $resultHandler;
     }
 
     public function doDispatcher(Request $request) {
@@ -56,14 +63,7 @@ class Dispatcher {
             $result = new Failed($ex->getMessage());
         }
 
-        //狗日的APP客户端...
-        $fuckingAppResultHead = [
-            'code' => $result->getStatus(),
-            'message' => $result->getMsg(),
-        ];
-        $fuckingAppResult = array_merge($fuckingAppResultHead, (array) $result->getData());
-
-        $this->outputJson(json_encode($fuckingAppResult));
+        $this->resultHandler->handle($result);
     }
 
     /**
@@ -82,12 +82,12 @@ class Dispatcher {
     }
 
     /**
-     * 转换服务方法返回结果为Result对象
+     * 转换控制器方法返回结果为Result对象
      * @param mixed $return
      * @return Result
      */
     private function convertReturnToResult($return) {
-        //服务方法可以直接返回一个Result对象
+        //控制器方法可以直接返回一个Result对象
         if ($return instanceof Result) {
             $result = $return;
         }
@@ -101,11 +101,6 @@ class Dispatcher {
         }
 
         return $result;
-    }
-
-    private function outputJson($jsonString) {
-        header('Content-Type:application/json; charset=utf-8');
-        echo $jsonString;
     }
 
 }

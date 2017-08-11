@@ -22,7 +22,8 @@ class Application {
 
         $appContext = $bootstrap->getAppContext();
         $router = $appContext->getService('httpRouter');
-        $this->dispatcher = new Dispatcher($appContext, $router);
+        $resultHandler = $appContext->getService('resultHandler');
+        $this->dispatcher = new Dispatcher($appContext, $router, $resultHandler);
     }
 
     public function handle(Request $request) {

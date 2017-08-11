@@ -2,6 +2,7 @@
 
 namespace LumengPHP\DependencyInjection;
 
+use ReflectionClass;
 use LumengPHP\Exceptions\InvalidServiceException;
 
 /**
@@ -77,7 +78,7 @@ class ServiceContainer implements ContainerInterface {
         if (empty($parsedArgs)) {
             $serviceInstance = new $serviceConfig['class']();
         } else {
-            $ref = new \ReflectionClass($serviceConfig['class']);
+            $ref = new ReflectionClass($serviceConfig['class']);
             $serviceInstance = $ref->newInstanceArgs($parsedArgs);
         }
 

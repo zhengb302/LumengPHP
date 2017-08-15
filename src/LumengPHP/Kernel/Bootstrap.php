@@ -5,6 +5,7 @@ namespace LumengPHP\Kernel;
 use LumengPHP\DependencyInjection\ServiceContainer;
 use LumengPHP\Kernel\Extension\ExtensionInterface;
 use LumengPHP\Kernel\Facade\Facade;
+use Dotenv\Dotenv;
 
 /**
  * 应用引导程序<br />
@@ -35,6 +36,9 @@ class Bootstrap {
     private $appContext;
 
     public function boot($configFilePath) {
+        $dotenv = new Dotenv(dirname($configFilePath), 'env');
+        $dotenv->load();
+
         $config = require($configFilePath);
         $this->appConfig = new AppConfig($config);
 

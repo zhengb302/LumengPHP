@@ -2,7 +2,8 @@
 
 namespace LumengPHP\Kernel;
 
-use LumengPHP\DependencyInjection\ServiceContainer;
+use LumengPHP\Kernel\DependencyInjection\ContainerInterface;
+use LumengPHP\Kernel\DependencyInjection\ServiceContainer;
 use LumengPHP\Kernel\Extension\ExtensionInterface;
 use Dotenv\Dotenv;
 use Exception;
@@ -26,7 +27,7 @@ class Bootstrap {
     private $appConfig;
 
     /**
-     * @var ServiceContainer 服务容器
+     * @var ContainerInterface 服务容器
      */
     private $container;
 

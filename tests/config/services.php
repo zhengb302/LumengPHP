@@ -4,7 +4,6 @@
  * 服务配置
  */
 
-return array(
+return [
     //service name => service config
-);
-
+];

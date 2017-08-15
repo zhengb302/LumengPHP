@@ -9,9 +9,9 @@ return array(
     'extends' => __DIR__ . '/config.php',
     //应用核心配置
     'app' => array(
-        'extensions' => array(
-            \LumengPHP\Extensions\HttpExtension::class,
-        ),
+        'extensions' => [
+            
+        ],
     ),
     //http配置
     'httpKernel' => array(

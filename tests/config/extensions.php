@@ -4,9 +4,9 @@
  * 扩展列表
  */
 
-return array(
-    'LumengPHP\Extensions\DatabaseExtension',
-    'LumengPHP\Extensions\MessagingExtension',
-    'LumengPHP\Extensions\JobExtension',
+return [
+    LumengPHP\Extensions\DatabaseExtension::class,
+    LumengPHP\Extensions\MessagingExtension::class,
+    LumengPHP\Extensions\JobExtension::class,
     //any other extensions here
-);
+];

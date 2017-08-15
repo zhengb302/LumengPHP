@@ -43,6 +43,7 @@ class Bootstrap {
         $config = require($configFilePath);
         $this->appConfig = new AppConfig($config);
 
+        //初始化服务容器
         $this->initServiceContainer();
 
         $this->appContext = new AppContext($this->appConfig, $this->container);

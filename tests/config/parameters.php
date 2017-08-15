@@ -6,4 +6,5 @@
 
 return array(
     'siteName' => 'LumengPHP!',
+    'pageSize' => 20,
 );

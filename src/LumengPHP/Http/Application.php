@@ -34,16 +34,16 @@ class Application {
     }
 
     private function init() {
-        $router = $this->appContext->getService('http.router');
+        $router = $this->appContext->getService('httpRouter');
         if (is_null($router)) {
             $router = new SimpleRouter($this->appContext);
-            $this->appContext->getServiceContainer()->register('http.router', $router);
+            $this->appContext->getServiceContainer()->register('httpRouter', $router);
         }
 
-        $resultHandler = $this->appContext->getService('http.resultHandler');
+        $resultHandler = $this->appContext->getService('httpResultHandler');
         if (is_null($resultHandler)) {
             $resultHandler = new SimpleResultHandler();
-            $this->appContext->getServiceContainer()->register('http.router', $router);
+            $this->appContext->getServiceContainer()->register('httpResultHandler', $router);
         }
 
         $this->dispatcher = new Dispatcher($this->appContext, $router, $resultHandler);

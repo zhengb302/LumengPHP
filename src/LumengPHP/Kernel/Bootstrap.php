@@ -4,8 +4,8 @@ namespace LumengPHP\Kernel;
 
 use LumengPHP\DependencyInjection\ServiceContainer;
 use LumengPHP\Kernel\Extension\ExtensionInterface;
-use LumengPHP\Kernel\Facade\Facade;
 use Dotenv\Dotenv;
+use Exception;
 
 /**
  * 应用引导程序<br />
@@ -45,10 +45,7 @@ class Bootstrap {
         $this->initServiceContainer();
 
         $this->appContext = new AppContext($this->appConfig, $this->container);
-
         $this->container->register('appContext', $this->appContext);
-
-        Facade::setAppContext($this->appContext);
 
         //加载扩展
         $this->loadExtensions();
@@ -60,11 +57,8 @@ class Bootstrap {
     private function initServiceContainer() {
         $serviceConfigs = $this->appConfig->get('app.services');
 
-        //服务配置要不不存在，要不就是个数组
-        assert(is_array($serviceConfigs) || is_null($serviceConfigs));
-
         if (is_null($serviceConfigs)) {
-            $serviceConfigs = array();
+            $serviceConfigs = [];
         }
 
         $this->container = new ServiceContainer($serviceConfigs);
@@ -75,22 +69,18 @@ class Bootstrap {
      */
     private function loadExtensions() {
         $extensions = $this->appConfig->get('app.extensions');
-
-        //扩展配置要不不存在，要不就是个数组
-        assert(is_array($extensions) || is_null($extensions));
-
         if (empty($extensions)) {
             return;
         }
 
         foreach ($extensions as $extensionClass) {
             $extension = new $extensionClass();
+            if (!$extension instanceof ExtensionInterface) {
+                throw new Exception("“{$extensionClass}”不是“ExtensionInterface”的实例");
+            }
 
-            assert($extension instanceof ExtensionInterface);
-
-            //注入AppContext和ServiceContainer
+            //注入AppContext
             $extension->setAppContext($this->appContext);
-            $extension->setServiceContainer($this->container);
 
             //加载扩展
             $extension->load();

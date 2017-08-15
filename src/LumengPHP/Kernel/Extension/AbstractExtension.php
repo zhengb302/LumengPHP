@@ -3,7 +3,6 @@
 namespace LumengPHP\Kernel\Extension;
 
 use LumengPHP\Kernel\AppContextInterface;
-use LumengPHP\DependencyInjection\ServiceContainer;
 
 /**
  * 一个简单的Extension实现
@@ -16,17 +15,8 @@ abstract class AbstractExtension implements ExtensionInterface {
      */
     protected $appContext;
 
-    /**
-     * @var ServiceContainer 服务容器
-     */
-    protected $container;
-
     public function setAppContext(AppContextInterface $appContext) {
         $this->appContext = $appContext;
-    }
-
-    public function setServiceContainer(ServiceContainer $container) {
-        $this->container = $container;
     }
 
 }

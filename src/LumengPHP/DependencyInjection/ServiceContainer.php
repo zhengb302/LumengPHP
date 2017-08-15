@@ -30,7 +30,7 @@ class ServiceContainer implements ContainerInterface {
 
     public function __construct(array $configs) {
         $this->configs = $configs;
-        $this->services = array();
+        $this->services = [];
     }
 
     /**
@@ -98,7 +98,7 @@ class ServiceContainer implements ContainerInterface {
             return null;
         }
 
-        $args = array();
+        $args = [];
         foreach ($rawArgs as $rawArg) {
             $args[] = $this->parseArg($rawArg);
         }

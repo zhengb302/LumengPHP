@@ -5,5 +5,5 @@
  */
 
 return [
-    //service name => service config
+        //service name => service config
 ];

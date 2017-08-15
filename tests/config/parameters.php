@@ -4,7 +4,7 @@
  * 应用配置参数
  */
 
-return array(
+return [
     'siteName' => 'LumengPHP!',
     'pageSize' => 20,
-);
+];

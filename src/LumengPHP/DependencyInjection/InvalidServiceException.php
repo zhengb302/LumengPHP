@@ -1,6 +1,6 @@
 <?php
 
-namespace LumengPHP\Exceptions;
+namespace LumengPHP\DependencyInjection;
 
 use Exception;
 

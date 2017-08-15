@@ -3,7 +3,6 @@
 namespace LumengPHP\DependencyInjection;
 
 use ReflectionClass;
-use LumengPHP\Exceptions\InvalidServiceException;
 
 /**
  * 依赖注入服务容器<br />

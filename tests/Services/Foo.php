@@ -10,7 +10,7 @@ namespace tests\Services;
 class Foo {
 
     public function foo() {
-        return 'foo!';
+        return 'foo';
     }
 
 }

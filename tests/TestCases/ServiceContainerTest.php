@@ -22,7 +22,7 @@ class ServiceContainerTest extends PHPUnit_Framework_TestCase {
 
         $foo = $container->get('foo');
         $this->assertInstanceOf(\tests\Services\Foo::class, $foo);
-        $this->assertEquals('foo!', $foo->foo());
+        $this->assertEquals('foo', $foo->foo());
     }
 
     public function testServiceNotExists() {
@@ -49,18 +49,36 @@ class ServiceContainerTest extends PHPUnit_Framework_TestCase {
 
     public function testCallback() {
         $configs = [
-            'foo' => function($container) {
-                return new \tests\Services\Foo();
+            'foo' => [
+                'class' => \tests\Services\Foo::class,
+            ],
+            'bar' => function($container) {
+                $foo = $container->get('foo');
+                return new \tests\Services\Bar($foo);
             },
         ];
         $container = new ServiceContainer($configs);
 
-        $foo = $container->get('foo');
-        $this->assertInstanceOf(\tests\Services\Foo::class, $foo);
+        $bar = $container->get('bar');
+        $this->assertInstanceOf(\tests\Services\Bar::class, $bar);
+        $this->assertEquals('fooBar', $bar->fooBar());
     }
 
     public function testArguments() {
-        
+        $configs = [
+            'foo' => [
+                'class' => \tests\Services\Foo::class,
+            ],
+            'bar' => [
+                'class' => \tests\Services\Bar::class,
+                'arguments' => ['@foo'],
+            ],
+        ];
+        $container = new ServiceContainer($configs);
+
+        $bar = $container->get('bar');
+        $this->assertInstanceOf(\tests\Services\Bar::class, $bar);
+        $this->assertEquals('fooBar', $bar->fooBar());
     }
 
 }

@@ -20,6 +20,9 @@
         "vlucas/phpdotenv": "^2.4"
     },
     "autoload": {
+        "files": [
+            "src/LumengPHP/Kernel/functions.php"
+        ],
         "psr-4": {
             "LumengPHP\\": "src/LumengPHP/"
         }

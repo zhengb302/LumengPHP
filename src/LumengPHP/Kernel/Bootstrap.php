@@ -42,7 +42,7 @@ class Bootstrap {
 
         $this->appContext = new AppContext($this->appConfig, $this->container);
 
-        $this->container->registerService('appContext', $this->appContext);
+        $this->container->register('appContext', $this->appContext);
 
         Facade::setAppContext($this->appContext);
 

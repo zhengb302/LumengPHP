@@ -26,7 +26,7 @@ class JobExtension extends AbstractExtension {
         }
 
         //把job转发器注册为服务
-        $this->container->registerService('jobDispatcher', function($container) {
+        $this->container->register('jobDispatcher', function($container) {
             //获取消息连接管理器
             $messagingConnManager = $container->get('messagingConnManager');
 

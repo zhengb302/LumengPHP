@@ -149,7 +149,7 @@ class ServiceContainer implements ContainerInterface {
      * @param mixed $serviceInstance 服务对象、服务配置或者是一个回调
      * @throws InvalidServiceException
      */
-    public function registerService($serviceName, $serviceInstance) {
+    public function register($serviceName, $serviceInstance) {
         if (is_callable($serviceInstance) || is_array($serviceInstance)) {
             //unset the old one
             $this->configs[$serviceName] = null;

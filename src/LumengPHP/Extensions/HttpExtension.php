@@ -44,7 +44,7 @@ class HttpExtension extends AbstractExtension {
         $httpKernel = new HttpKernel($dispatcher, $resolver, $requestStack);
 
         //把HttpKernel对象注册为服务
-        $this->container->registerService('http', $httpKernel);
+        $this->container->register('http', $httpKernel);
     }
 
     /**

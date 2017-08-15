@@ -30,7 +30,7 @@ class DatabaseExtension extends AbstractExtension {
         require_once(ShortcutFunctionHelper::getPath());
 
         //把连接管理器注册为服务
-        $this->container->registerService('connManager', function($container) {
+        $this->container->register('connManager', function($container) {
             //获取数据库配置
             $appContext = $container->get('appContext');
             $dbConfig = $appContext->getConfig('database');
@@ -44,7 +44,7 @@ class DatabaseExtension extends AbstractExtension {
 
         //把各个连接注册为服务，服务名为连接名
         foreach (array_keys($dbConfig['connections']) as $connName) {
-            $this->container->registerService($connName, function($container) use ($connName) {
+            $this->container->register($connName, function($container) use ($connName) {
                 return $container->get('connManager')->getConnection($connName);
             });
         }

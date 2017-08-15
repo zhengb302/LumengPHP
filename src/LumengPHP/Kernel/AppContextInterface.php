@@ -2,7 +2,7 @@
 
 namespace LumengPHP\Kernel;
 
-use LumengPHP\DependencyInjection\ServiceContainer;
+use LumengPHP\DependencyInjection\ContainerInterface;
 
 /**
  * 应用程序上下文接口
@@ -28,11 +28,17 @@ interface AppContextInterface {
 
     /**
      * 取得服务对象实例
-     * @see ServiceContainer
+     * @see ContainerInterface
      * @param string $serviceName 服务名称
      * @return mixed|null 一个服务对象。如果服务不存在，返回null
      */
     public function getService($serviceName);
+
+    /**
+     * 取得服务容器实例
+     * @return ContainerInterface 服务容器实例
+     */
+    public function getServiceContainer();
 
     /**
      * 取得应用根目录路径<br />

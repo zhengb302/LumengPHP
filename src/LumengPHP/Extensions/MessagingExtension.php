@@ -26,7 +26,7 @@ class MessagingExtension extends AbstractExtension {
         }
 
         //把连接管理器注册为服务
-        $this->container->registerService('messagingConnManager', function($container) {
+        $this->container->register('messagingConnManager', function($container) {
             //获取消息服务配置
             $appContext = $container->get('appContext');
             $messagingConfig = $appContext->getConfig('messaging');
@@ -40,7 +40,7 @@ class MessagingExtension extends AbstractExtension {
 
         //把各个连接注册为服务，服务名为连接名
         foreach (array_keys($messagingConfig['connections']) as $connName) {
-            $this->container->registerService($connName, function($container) use ($connName) {
+            $this->container->register($connName, function($container) use ($connName) {
                 return $container->get('messagingConnManager')->getConnection($connName);
             });
         }

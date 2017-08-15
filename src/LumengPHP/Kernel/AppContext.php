@@ -2,7 +2,7 @@
 
 namespace LumengPHP\Kernel;
 
-use LumengPHP\DependencyInjection\ServiceContainer;
+use LumengPHP\DependencyInjection\ContainerInterface;
 
 /**
  * AppContext接口实现
@@ -17,11 +17,11 @@ class AppContext implements AppContextInterface {
     private $appConfig;
 
     /**
-     * @var ServiceContainer 服务容器
+     * @var ContainerInterface 服务容器
      */
     private $serviceContainer;
 
-    public function __construct(AppConfig $appConfig, ServiceContainer $serviceContainer) {
+    public function __construct(AppConfig $appConfig, ContainerInterface $serviceContainer) {
         $this->appConfig = $appConfig;
         $this->serviceContainer = $serviceContainer;
     }
@@ -45,6 +45,13 @@ class AppContext implements AppContextInterface {
      */
     public function getService($serviceName) {
         return $this->serviceContainer->get($serviceName);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getServiceContainer() {
+        return $this->serviceContainer;
     }
 
     /**

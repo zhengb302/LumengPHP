@@ -30,10 +30,10 @@ class ModelTest extends \PHPUnit_Framework_TestCase {
 
         $appContext = new AppContext($appConfig, $serviceContainer);
 
-        $serviceContainer->registerService('appContext', $appContext);
+        $serviceContainer->register('appContext', $appContext);
 
         $logger = new DumpLogger();
-        $serviceContainer->registerService('logger', $logger);
+        $serviceContainer->register('logger', $logger);
 
         $databaseExtension = new DatabaseExtension();
         $databaseExtension->setAppContext($appContext);

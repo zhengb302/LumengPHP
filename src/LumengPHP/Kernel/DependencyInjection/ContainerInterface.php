@@ -1,6 +1,6 @@
 <?php
 
-namespace LumengPHP\DependencyInjection;
+namespace LumengPHP\Kernel\DependencyInjection;
 
 /**
  * 容器接口

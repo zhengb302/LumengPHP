@@ -2,7 +2,7 @@
 
 namespace LumengPHP\Kernel;
 
-use LumengPHP\DependencyInjection\ContainerInterface;
+use LumengPHP\Kernel\DependencyInjection\ContainerInterface;
 
 /**
  * AppContext接口实现

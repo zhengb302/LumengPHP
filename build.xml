@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project name="LumengPHP-build" default="build" basedir=".">
-    <target name="build">
-        <!--单元测试-->
-        <exec executable="phpunit" failonerror="true">
-            <arg line="--bootstrap tests/bootstrap.php tests/" />
-        </exec>
-    </target>
-</project>

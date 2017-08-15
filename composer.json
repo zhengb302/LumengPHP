@@ -15,8 +15,6 @@
     "require": {
         "php": ">=5.6.0",
         "psr/log": "^1.0",
-        "lumeng/lumeng-php-db": "^1.0",
-        "lumeng/lumeng-php-messaging": "master-dev",
         "vlucas/phpdotenv": "^2.4"
     },
     "autoload": {

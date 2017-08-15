@@ -4,166 +4,9 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "8caee046dca2fd2bc04f4c7b76e49cdd",
-    "content-hash": "bb678cb7ccf59da5bc6e8dca53674e0c",
+    "hash": "7773b3b04a2184e5ad31a689b0dabeff",
+    "content-hash": "e3666100c453a426036118f28f839dd5",
     "packages": [
-        {
-            "name": "lumeng/lumeng-php-db",
-            "version": "1.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/zhengb302/LumengPHP-Db.git",
-                "reference": "2df2c73dc95678e6d16764b1d7507c3237104943"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/zhengb302/LumengPHP-Db/zipball/2df2c73dc95678e6d16764b1d7507c3237104943",
-                "reference": "2df2c73dc95678e6d16764b1d7507c3237104943",
-                "shasum": ""
-            },
-            "require": {
-                "psr/log": "^1.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "LumengPHP\\Db\\": "src/LumengPHP/Db/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "Apache License 2.0"
-            ],
-            "authors": [
-                {
-                    "name": "Lumeng",
-                    "email": "908235332@qq.com",
-                    "homepage": "https://github.com/zhengb302/",
-                    "role": "Developer"
-                }
-            ],
-            "description": "A database operation library for PHP.",
-            "homepage": "https://github.com/zhengb302/LumengPHP-Db",
-            "keywords": [
-                "database operation library",
-                "library"
-            ],
-            "time": "2016-03-27 13:07:40"
-        },
-        {
-            "name": "lumeng/lumeng-php-messaging",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/zhengb302/LumengPHP-Messaging.git",
-                "reference": "ade478e056feaff5b9f69fa2ac03dc04978d4a9c"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/zhengb302/LumengPHP-Messaging/zipball/ade478e056feaff5b9f69fa2ac03dc04978d4a9c",
-                "reference": "ade478e056feaff5b9f69fa2ac03dc04978d4a9c",
-                "shasum": ""
-            },
-            "require": {
-                "php-amqplib/php-amqplib": "^2.6",
-                "psr/log": "^1.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "LumengPHP\\Messaging\\": "src/LumengPHP/Messaging/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "Apache License 2.0"
-            ],
-            "authors": [
-                {
-                    "name": "Lumeng",
-                    "email": "908235332@qq.com",
-                    "homepage": "https://github.com/zhengb302/",
-                    "role": "Developer"
-                }
-            ],
-            "description": "A message broker client library for PHP.",
-            "homepage": "https://github.com/zhengb302/LumengPHP-Messaging",
-            "keywords": [
-                "library",
-                "message broker client library"
-            ],
-            "time": "2016-05-28 13:28:09"
-        },
-        {
-            "name": "php-amqplib/php-amqplib",
-            "version": "v2.6.3",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/php-amqplib/php-amqplib.git",
-                "reference": "fa2f0d4410a11008cb36b379177291be7ee9e4f6"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/php-amqplib/php-amqplib/zipball/fa2f0d4410a11008cb36b379177291be7ee9e4f6",
-                "reference": "fa2f0d4410a11008cb36b379177291be7ee9e4f6",
-                "shasum": ""
-            },
-            "require": {
-                "ext-bcmath": "*",
-                "ext-mbstring": "*",
-                "php": ">=5.3.0"
-            },
-            "replace": {
-                "videlalvaro/php-amqplib": "self.version"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^4.8",
-                "scrutinizer/ocular": "^1.1",
-                "squizlabs/php_codesniffer": "^2.5"
-            },
-            "suggest": {
-                "ext-sockets": "Use AMQPSocketConnection"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.7-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "PhpAmqpLib\\": "PhpAmqpLib/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "LGPL-2.1"
-            ],
-            "authors": [
-                {
-                    "name": "Alvaro Videla",
-                    "role": "Original Maintainer"
-                },
-                {
-                    "name": "John Kelly",
-                    "email": "johnmkelly86@gmail.com",
-                    "role": "Maintainer"
-                },
-                {
-                    "name": "Raúl Araya",
-                    "email": "nubeiro@gmail.com",
-                    "role": "Maintainer"
-                }
-            ],
-            "description": "Formerly videlalvaro/php-amqplib.  This library is a pure PHP implementation of the AMQP protocol. It's been tested against RabbitMQ.",
-            "homepage": "https://github.com/php-amqplib/php-amqplib/",
-            "keywords": [
-                "message",
-                "queue",
-                "rabbitmq"
-            ],
-            "time": "2016-04-11 14:30:01"
-        },
         {
             "name": "psr/log",
             "version": "1.0.2",
@@ -265,9 +108,7 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "lumeng/lumeng-php-messaging": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

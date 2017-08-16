@@ -82,15 +82,19 @@ class ServiceBuilder {
      * <ul>
      *   <li>0、null、对象、长度小于或等于1的字符串,etc  返回原参数</li>
      *   <li>@bar  则表示传入一个名称为 bar 的服务对象</li>
-     *   <li>\@HelloKity  则实际传入的是字符串 @HelloKity</dd>
+     *   <li>\@bar  则实际传入的是字符串 @bar</dd>
      *   <li>其他任何字符串  返回原参数</li>
      * </ul>
-     * @return mixed 可能的返回值：服务对象、字符串,etc
+     * @return mixed 可能的返回值：服务对象、字符串、其他类型的值,etc
      */
     private function parseArg($rawArg) {
-        $rawArgLen = strlen($rawArg);
+        //如果不是字符串，则传入原值
+        if (!is_string($rawArg)) {
+            return $rawArg;
+        }
 
-        if (!is_string($rawArg) || $rawArgLen <= 1) {
+        $rawArgLen = strlen($rawArg);
+        if ($rawArgLen <= 1) {
             return $rawArg;
         }
 
@@ -101,7 +105,7 @@ class ServiceBuilder {
         }
 
         //以 \@ 开头，则表示传入一个以@开头的字符串，反斜杠作为转义符
-        //如 \@HelloKity，则实际传入的是 @HelloKity
+        //例如 \@bar，则实际传入的是 @bar
         if ($rawArg[0] == '\\' && $rawArg[1] == '@') {
             return substr($rawArg, 1, $rawArgLen - 1);
         }

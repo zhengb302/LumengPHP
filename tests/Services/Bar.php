@@ -18,6 +18,10 @@ class Bar {
         $this->foo = $foo;
     }
 
+    public function bar() {
+        return 'bar';
+    }
+
     public function fooBar() {
         return $this->foo->foo() . 'Bar';
     }

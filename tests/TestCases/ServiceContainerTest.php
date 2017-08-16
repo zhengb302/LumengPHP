@@ -103,4 +103,31 @@ class ServiceContainerTest extends PHPUnit_Framework_TestCase {
         $container->get('bar');
     }
 
+    /**
+     * 测试XXX
+     */
+    public function testCalls() {
+        $configs = [
+            'foo' => [
+                'class' => \tests\Services\Foo::class,
+            ],
+            'bar' => [
+                'class' => \tests\Services\Bar::class,
+                'constructor-args' => ['@foo'],
+            ],
+            'fooBar' => [
+                'class' => \tests\Services\FooBar::class,
+                'calls' => [
+                    'setFoo' => ['@foo'],
+                    'setBar' => ['@bar'],
+                ],
+            ],
+        ];
+        $container = new ServiceContainer($configs);
+
+        $fooBar = $container->get('fooBar');
+        $this->assertInstanceOf(\tests\Services\FooBar::class, $fooBar);
+        $this->assertEquals('fooBar', $fooBar->fooBar());
+    }
+
 }

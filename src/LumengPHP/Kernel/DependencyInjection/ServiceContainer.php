@@ -2,8 +2,6 @@
 
 namespace LumengPHP\Kernel\DependencyInjection;
 
-use ReflectionClass;
-
 /**
  * 依赖注入服务容器<br />
  * Usage:
@@ -29,12 +27,18 @@ class ServiceContainer implements ContainerInterface {
     private $services;
 
     /**
+     * @var ServiceBuilder 服务对象实例构造器
+     */
+    private $serviceBuilder;
+
+    /**
      * 使用服务配置构造一个服务容器
      * @param array $configs 服务配置Map，格式：service name => service config/callback
      */
     public function __construct(array $configs) {
         $this->configs = $configs;
         $this->services = [];
+        $this->serviceBuilder = new ServiceBuilder($this);
     }
 
     /**
@@ -67,87 +71,11 @@ class ServiceContainer implements ContainerInterface {
 
     private function buildService($serviceName) {
         $serviceConfig = $this->configs[$serviceName];
-
-        //“服务配置”可以是一个回调函数
-        if (is_callable($serviceConfig)) {
-            $callback = $serviceConfig;
-            $this->services[$serviceName] = $callback($this);
-            return;
-        }
-
-        //如果不是回调函数，那只能是数组形式的服务配置了
-        if (!is_array($serviceConfig)) {
+        if (!is_callable($serviceConfig) && !is_array($serviceConfig)) {
             throw new ServiceContainerException("无效的服务配置，服务名称：{$serviceName}");
         }
 
-        $parsedArgs = isset($serviceConfig['constructor-args']) ?
-                $this->parseArgs($serviceConfig['constructor-args']) : null;
-
-        if (empty($parsedArgs)) {
-            $serviceInstance = new $serviceConfig['class']();
-        } else {
-            $ref = new ReflectionClass($serviceConfig['class']);
-            $serviceInstance = $ref->newInstanceArgs($parsedArgs);
-        }
-
-        $this->services[$serviceName] = $serviceInstance;
-    }
-
-    /**
-     * 解析参数列表
-     * @param array $rawArgs 未经处理的参数列表，必须为数组。
-     * @return null|array
-     */
-    private function parseArgs($rawArgs) {
-        if (!is_array($rawArgs)) {
-            throw new ServiceContainerException('constructor-args must be array!');
-        }
-
-        if (empty($rawArgs)) {
-            return null;
-        }
-
-        $args = [];
-        foreach ($rawArgs as $rawArg) {
-            $args[] = $this->parseArg($rawArg);
-        }
-        return $args;
-    }
-
-    /**
-     * 解析单个参数
-     * @param mixed $rawArg <br/>
-     * 参数示例：
-     * <ul>
-     *   <li>0、null、对象、长度小于或等于1的字符串,etc  返回原参数</li>
-     *   <li>@bar  则表示传入一个名称为 bar 的服务对象</li>
-     *   <li>\@HelloKity  则实际传入的是字符串 @HelloKity</dd>
-     *   <li>其他任何字符串  返回原参数</li>
-     * </ul>
-     * @return mixed 可能的返回值：服务对象、字符串,etc
-     */
-    private function parseArg($rawArg) {
-        $rawArgLen = strlen($rawArg);
-
-        if (!is_string($rawArg) || $rawArgLen <= 1) {
-            return $rawArg;
-        }
-
-        //以 @ 开头，则表示传入一个服务对象
-        //如 @bar，则表示传入一个名称为 bar 的服务对象
-        if ($rawArg[0] == '@') {
-            $serviceName = substr($rawArg, 1, $rawArgLen - 1);
-            return $this->get($serviceName);
-        }
-
-        //以 \@ 开头，则表示传入一个以@开头的字符串，反斜杠作为转义符
-        //如 \@HelloKity，则实际传入的是 @HelloKity
-        if ($rawArg[0] == '\\' && $rawArg[1] == '@') {
-            return substr($rawArg, 1, $rawArgLen - 1);
-        }
-
-        //其他字符串
-        return $rawArg;
+        $this->services[$serviceName] = $this->serviceBuilder->build($serviceConfig);
     }
 
     /**

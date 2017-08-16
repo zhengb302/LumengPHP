@@ -3,6 +3,7 @@
 namespace LumengPHP\Kernel\DependencyInjection;
 
 use ReflectionClass;
+use Exception;
 
 /**
  * 依赖注入服务容器<br />
@@ -24,7 +25,7 @@ class ServiceContainer implements ContainerInterface {
 
     /**
      *
-     * @var array 服务map，格式：service name => service instance
+     * @var array 服务map，格式：service name => service config/service instance/callback
      */
     private $services;
 
@@ -71,8 +72,8 @@ class ServiceContainer implements ContainerInterface {
             return;
         }
 
-        $parsedArgs = isset($serviceConfig['arguments']) ?
-                $this->parseArgs($serviceConfig['arguments']) : null;
+        $parsedArgs = isset($serviceConfig['constructor-args']) ?
+                $this->parseArgs($serviceConfig['constructor-args']) : null;
 
         if (empty($parsedArgs)) {
             $serviceInstance = new $serviceConfig['class']();
@@ -91,7 +92,7 @@ class ServiceContainer implements ContainerInterface {
      */
     private function parseArgs($rawArgs) {
         if (!is_array($rawArgs)) {
-            trigger_error('service arguments must be array!', E_USER_ERROR);
+            throw new Exception('constructor-args must be array!', E_USER_ERROR);
         }
 
         if (empty($rawArgs)) {

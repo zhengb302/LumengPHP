@@ -47,6 +47,9 @@ class ServiceContainerTest extends PHPUnit_Framework_TestCase {
         $this->assertInstanceOf(\tests\Services\Foo::class, $foo);
     }
 
+    /**
+     * 测试回调
+     */
     public function testCallback() {
         $configs = [
             'foo' => [
@@ -64,14 +67,17 @@ class ServiceContainerTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals('fooBar', $bar->fooBar());
     }
 
-    public function testArguments() {
+    /**
+     * 测试构造器参数及服务引用
+     */
+    public function testConstructorArgsAndServiceRef() {
         $configs = [
             'foo' => [
                 'class' => \tests\Services\Foo::class,
             ],
             'bar' => [
                 'class' => \tests\Services\Bar::class,
-                'arguments' => ['@foo'],
+                'constructor-args' => ['@foo'],
             ],
         ];
         $container = new ServiceContainer($configs);

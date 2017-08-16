@@ -5,10 +5,10 @@ namespace LumengPHP\Kernel\DependencyInjection;
 use Exception;
 
 /**
- * 无效的服务构造器参数
+ * 与服务容器相关的异常
  *
  * @author zhengluming <luming.zheng@shandjj.com>
  */
-class InvalidConstructorArgsException extends Exception {
+class ServiceContainerException extends Exception {
     
 }

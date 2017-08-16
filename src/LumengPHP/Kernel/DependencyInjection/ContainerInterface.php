@@ -27,7 +27,7 @@ interface ContainerInterface {
      * 如果服务容器中已经存在名称相同的服务，则会覆盖原来的服务对象
      * @param string $serviceName 服务名称
      * @param mixed $serviceInstance 服务对象、服务配置或者是一个回调
-     * @throws InvalidServiceException
+     * @throws ServiceContainerException
      */
     public function register($serviceName, $serviceInstance);
 }

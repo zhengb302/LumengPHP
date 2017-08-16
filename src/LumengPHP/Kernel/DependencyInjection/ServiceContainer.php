@@ -64,10 +64,16 @@ class ServiceContainer implements ContainerInterface {
     private function buildService($serviceName) {
         $serviceConfig = $this->configs[$serviceName];
 
-        //服务配置可以是一个回调函数，如果服务配置是一个回调函数...
+        //服务配置可以是一个回调函数
         if (is_callable($serviceConfig)) {
             $callback = $serviceConfig;
             $this->services[$serviceName] = $callback($this);
+            return;
+        }
+
+        //服务配置也可以是一个对象实例
+        if (is_object($serviceConfig)) {
+            $this->services[$serviceName] = $serviceConfig;
             return;
         }
 
@@ -91,7 +97,7 @@ class ServiceContainer implements ContainerInterface {
      */
     private function parseArgs($rawArgs) {
         if (!is_array($rawArgs)) {
-            throw new InvalidConstructorArgsException('constructor-args must be array!');
+            throw new ServiceContainerException('constructor-args must be array!');
         }
 
         if (empty($rawArgs)) {
@@ -146,7 +152,7 @@ class ServiceContainer implements ContainerInterface {
      * 如果服务容器中已经存在名称相同的服务，则会覆盖原来的服务对象
      * @param string $serviceName 服务名称
      * @param mixed $serviceInstance 服务对象、服务配置或者是一个回调
-     * @throws InvalidServiceException
+     * @throws ServiceContainerException
      */
     public function register($serviceName, $serviceInstance) {
         if (is_callable($serviceInstance) || is_array($serviceInstance)) {
@@ -169,7 +175,7 @@ class ServiceContainer implements ContainerInterface {
             return;
         }
 
-        throw new InvalidServiceException("{$serviceName} is not a valid service.");
+        throw new ServiceContainerException("{$serviceName} is not a valid service.");
     }
 
 }

@@ -90,6 +90,7 @@ class ServiceContainerTest extends PHPUnit_Framework_TestCase {
     /**
      * 测试无效的服务构造器参数
      * @expectedException \LumengPHP\Kernel\DependencyInjection\ServiceContainerException
+     * @expectedExceptionMessage constructor-args must be array!
      */
     public function testInvalidConstructorArgs() {
         $configs = [

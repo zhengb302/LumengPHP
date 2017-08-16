@@ -3,7 +3,6 @@
 namespace LumengPHP\Kernel\DependencyInjection;
 
 use ReflectionClass;
-use Exception;
 
 /**
  * 依赖注入服务容器<br />
@@ -92,7 +91,7 @@ class ServiceContainer implements ContainerInterface {
      */
     private function parseArgs($rawArgs) {
         if (!is_array($rawArgs)) {
-            throw new Exception('constructor-args must be array!', E_USER_ERROR);
+            throw new InvalidConstructorArgsException('constructor-args must be array!');
         }
 
         if (empty($rawArgs)) {

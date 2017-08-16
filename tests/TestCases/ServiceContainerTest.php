@@ -87,4 +87,19 @@ class ServiceContainerTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals('fooBar', $bar->fooBar());
     }
 
+    /**
+     * 测试无效的服务构造器参数
+     * @expectedException \LumengPHP\Kernel\DependencyInjection\InvalidConstructorArgsException
+     */
+    public function testInvalidConstructorArgs() {
+        $configs = [
+            'bar' => [
+                'class' => \tests\Services\Bar::class,
+                'constructor-args' => '@foo',
+            ],
+        ];
+        $container = new ServiceContainer($configs);
+        $container->get('bar');
+    }
+
 }

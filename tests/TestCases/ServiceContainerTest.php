@@ -104,7 +104,7 @@ class ServiceContainerTest extends PHPUnit_Framework_TestCase {
     }
 
     /**
-     * 测试XXX
+     * 测试服务配置里的方法调用
      */
     public function testCalls() {
         $configs = [

@@ -22,9 +22,9 @@ use Exception;
 class Bootstrap {
 
     /**
-     * @var AppConfig AppConfig对象
+     * @var AppSettingInterface 应用特定配置
      */
-    private $appConfig;
+    private $appSetting;
 
     /**
      * @var ContainerInterface 服务容器
@@ -36,17 +36,19 @@ class Bootstrap {
      */
     private $appContext;
 
-    public function boot($configFilePath) {
+    public function boot(AppSettingInterface $appSetting, $configFilePath) {
+        $this->appSetting = $appSetting;
+
         $dotenv = new Dotenv(dirname($configFilePath), 'env');
         $dotenv->load();
 
         $config = require($configFilePath);
-        $this->appConfig = new AppConfig($config);
+        $appConfig = new AppConfig($config);
 
-        //初始化服务容器
-        $this->initServiceContainer();
+        //构造服务容器
+        $this->buildServiceContainer();
 
-        $this->appContext = new AppContext($this->appConfig, $this->container);
+        $this->appContext = new AppContext($appConfig, $this->container);
         $this->container->register('appContext', $this->appContext);
 
         //加载扩展
@@ -54,10 +56,10 @@ class Bootstrap {
     }
 
     /**
-     * 初始化服务容器
+     * 构造服务容器
      */
-    private function initServiceContainer() {
-        $serviceConfigs = $this->appConfig->get('app.services');
+    private function buildServiceContainer() {
+        $serviceConfigs = $this->appSetting->getServiceSetting();
 
         if (is_null($serviceConfigs)) {
             $serviceConfigs = [];
@@ -70,7 +72,7 @@ class Bootstrap {
      * 加载扩展
      */
     private function loadExtensions() {
-        $extensions = $this->appConfig->get('app.extensions');
+        $extensions = $this->appSetting->getExtensionSetting();
         if (empty($extensions)) {
             return;
         }

@@ -2,10 +2,9 @@
 
 namespace LumengPHP\Http;
 
+use LumengPHP\Kernel\AppSettingInterface;
 use LumengPHP\Kernel\AppContextInterface;
 use LumengPHP\Kernel\Bootstrap;
-use LumengPHP\Http\Routing\SimpleRouter;
-use LumengPHP\Http\Result\SimpleResultHandler;
 
 /**
  * HTTP应用
@@ -24,9 +23,11 @@ class Application {
      */
     private $dispatcher;
 
-    public function __construct($configFilePath) {
+    public function __construct(AppSettingInterface $appSetting, $configFilePath) {
+        $httpAppSetting = new HttpAppSetting($appSetting);
+
         $bootstrap = new Bootstrap();
-        $bootstrap->boot($configFilePath);
+        $bootstrap->boot($httpAppSetting, $configFilePath);
 
         $this->appContext = $bootstrap->getAppContext();
 
@@ -35,17 +36,7 @@ class Application {
 
     private function init() {
         $router = $this->appContext->getService('httpRouter');
-        if (is_null($router)) {
-            $router = new SimpleRouter($this->appContext);
-            $this->appContext->getServiceContainer()->register('httpRouter', $router);
-        }
-
         $resultHandler = $this->appContext->getService('httpResultHandler');
-        if (is_null($resultHandler)) {
-            $resultHandler = new SimpleResultHandler();
-            $this->appContext->getServiceContainer()->register('httpResultHandler', $router);
-        }
-
         $this->dispatcher = new Dispatcher($this->appContext, $router, $resultHandler);
     }
 

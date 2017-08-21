@@ -117,7 +117,9 @@ class ServiceContainerTest extends PHPUnit_Framework_TestCase {
             ],
             'fooBar' => [
                 'class' => \tests\Services\FooBar::class,
+                //服务配置里的方法调用
                 'calls' => [
+                    //方法名称 => 方法参数数组
                     'setFoo' => ['@foo'],
                     'setBar' => ['@bar'],
                 ],

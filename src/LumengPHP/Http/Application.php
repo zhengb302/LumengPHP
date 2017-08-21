@@ -31,10 +31,10 @@ class Application {
 
         $this->appContext = $bootstrap->getAppContext();
 
-        $this->init();
+        $this->buildDispatcher();
     }
 
-    private function init() {
+    private function buildDispatcher() {
         $router = $this->appContext->getService('httpRouter');
         $resultHandler = $this->appContext->getService('httpResultHandler');
         $this->dispatcher = new Dispatcher($this->appContext, $router, $resultHandler);

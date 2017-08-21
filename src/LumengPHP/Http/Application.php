@@ -7,7 +7,14 @@ use LumengPHP\Kernel\AppContextInterface;
 use LumengPHP\Kernel\Bootstrap;
 
 /**
- * HTTP应用
+ * HTTP应用<br />
+ * Usage:
+ *     $request = Request::createFromGlobals();
+ * 
+ *     $appSetting = new FooAppSetting();
+ *     $configFilePath = '...somewhere...';
+ *     $app = new Application($appSetting, $configFilePath);
+ *     $app->handle($request);
  *
  * @author Lumeng <zhengb302@163.com>
  */

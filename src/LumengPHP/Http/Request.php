@@ -59,6 +59,11 @@ class Request {
         
     }
 
+    public static function createFromGlobals() {
+        $request = new Request($_GET, $_POST, $_REQUEST, $_COOKIE, $_FILES, $_SERVER);
+        return $request;
+    }
+
     public function getQueryString() {
         return $this->server['QUERY_STRING'];
     }

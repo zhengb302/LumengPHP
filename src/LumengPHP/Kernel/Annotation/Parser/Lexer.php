@@ -122,6 +122,9 @@ class Lexer {
             case '@service':
                 $tokenType = Token::T_PROPERTY_INJECTOR;
                 break;
+            case '@keepDefault':
+                $tokenType = Token::T_ACTION;
+                break;
             default:
                 $tokenType = Token::T_UNKNOWN_ANNOTATION;
         }

@@ -36,6 +36,10 @@ class SimpleRouter extends AbstractRouter {
         return $controllerClass;
     }
 
+    private function requestUriToComponents($requestUri) {
+        
+    }
+
     private function verifyComponentName($componentName) {
         //大写英文字母开头，后边跟着一个或多个英文字母
         if (!preg_match('/^[A-Z][A-Za-z]+$/', $componentName)) {

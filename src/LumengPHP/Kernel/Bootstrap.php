@@ -22,7 +22,7 @@ use Exception;
 class Bootstrap {
 
     /**
-     * @var AppSettingInterface 应用特定配置
+     * @var AppSettingInterface 应用配置对象
      */
     private $appSetting;
 

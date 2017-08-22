@@ -59,6 +59,10 @@ class Request {
         
     }
 
+    /**
+     * 从超全局变量中创建一个<b>Request</b>实例
+     * @return Request
+     */
     public static function createFromGlobals() {
         $request = new Request($_GET, $_POST, $_REQUEST, $_COOKIE, $_FILES, $_SERVER);
         return $request;

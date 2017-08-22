@@ -21,8 +21,8 @@ class SimpleRouter extends AbstractRouter {
         }
 
         foreach ($components as $i => $component) {
-            $this->verifyComponentName($component);
             $components[$i] = ucfirst($component);
+            $this->verifyComponentName($components[$i]);
         }
 
         /* @var $appSetting HttpAppSettingInterface */

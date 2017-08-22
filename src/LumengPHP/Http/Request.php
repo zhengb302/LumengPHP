@@ -44,6 +44,16 @@ class Request {
      */
     private $session;
 
+    /**
+     * @var string HTTP method
+     */
+    private $method;
+
+    /**
+     * @var string HTTP Request Scheme
+     */
+    private $requestScheme;
+
     public function __construct($get, $post, $request, $cookies, $files, $server) {
         $this->get = $get;
         $this->post = $post;
@@ -56,7 +66,8 @@ class Request {
     }
 
     private function init() {
-        
+        $this->method = strtoupper($this->server['REQUEST_METHOD']);
+        $this->requestScheme = strtolower($this->server['REQUEST_SCHEME']);
     }
 
     /**
@@ -81,7 +92,7 @@ class Request {
      * @return string
      */
     public function getMethod() {
-        return strtoupper($this->server['REQUEST_METHOD']);
+        return $this->method;
     }
 
     /**
@@ -89,7 +100,7 @@ class Request {
      * @return string
      */
     public function getRequestScheme() {
-        return $this->server['REQUEST_SCHEME'];
+        return $this->requestScheme;
     }
 
     /**

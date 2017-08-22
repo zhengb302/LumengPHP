@@ -83,9 +83,9 @@ class ClassInvoker {
      * 加载类元数据
      */
     private function loadClassMetadata() {
-        $metadataCacheDir = $this->appContext->getCacheDir() . '/class-metadata';
+        $metadataCacheDir = $this->appContext->getRuntimeDir() . '/cache/class-metadata';
         if (!is_dir($metadataCacheDir)) {
-            mkdir($metadataCacheDir, 0755);
+            mkdir($metadataCacheDir, 0755, true);
         }
 
         //最后修改时间

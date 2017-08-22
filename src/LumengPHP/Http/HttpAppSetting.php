@@ -51,8 +51,8 @@ class HttpAppSetting implements HttpAppSettingInterface {
         return $this->appSetting->getRootDir();
     }
 
-    public function getCacheDir() {
-        return $this->appSetting->getCacheDir();
+    public function getRuntimeDir() {
+        return $this->appSetting->getRuntimeDir();
     }
 
     public function getControllerParentNamespace() {

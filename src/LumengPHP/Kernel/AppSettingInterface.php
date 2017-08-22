@@ -34,8 +34,8 @@ interface AppSettingInterface {
     public function getRootDir();
 
     /**
-     * 取得缓存目录
+     * 取得运行时目录
      * @return string 
      */
-    public function getCacheDir();
+    public function getRuntimeDir();
 }

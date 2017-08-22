@@ -70,8 +70,8 @@ class AppContext implements AppContextInterface {
     /**
      * {@inheritdoc}
      */
-    public function getCacheDir() {
-        return $this->appSetting->getCacheDir();
+    public function getRuntimeDir() {
+        return $this->appSetting->getRuntimeDir();
     }
 
 }

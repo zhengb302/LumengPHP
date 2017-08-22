@@ -47,9 +47,9 @@ interface AppContextInterface {
     public function getRootDir();
 
     /**
-     * 取得缓存目录路径<br />
+     * 取得运行时目录路径<br />
      * 注意：结尾不带斜杠“/”
      * @return string
      */
-    public function getCacheDir();
+    public function getRuntimeDir();
 }

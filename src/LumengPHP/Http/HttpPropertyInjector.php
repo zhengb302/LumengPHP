@@ -2,16 +2,17 @@
 
 namespace LumengPHP\Http;
 
-use LumengPHP\Kernel\AppContextInterface;
-use ReflectionClass;
 use Exception;
+use LumengPHP\Kernel\AppContextInterface;
+use LumengPHP\Kernel\PropertyInjectorInterface;
+use ReflectionClass;
 
 /**
- * HTTP属性注射器
+ * HTTP属性注入器
  *
  * @author zhengluming <luming.zheng@shandjj.com>
  */
-class HttpPropertyInjector {
+class HttpPropertyInjector implements PropertyInjectorInterface {
 
     /**
      * @var AppContextInterface

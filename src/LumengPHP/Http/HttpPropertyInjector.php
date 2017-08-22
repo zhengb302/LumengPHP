@@ -126,7 +126,7 @@ class HttpPropertyInjector implements PropertyInjectorInterface {
             case 'bool':
                 return $value == '0' || $value == '' || $value == 'false' ? false : true;
             case 'string':
-                return (string) $value;
+                return trim((string) $value);
             case 'array':
                 //对于数组类型，如果值不是数组，则按英文逗号分隔字符串再返回一个数组
                 return is_array($value) ? $value : explode(',', $value);

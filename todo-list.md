@@ -1,6 +1,8 @@
 # todo list
 
-# “@container"改名为”@service“
+# ~~“@container"改名为”@service“~~
+# ~~支持”@config“注解，用于从配置中注入属性~~
+# ~~string类型的属性，注入时默认会使用trim函数处理源数据~~
 # 支持“@keepNull”注解，用于源数据不存在时，属性的值保持为“null”
 
 ### 2017-08-22

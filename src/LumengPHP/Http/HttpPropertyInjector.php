@@ -96,12 +96,15 @@ class HttpPropertyInjector implements PropertyInjectorInterface {
             case 'session':
                 $rawValue = $this->session[$paramName];
                 break;
-            case 'container':
+            case 'config':
+                $rawValue = $this->appContext->getConfig($paramName);
+                break;
+            case 'service':
                 $rawValue = $this->appContext->getService($paramName);
                 break;
         }
 
-        if ($source == 'container') {
+        if ($source == 'service') {
             $value = $rawValue;
         } else {
             $value = $this->formatValue($metadata['type'], $rawValue);

@@ -68,7 +68,7 @@ class Parser {
     }
 
     /**
-     * 属性注入注解："@get"、"@post"、"@request"、"@session"、"@container"
+     * 属性注入注解："@get"、"@post"、"@request"、"@session"、”@config“、"@service"
      */
     private function propertyInjectorTag() {
         $this->match(Token::T_PROPERTY_INJECTOR);

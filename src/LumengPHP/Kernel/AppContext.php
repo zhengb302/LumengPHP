@@ -12,6 +12,11 @@ use LumengPHP\Kernel\DependencyInjection\ContainerInterface;
 class AppContext implements AppContextInterface {
 
     /**
+     * @var AppSettingInterface 应用特定配置
+     */
+    private $appSetting;
+
+    /**
      * @var AppConfig 
      */
     private $appConfig;
@@ -21,7 +26,8 @@ class AppContext implements AppContextInterface {
      */
     private $serviceContainer;
 
-    public function __construct(AppConfig $appConfig, ContainerInterface $serviceContainer) {
+    public function __construct(AppSettingInterface $appSetting, AppConfig $appConfig, ContainerInterface $serviceContainer) {
+        $this->appSetting = $appSetting;
         $this->appConfig = $appConfig;
         $this->serviceContainer = $serviceContainer;
     }
@@ -29,15 +35,15 @@ class AppContext implements AppContextInterface {
     /**
      * {@inheritdoc}
      */
-    public function getConfig($key) {
-        return $this->appConfig->get($key);
+    public function getAppSetting() {
+        return $this->appSetting;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getParameter($key) {
-        return $this->appConfig->get("parameters.{$key}");
+    public function getConfig($key) {
+        return $this->appConfig->get($key);
     }
 
     /**
@@ -58,14 +64,14 @@ class AppContext implements AppContextInterface {
      * {@inheritdoc}
      */
     public function getRootDir() {
-        return $this->appConfig->get('app.rootDir');
+        return $this->appSetting->getRootDir();
     }
 
     /**
      * {@inheritdoc}
      */
     public function getCacheDir() {
-        return $this->appConfig->get('app.cacheDir');
+        return $this->appSetting->getCacheDir();
     }
 
 }

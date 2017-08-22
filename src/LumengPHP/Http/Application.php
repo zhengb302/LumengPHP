@@ -2,7 +2,6 @@
 
 namespace LumengPHP\Http;
 
-use LumengPHP\Kernel\AppSettingInterface;
 use LumengPHP\Kernel\AppContextInterface;
 use LumengPHP\Kernel\Bootstrap;
 
@@ -30,7 +29,7 @@ class Application {
      */
     private $dispatcher;
 
-    public function __construct(AppSettingInterface $appSetting, $configFilePath) {
+    public function __construct(HttpAppSettingInterface $appSetting, $configFilePath) {
         $httpAppSetting = new HttpAppSetting($appSetting);
 
         $bootstrap = new Bootstrap();

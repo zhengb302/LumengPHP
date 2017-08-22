@@ -71,7 +71,9 @@ class Dispatcher {
      * @throws Exception
      */
     private function invokeInterceptor() {
-        $interceptors = $this->appContext->getConfig('interceptors');
+        /* @var $appSetting HttpAppSettingInterface */
+        $appSetting = $this->appContext->getAppSetting();
+        $interceptors = $appSetting->getInterceptors();
         foreach ($interceptors as $interceptorClass) {
             if (!class_exists($interceptorClass)) {
                 throw new Exception("拦截器{$interceptorClass}不存在~");

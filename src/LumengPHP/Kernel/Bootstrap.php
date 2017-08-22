@@ -48,7 +48,7 @@ class Bootstrap {
         //构造服务容器
         $this->buildServiceContainer();
 
-        $this->appContext = new AppContext($appConfig, $this->container);
+        $this->appContext = new AppContext($appSetting, $appConfig, $this->container);
         $this->container->register('appContext', $this->appContext);
 
         //加载扩展
@@ -59,7 +59,7 @@ class Bootstrap {
      * 构造服务容器
      */
     private function buildServiceContainer() {
-        $serviceConfigs = $this->appSetting->getServiceSetting();
+        $serviceConfigs = $this->appSetting->getServices();
 
         if (is_null($serviceConfigs)) {
             $serviceConfigs = [];
@@ -72,7 +72,7 @@ class Bootstrap {
      * 加载扩展
      */
     private function loadExtensions() {
-        $extensions = $this->appSetting->getExtensionSetting();
+        $extensions = $this->appSetting->getExtensions();
         if (empty($extensions)) {
             return;
         }

@@ -19,13 +19,13 @@ interface AppSettingInterface {
      * 取得服务配置
      * @return array 
      */
-    public function getServiceSetting();
+    public function getServices();
 
     /**
      * 取得扩展配置
      * @return array 
      */
-    public function getExtensionSetting();
+    public function getExtensions();
 
     /**
      * 取得应用根目录

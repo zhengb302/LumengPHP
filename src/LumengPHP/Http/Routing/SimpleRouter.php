@@ -2,6 +2,7 @@
 
 namespace LumengPHP\Http\Routing;
 
+use LumengPHP\Http\HttpAppSettingInterface;
 use LumengPHP\Http\Request;
 use Exception;
 
@@ -19,7 +20,9 @@ class SimpleRouter extends AbstractRouter {
         $this->verifyComponentName($controllerName);
         $this->verifyComponentName($actionName);
 
-        $parentNamespace = $this->appContext->getConfig('controllerParentNamespace');
+        /* @var $appSetting HttpAppSettingInterface */
+        $appSetting = $this->appContext->getAppSetting();
+        $parentNamespace = $appSetting->getControllerParentNamespace();
         $controllerClass = "{$parentNamespace}\\{$controllerName}\\{$actionName}";
         if (!class_exists($controllerClass)) {
             throw new Exception('您请求的控制器不存在~');

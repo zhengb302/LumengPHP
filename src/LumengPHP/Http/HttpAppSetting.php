@@ -2,7 +2,6 @@
 
 namespace LumengPHP\Http;
 
-use LumengPHP\Kernel\AppSettingInterface;
 use LumengPHP\Http\Routing\SimpleRouter;
 use LumengPHP\Http\Result\SimpleResultHandler;
 
@@ -11,22 +10,22 @@ use LumengPHP\Http\Result\SimpleResultHandler;
  *
  * @author zhengluming <luming.zheng@shandjj.com>
  */
-class HttpAppSetting implements AppSettingInterface {
+class HttpAppSetting implements HttpAppSettingInterface {
 
     /**
-     * @var AppSettingInterface 应用特定配置
+     * @var HttpAppSettingInterface 应用特定配置
      */
     private $appSetting;
 
     /**
      * 构造一个<b>HttpAppSetting</b>实例
-     * @param AppSettingInterface $appSetting 应用特定配置
+     * @param HttpAppSettingInterface $appSetting 应用特定配置
      */
-    public function __construct(AppSettingInterface $appSetting) {
+    public function __construct(HttpAppSettingInterface $appSetting) {
         $this->appSetting = $appSetting;
     }
 
-    public function getServiceSetting() {
+    public function getServices() {
         //http服务配置
         $httpAppServices = [
             'httpRouter' => [
@@ -39,19 +38,13 @@ class HttpAppSetting implements AppSettingInterface {
         ];
 
         //应用特定服务配置
-        $appServices = $this->appSetting->getServiceSetting() ?: [];
+        $appServices = $this->appSetting->getServices() ?: [];
 
         return array_merge($httpAppServices, $appServices);
     }
 
-    public function getExtensionSetting() {
-        //http扩展
-        $httpAppExtensions = [];
-
-        //应用特定扩展
-        $appExtensions = $this->appSetting->getExtensionSetting() ?: [];
-
-        return array_merge($httpAppExtensions, $appExtensions);
+    public function getExtensions() {
+        return $this->appSetting->getExtensions() ?: [];
     }
 
     public function getRootDir() {
@@ -60,6 +53,14 @@ class HttpAppSetting implements AppSettingInterface {
 
     public function getCacheDir() {
         return $this->appSetting->getCacheDir();
+    }
+
+    public function getControllerParentNamespace() {
+        return $this->appSetting->getControllerParentNamespace();
+    }
+
+    public function getInterceptors() {
+        return $this->appSetting->getInterceptors() ?: [];
     }
 
 }

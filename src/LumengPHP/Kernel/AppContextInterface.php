@@ -12,19 +12,18 @@ use LumengPHP\Kernel\DependencyInjection\ContainerInterface;
 interface AppContextInterface {
 
     /**
+     * 取得<b>AppSettingInterface</b>实例
+     * @return AppSettingInterface
+     */
+    public function getAppSetting();
+
+    /**
      * 取得应用配置数据
      * @see AppConfig
      * @param string $key 配置key
      * @return mixed|null 
      */
     public function getConfig($key);
-
-    /**
-     * 取得应用配置参数
-     * @param string $key 参数key
-     * @return string|null
-     */
-    public function getParameter($key);
 
     /**
      * 取得服务对象实例

@@ -87,6 +87,10 @@ class Request {
         return $this->server['REQUEST_URI'];
     }
 
+    public function getPathInfo() {
+        return $this->server['PATH_INFO'];
+    }
+
     /**
      * GET、POST、PUT、DELETE等，大写
      * @return string

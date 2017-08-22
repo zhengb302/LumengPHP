@@ -7,23 +7,28 @@ use LumengPHP\Http\Request;
 use Exception;
 
 /**
- * 简单的请求路由器
+ * 简单的请求路由器，只支持URL重写之后的URL类型
  *
  * @author zhengluming <luming.zheng@shandjj.com>
  */
 class SimpleRouter extends AbstractRouter {
 
     public function route(Request $request) {
-        $controllerName = ucfirst($request->get['c']);
-        $actionName = ucfirst($request->get['a']);
+        $requestUri = $request->getRequestUri();
+        $components = explode('/', trim($requestUri, '/'));
+        if (empty($components)) {
+            throw new Exception('URL地址错误~');
+        }
 
-        $this->verifyComponentName($controllerName);
-        $this->verifyComponentName($actionName);
+        foreach ($components as $i => $component) {
+            $this->verifyComponentName($component);
+            $components[$i] = ucfirst($component);
+        }
 
         /* @var $appSetting HttpAppSettingInterface */
         $appSetting = $this->appContext->getAppSetting();
         $parentNamespace = $appSetting->getControllerParentNamespace();
-        $controllerClass = "{$parentNamespace}\\{$controllerName}\\{$actionName}";
+        $controllerClass = "{$parentNamespace}\\" . implode('\\', $components);
         if (!class_exists($controllerClass)) {
             throw new Exception('您请求的控制器不存在~');
         }

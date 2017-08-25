@@ -96,12 +96,20 @@ class HttpPropertyInjector implements PropertyInjectorInterface {
             case 'session':
                 $rawValue = $this->session[$paramName];
                 break;
-            case 'container':
+            case 'config':
+                $rawValue = $this->appContext->getConfig($paramName);
+                break;
+            case 'service':
                 $rawValue = $this->appContext->getService($paramName);
                 break;
         }
 
-        if ($source == 'container') {
+        //源数据不存在时，且设置了“@keepDefault”注解时，保持属性的原值
+        if (is_null($rawValue) && isset($metadata['keepDefault'])) {
+            return;
+        }
+
+        if ($source == 'service') {
             $value = $rawValue;
         } else {
             $value = $this->formatValue($metadata['type'], $rawValue);
@@ -112,21 +120,21 @@ class HttpPropertyInjector implements PropertyInjectorInterface {
         $property->setValue($this->classObj, $value);
     }
 
-    private function formatValue($type, $value) {
+    private function formatValue($type, $rawValue) {
         switch ($type) {
             case 'int':
             case 'long':
-                return (int) $value;
+                return (int) $rawValue;
             case 'float':
             case 'double':
-                return (float) $value;
+                return (float) $rawValue;
             case 'bool':
-                return $value == '0' || $value == '' || $value == 'false' ? false : true;
+                return $rawValue == '0' || $rawValue == '' || $rawValue == 'false' ? false : true;
             case 'string':
-                return (string) $value;
+                return trim((string) $rawValue);
             case 'array':
                 //对于数组类型，如果值不是数组，则按英文逗号分隔字符串再返回一个数组
-                return is_array($value) ? $value : explode(',', $value);
+                return is_array($rawValue) ? $rawValue : explode(',', $rawValue);
             default:
                 throw new Exception("不支持的数据类型：{$type}");
         }

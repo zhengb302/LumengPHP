@@ -15,7 +15,7 @@ class SimpleRouter extends AbstractRouter {
 
     public function route(Request $request) {
         $requestUri = $request->getRequestUri();
-        $components = explode('/', trim($requestUri, '/'));
+        $components = $this->requestUriToComponents($requestUri);
         if (empty($components)) {
             throw new Exception('URL地址错误~');
         }
@@ -37,7 +37,7 @@ class SimpleRouter extends AbstractRouter {
     }
 
     private function requestUriToComponents($requestUri) {
-        
+        explode('/', trim($requestUri, '/'));
     }
 
     private function verifyComponentName($componentName) {

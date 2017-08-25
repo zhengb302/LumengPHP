@@ -50,6 +50,8 @@ class Parser {
                 $this->varTag();
             } elseif ($lookaheadTokenType == Token::T_PROPERTY_INJECTOR) {
                 $this->propertyInjectorTag();
+            } elseif ($lookaheadTokenType == Token::T_ACTION) {
+                $this->actionTag();
             } elseif ($lookaheadTokenType == Token::T_UNKNOWN_ANNOTATION) {
                 $this->unknownTag();
             } else {
@@ -68,7 +70,7 @@ class Parser {
     }
 
     /**
-     * 属性注入注解："@get"、"@post"、"@request"、"@session"、"@container"
+     * 属性注入注解："@get"、"@post"、"@request"、"@session"、”@config“、"@service"
      */
     private function propertyInjectorTag() {
         $this->match(Token::T_PROPERTY_INJECTOR);
@@ -84,6 +86,15 @@ class Parser {
             $this->lexer->gotoNextAnnotation();
             $this->consume();
         }
+    }
+
+    /**
+     * 动作注解：“@keepDefault”
+     */
+    private function actionTag() {
+        $this->match(Token::T_ACTION, true);
+        $action = ltrim($this->lastToken->getText(), '@');
+        $this->metadata->addMetadata($action, true);
     }
 
     /**

@@ -30,19 +30,24 @@ class Token {
     const T_VAR = 3;
 
     /**
-     * 属性注入注解，有@get、@post、@request、@session、@container
+     * 属性注入注解，有@get、@post、@request、@session、@config、@service
      */
     const T_PROPERTY_INJECTOR = 4;
 
     /**
+     * 动作注解，有@keepDefault
+     */
+    const T_ACTION = 5;
+
+    /**
      * 左圆括号"("
      */
-    const T_LEFT_PARENTHESIS = 5;
+    const T_LEFT_PARENTHESIS = 6;
 
     /**
      * 右圆括号")"
      */
-    const T_RIGHT_PARENTHESIS = 6;
+    const T_RIGHT_PARENTHESIS = 7;
 
     /**
      * @var int token编号
@@ -70,7 +75,8 @@ class Token {
     public function isAnnotation() {
         return $this->type == self::T_UNKNOWN_ANNOTATION ||
                 $this->type == self::T_VAR ||
-                $this->type == self::T_PROPERTY_INJECTOR;
+                $this->type == self::T_PROPERTY_INJECTOR ||
+                $this->type == self::T_ACTION;
     }
 
 }

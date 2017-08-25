@@ -47,6 +47,10 @@ class Application {
     }
 
     public function handle(Request $request) {
+        //把Request实例注册为服务
+        $this->appContext->getServiceContainer()->register('request', $request);
+
+        //执行派发动作
         $this->dispatcher->doDispatcher($request);
     }
 

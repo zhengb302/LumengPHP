@@ -18,3 +18,36 @@ function env($key, $default = null) {
 
     return $value;
 }
+
+/**
+ * 是否一个给定的字符串以一个子串结尾
+ * @param string $haystack 
+ * @param string $needles 
+ * @param bool $caseInsensitive 是否大小写不敏感，默认大小写敏感
+ * @return bool
+ */
+function ends_with($haystack, $needles, $caseInsensitive = false) {
+    $pieceLen = strlen($needles);
+    $tailSubStr = substr($haystack, -$pieceLen);
+
+    if ($caseInsensitive) {
+        $tailSubStr = strtolower($tailSubStr);
+        $needles = strtolower($needles);
+    }
+
+    return $tailSubStr == $needles;
+}
+
+/**
+ * 返回数组的最后一个元素
+ * @param array $array
+ * @return mixed|null 如果是空数组，则返回null，否则返回数组最后一个元素
+ */
+function array_last(array $array) {
+    $len = count($array);
+    if ($len == 0) {
+        return null;
+    }
+
+    return $array[$len - 1];
+}

@@ -22,20 +22,20 @@ function env($key, $default = null) {
 /**
  * 是否一个给定的字符串以一个子串结尾
  * @param string $haystack 
- * @param string $needles 
+ * @param string $needle 
  * @param bool $caseInsensitive 是否大小写不敏感，默认大小写敏感
  * @return bool
  */
-function ends_with($haystack, $needles, $caseInsensitive = false) {
-    $pieceLen = strlen($needles);
+function ends_with($haystack, $needle, $caseInsensitive = false) {
+    $pieceLen = strlen($needle);
     $tailSubStr = substr($haystack, -$pieceLen);
 
     if ($caseInsensitive) {
         $tailSubStr = strtolower($tailSubStr);
-        $needles = strtolower($needles);
+        $needle = strtolower($needle);
     }
 
-    return $tailSubStr == $needles;
+    return $tailSubStr == $needle;
 }
 
 /**

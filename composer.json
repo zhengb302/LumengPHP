@@ -19,7 +19,8 @@
     },
     "autoload": {
         "files": [
-            "src/LumengPHP/Kernel/functions.php"
+            "src/LumengPHP/Kernel/functions.php",
+            "src/LumengPHP/Http/functions.php"
         ],
         "psr-4": {
             "LumengPHP\\": "src/LumengPHP/"

@@ -2,8 +2,8 @@
 
 namespace LumengPHP\Http;
 
-use LumengPHP\Http\Routing\SimpleRouter;
 use LumengPHP\Http\Result\SimpleResultHandler;
+use LumengPHP\Http\Routing\SimpleRouter;
 
 /**
  * HTTP应用配置
@@ -38,13 +38,13 @@ class HttpAppSetting implements HttpAppSettingInterface {
         ];
 
         //应用特定服务配置
-        $appServices = $this->appSetting->getServices() ?: [];
+        $appServices = $this->appSetting->getServices() ? : [];
 
         return array_merge($httpAppServices, $appServices);
     }
 
     public function getExtensions() {
-        return $this->appSetting->getExtensions() ?: [];
+        return $this->appSetting->getExtensions() ? : [];
     }
 
     public function getRootDir() {
@@ -55,12 +55,12 @@ class HttpAppSetting implements HttpAppSettingInterface {
         return $this->appSetting->getRuntimeDir();
     }
 
-    public function getControllerParentNamespace() {
-        return $this->appSetting->getControllerParentNamespace();
+    public function getInterceptors() {
+        return $this->appSetting->getInterceptors() ? : [];
     }
 
-    public function getInterceptors() {
-        return $this->appSetting->getInterceptors() ?: [];
+    public function getRoutingConfig() {
+        return $this->appSetting->getRoutingConfig();
     }
 
 }

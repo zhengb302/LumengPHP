@@ -2,12 +2,18 @@
 
 namespace LumengPHP\Http\Routing;
 
-use LumengPHP\Http\HttpAppSettingInterface;
-use LumengPHP\Http\Request;
 use Exception;
+use LumengPHP\Http\Request;
 
 /**
- * 简单的请求路由器，只支持URL重写之后的URL类型
+ * 简单的请求路由器<br />
+ * 以“URI Path”作为key，映射到相应的控制器，配置格式：URI Path => 控制器的全限定类名称
+ * 只支持重写之后的URL类型
+ * 配置示例：
+ * [
+ *     '/home' => \SomeApp\Controllers\Home::class,
+ *     '/foo/bar' => \SomeApp\Controllers\Foo\Bar::class,
+ * ]
  *
  * @author zhengluming <luming.zheng@shandjj.com>
  */
@@ -15,36 +21,13 @@ class SimpleRouter extends AbstractRouter {
 
     public function route(Request $request) {
         $requestUri = $request->getRequestUri();
-        $components = $this->requestUriToComponents($requestUri);
-        if (empty($components)) {
-            throw new Exception('URL地址错误~');
-        }
-
-        foreach ($components as $i => $component) {
-            $components[$i] = ucfirst($component);
-            $this->verifyComponentName($components[$i]);
-        }
-
-        /* @var $appSetting HttpAppSettingInterface */
-        $appSetting = $this->appContext->getAppSetting();
-        $parentNamespace = $appSetting->getControllerParentNamespace();
-        $controllerClass = "{$parentNamespace}\\" . implode('\\', $components);
-        if (!class_exists($controllerClass)) {
+        $uriPath = $requestUri;
+        if (!isset($this->routingConfig[$uriPath])) {
             throw new Exception('您请求的控制器不存在~');
         }
 
+        $controllerClass = $this->routingConfig[$uriPath];
         return $controllerClass;
-    }
-
-    private function requestUriToComponents($requestUri) {
-        explode('/', trim($requestUri, '/'));
-    }
-
-    private function verifyComponentName($componentName) {
-        //大写英文字母开头，后边跟着一个或多个英文字母
-        if (!preg_match('/^[A-Z][A-Za-z]+$/', $componentName)) {
-            throw new Exception('控制器名称非法→_→');
-        }
     }
 
 }

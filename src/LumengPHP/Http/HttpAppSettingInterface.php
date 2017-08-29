@@ -18,8 +18,9 @@ interface HttpAppSettingInterface extends AppSettingInterface {
     public function getInterceptors();
 
     /**
-     * 取得控制器父名称空间，尾部不能带反斜杠
-     * @return string 
+     * 取得路由配置<br />
+     * 应用根据使用的路由实现，返回相应的路由配置
+     * @return mixed 
      */
-    public function getControllerParentNamespace();
+    public function getRoutingConfig();
 }

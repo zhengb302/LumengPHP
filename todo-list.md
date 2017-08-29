@@ -1,5 +1,7 @@
 # todo list
 
+# ~~“HttpAppSettingInterface”去掉“getControllerParentNamespace”方法，增加返回路由配置的方法~~
+
 ### 2017-08-23
 
 # ~~“@container”改名为“@service”~~

@@ -8,7 +8,7 @@ use LumengPHP\Http\Request;
 /**
  * 简单的请求路由器<br />
  * 以“URI Path”作为key，映射到相应的控制器，配置格式：URI Path => 控制器的全限定类名称
- * 只支持重写之后的URL类型
+ * 支持重写之后的URL类型或PathInfo类型的URL
  * 配置示例：
  * [
  *     '/home' => \SomeApp\Controllers\Home::class,
@@ -20,14 +20,41 @@ use LumengPHP\Http\Request;
 class SimpleRouter extends AbstractRouter {
 
     public function route(Request $request) {
-        $requestUri = $request->getRequestUri();
-        $uriPath = $requestUri;
+        //PathInfo类型的URL
+        $pathInfo = $request->getPathInfo();
+        if ($pathInfo) {
+            $uriPath = $pathInfo;
+        }
+        //重写之后的URL类型
+        else {
+            $requestUri = $request->getRequestUri();
+            $uriPath = $this->extractUriPath($requestUri);
+        }
+
         if (!isset($this->routingConfig[$uriPath])) {
             throw new Exception('您请求的控制器不存在~');
         }
 
         $controllerClass = $this->routingConfig[$uriPath];
         return $controllerClass;
+    }
+
+    /**
+     * 从RequestUri提取Uri Path<br />
+     * 如：
+     *     /foo/bar => /foo/bar
+     *     /foo/bar?id=10086 => /foo/bar
+     * 
+     * @param string $requestUri
+     * @return string
+     */
+    private function extractUriPath($requestUri) {
+        $questionMarkPos = strpos($requestUri, '?');
+        if ($questionMarkPos === false) {
+            return $requestUri;
+        }
+
+        return substr($requestUri, 0, $questionMarkPos);
     }
 
 }

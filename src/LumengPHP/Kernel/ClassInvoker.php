@@ -88,7 +88,7 @@ class ClassInvoker {
             mkdir($metadataCacheDir, 0755, true);
         }
 
-        //inode及最后修改时间
+        //inode、最后修改时间
         $classFilePath = $this->reflectionObj->getFileName();
         $inode = fileinode($classFilePath);
         $lastModifiedTime = filemtime($classFilePath);
@@ -97,7 +97,7 @@ class ClassInvoker {
         $classFullName = $this->reflectionObj->getName();
 
         //类元数据缓存文件名及路径
-        $cacheFileName = str_replace('\\', '.', $classFullName) . ".{$inode}" . ".{$lastModifiedTime}.php";
+        $cacheFileName = str_replace('\\', '.', $classFullName) . ".{$inode}.{$lastModifiedTime}.php";
         $cacheFilePath = $metadataCacheDir . '/' . $cacheFileName;
 
         if (is_file($cacheFilePath)) {

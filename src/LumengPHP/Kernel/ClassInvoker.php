@@ -88,15 +88,16 @@ class ClassInvoker {
             mkdir($metadataCacheDir, 0755, true);
         }
 
-        //最后修改时间
+        //inode及最后修改时间
         $classFilePath = $this->reflectionObj->getFileName();
+        $inode = fileinode($classFilePath);
         $lastModifiedTime = filemtime($classFilePath);
 
         //类的全限定名称
         $classFullName = $this->reflectionObj->getName();
 
         //类元数据缓存文件名及路径
-        $cacheFileName = str_replace('\\', '.', $classFullName) . ".{$lastModifiedTime}.php";
+        $cacheFileName = str_replace('\\', '.', $classFullName) . ".{$inode}" . ".{$lastModifiedTime}.php";
         $cacheFilePath = $metadataCacheDir . '/' . $cacheFileName;
 
         if (is_file($cacheFilePath)) {

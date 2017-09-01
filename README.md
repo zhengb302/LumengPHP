@@ -14,4 +14,4 @@ LumengPHP
 文档
 ----
 
-[LumengPHP教程](doc/index.md)
+[LumengPHP教程](docs/manual.md)

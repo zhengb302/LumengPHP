@@ -1,4 +1,8 @@
-【未分版本】
+## 应用目录结构
+
+### 未分版本
+
+```
 djj_bbs/   
     app/
         Foo/
@@ -27,9 +31,11 @@ djj_bbs/
         index.php
     composer.json
     composer.lock
+```
 
+### 分版本
 
-【分版本】
+```
 djj_bbs/   
     app/
         v1.0
@@ -78,3 +84,4 @@ djj_bbs/
         index.php
     composer.json
     composer.lock
+```

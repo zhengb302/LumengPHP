@@ -20,12 +20,12 @@ use LumengPHP\Http\Request;
 class SimpleRouter extends AbstractRouter {
 
     public function route(Request $request) {
-        //PathInfo类型的URL
+        //PathInfo类型的URL，例如“/index.php/foo/bar”，PathInfo就是“/foo/bar”
         $pathInfo = $request->getPathInfo();
         if ($pathInfo) {
             $uriPath = $pathInfo;
         }
-        //重写之后的URL类型
+        //重写之后的URL类型，例如“/foo/bar”、“/foo/bar?id=10086”
         else {
             $requestUri = $request->getRequestUri();
             $uriPath = $this->extractUriPath($requestUri);

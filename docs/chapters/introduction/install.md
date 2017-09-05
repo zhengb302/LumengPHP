@@ -12,6 +12,9 @@ LumengPHP框架对系统几乎没什么特别的要求，只需要满足以下�
 假设现在要为Bear公司创建一个BBS应用。创建应用很简单，只需要执行一条命令就能完成：
 ```bash
 composer create-project --prefer-dist lumeng/lumeng-php-skeleton bear-bbs
+
+# 进入bear-bbs目录
+cd bear-bbs
 ```
 
 ### 配置

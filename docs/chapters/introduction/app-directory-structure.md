@@ -3,13 +3,10 @@
 ### 未分版本
 
 ```
-djj_bbs/   
+bear-bbs/   
     app/
-        Foo/
-            Bar/
-                Extensions/
-                    DatabaseExtension.php
-                    CacheExtension.php
+        Bear/
+            BBS/
                 Interceptors/
                     UserAuth.php
                     UvStat.php
@@ -36,14 +33,11 @@ djj_bbs/
 ### 分版本
 
 ```
-djj_bbs/   
+bear-bbs/   
     app/
         v1.0
-            Foo/
-                Bar/
-                    Extensions/
-                        DatabaseExtension.php
-                        CacheExtension.php
+            Bear/
+                BBS/
                     Interceptors/
                         UserAuth.php
                         UvStat.php
@@ -58,11 +52,8 @@ djj_bbs/
                         PostHelper.php
                     AppSetting.php
         v1.1
-            Foo/
-                Bar/
-                    Extensions/
-                        DatabaseExtension.php
-                        CacheExtension.php
+            Bear/
+                BBS/
                     Interceptors/
                         UserAuth.php
                         UvStat.php

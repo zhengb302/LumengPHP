@@ -1,6 +1,6 @@
-## LumengPHP教程
+## LumengPHP开发手册
 
-### 入门
+### 快速入门
 
 1. [安装](chapters/introduction/install.md)
 2. [应用目录结构](chapters/introduction/app-directory-structure.md)

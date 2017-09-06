@@ -9,9 +9,11 @@ LumengPHP
 主要特点
 -------
 
-
+* 尽可能多得使用配置类，尽可能少得使用配置文件
+* 注解及属性注入
+* 非侵入式设计
 
 文档
 ----
 
-[LumengPHP教程](docs/manual.md)
+[LumengPHP开发手册](docs/manual.md)

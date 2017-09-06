@@ -48,7 +48,7 @@ bear-bbs/                                //应用根目录
         cache/
     vendor/                              //第三方依赖
     web/
-        index.php
+        index.php                        //HTTP应用入口
     composer.json
     composer.lock
 ```
@@ -63,12 +63,13 @@ LumengPHP使用Composer管理依赖。默认情况下应用相关的类都放在
 
 #### Web服务器配置
 
-完成以上步骤之后，把Web服务器的“DocumentRoot”指向bear-bbs目录下的web目录即可。
+完成以上步骤之后，把Web服务器的“DocumentRoot”(Apache)或“root”(Nginx)指向bear-bbs目录下的web目录即可。
 web目录下的“index.php”文件作为HTTP应用的入口文件。
 
 #### URL重写
 
-
+重写之后的URL通常更优雅，同时也隐藏了后端所使用的技术架构。所以LumengPHP默认的路由组件只支持重写之后的URL。
+当然，开发者可以根据应用的路由策略，使用自定义的路由组件。
 
 Apache：
 ```
@@ -101,9 +102,23 @@ location / {
 }
 ```
 
-#### 应用配置类
+#### 应用配置
 
-Bear/BBS/AppSetting.php
+LumengPHP支持多种类型的配置：配置类、配置文件、环境配置。优先级：环境配置 > 配置文件，配置类用于配置框架及那些变化很少的配置。
+Bear BBS的应用配置类为：Bear\BBS\AppSetting，在这里可以配置路由、拦截器、服务等。应用配置文件入口为：config/config.php，
+环境配置文件为：config/env。
+
+Bear BBS的应用配置类的路由配置为：
+```php
+public function getRoutingConfig() {
+    return [
+        '/helloWorld' => \Bear\BBS\Controllers\HelloWorld::class,
+        '/user/greetUser' => \Bear\BBS\Controllers\User\GreetUser::class,
+        '/user/showUser' => \Bear\BBS\Controllers\User\ShowUser::class,
+    ];
+}
+```
 
 ### Hello World
 
+从[应用配置](#应用配置)小节可以看到，Bear BBS已经自带了一个“Hello World”

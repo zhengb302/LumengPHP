@@ -33,10 +33,18 @@ class Application {
         $this->appContext = $bootstrap->getAppContext();
     }
 
-    public function handle($argc, $argv) {
-        $cmdMapping = $this->consoleAppSetting->getCmdMapping();
+    public function run() {
+        $argc = $_SERVER['argc'];
+        $argv = $_SERVER['argv'];
+        if ($argc < 2) {
+            echo "参数错误~\n";
+            echo "Usage:\n";
+            echo "    launch <cmd name> [arg1] [arg2] ... [argX]";
+            exit(-1);
+        }
 
         $cmdName = $argv[1];
+        $cmdMapping = $this->consoleAppSetting->getCmdMapping();
         if (!isset($cmdMapping[$cmdName])) {
             echo "命令“{$cmdName}”不存在~\n";
             exit(-1);

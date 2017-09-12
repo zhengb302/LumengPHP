@@ -38,8 +38,7 @@ class Application {
         $argv = $_SERVER['argv'];
         if ($argc < 2) {
             echo "参数错误~\n";
-            echo "Usage:\n";
-            echo "    launch <cmd name> [arg1] [arg2] ... [argX]";
+            $this->pringUsage();
             exit(-1);
         }
 
@@ -61,6 +60,17 @@ class Application {
             echo "发生异常，异常消息：", $ex->getMessage(), "\n";
             exit(-1);
         }
+    }
+
+    private function pringUsage() {
+        echo "Usage:\n";
+        echo "    launch <cmd name> [arg1] [arg2] ... [argX]\n";
+        echo "    launch -l\n";
+        echo "Options:\n";
+        echo "    -l, --list    List all commands\n";
+        echo "    -i, --info <cmd name>    Show detail information for some command\n";
+        echo "    -h, --help    Show this help\n";
+        echo "    \n";
     }
 
 }

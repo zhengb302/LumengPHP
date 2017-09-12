@@ -1,5 +1,9 @@
 # todo list
 
+# 抽取HTTP应用和Console应用的属性注入器的相同代码部分，做成一个抽象
+
+### 2017-09-12
+
 # ~~“HttpAppSettingInterface”去掉“getControllerParentNamespace”方法，增加返回路由配置的方法~~
 
 ### 2017-08-23

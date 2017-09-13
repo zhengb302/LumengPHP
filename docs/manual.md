@@ -9,7 +9,7 @@
 
 ### 服务容器
 
-### 注解及属性注入
+### [注解及属性注入](chapters/annotation_and_property_injecting/index.md)
 
 1. [属性注入注解](chapters/annotation_and_property_injecting/property_injecting.md)
 2. [动作注解](chapters/annotation_and_property_injecting/action.md)

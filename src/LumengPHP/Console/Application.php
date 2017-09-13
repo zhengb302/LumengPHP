@@ -6,6 +6,7 @@ use Exception;
 use LumengPHP\Kernel\AppContextInterface;
 use LumengPHP\Kernel\Bootstrap;
 use LumengPHP\Kernel\ClassInvoker;
+use ReflectionClass;
 
 /**
  * 控制台应用
@@ -81,11 +82,6 @@ class Application {
                 case 'list':
                     $this->listAllCmds();
                     break;
-                case 'i':
-                case 'info':
-                    $cmdName = $value;
-                    $this->showCmd($cmdName);
-                    break;
                 case 'h':
                 case 'help':
                     $this->pringUsage();
@@ -106,8 +102,12 @@ class Application {
             return;
         }
 
-        $cmdNameArr = array_keys($this->cmdMapping);
-        echo implode("\n", $cmdNameArr), "\n";
+        $cmdInfos = "\n";
+        foreach ($this->cmdMapping as $cmdName => $cmdClass) {
+            $cmdInfos = $cmdInfos . $this->buildCmdInfo($cmdName, $cmdClass);
+        }
+
+        echo $cmdInfos;
     }
 
     /**
@@ -115,20 +115,12 @@ class Application {
      * 
      * @param string $cmdName 命令名称
      */
-    private function showCmd($cmdName) {
-        if (!isset($this->cmdMapping[$cmdName])) {
-            echo "命令“{$cmdName}”不存在~\n";
-            return;
-        }
-
-        $cmdClass = $this->cmdMapping[$cmdName];
-        $refObj = new \ReflectionClass($cmdClass);
+    private function buildCmdInfo($cmdName, $cmdClass) {
+        $refObj = new ReflectionClass($cmdClass);
         $docComment = $refObj->getDocComment();
         $firstLineComment = $this->extractFirstLine($docComment);
 
-        echo "命令名称：{$cmdName}\n";
-        echo "类名称：{$cmdClass}\n";
-        echo "说明：{$firstLineComment}\n";
+        return str_pad($cmdName, 25, ' ') . $firstLineComment . "\n";
     }
 
     private function extractFirstLine($docComment) {
@@ -145,14 +137,16 @@ class Application {
     }
 
     private function pringUsage() {
-        echo "Usage:\n";
-        echo "    launch <cmd name> [arg1] [arg2] ... [argX]\n";
-        echo "    launch -l\n";
-        echo "Options:\n";
-        echo "    -l, --list    列出所有命令\n";
-        echo "    -i, --info <cmd name>    显示命令信息\n";
-        echo "    -h, --help    显示此帮助\n";
-        echo "    \n";
+        $usage = "\n";
+        $usage .= "Usage:\n";
+        $usage .= "    launch <cmd name> [arg1] [arg2] ... [argX]\n";
+        $usage .= "    launch -l\n\n";
+        $usage .= "Options:\n";
+        $usage .= "    -l, --list    列出所有命令\n";
+        $usage .= "    -h, --help    显示此帮助\n";
+        $usage .= "    \n";
+
+        echo $usage;
     }
 
 }

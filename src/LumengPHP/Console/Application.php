@@ -48,31 +48,7 @@ class Application {
             return;
         }
 
-        $argc = $_SERVER['argc'];
-        $argv = $_SERVER['argv'];
-        if ($argc < 2) {
-            echo "参数错误~\n";
-            $this->pringUsage();
-            exit(-1);
-        }
-
-        $cmdName = $argv[1];
-        if (!isset($this->cmdMapping[$cmdName])) {
-            echo "命令“{$cmdName}”不存在~\n";
-            exit(-1);
-        }
-
-        $cmdClass = $this->cmdMapping[$cmdName];
-
-        $propertyInjector = new ConsolePropertyInjector($this->appContext);
-        $classInvoker = new ClassInvoker($this->appContext, $propertyInjector);
-
-        try {
-            $classInvoker->invoke($cmdClass);
-        } catch (Exception $ex) {
-            echo "发生异常，异常消息：", $ex->getMessage(), "\n";
-            exit(-1);
-        }
+        $this->runCmd();
     }
 
     private function processOpts($opts) {
@@ -136,11 +112,44 @@ class Application {
         return '';
     }
 
+    private function runCmd() {
+        $argc = $_SERVER['argc'];
+        $argv = $_SERVER['argv'];
+        if ($argc < 2) {
+            echo "参数错误~\n";
+            $this->pringUsage();
+            exit(-1);
+        }
+
+        $cmdName = $argv[1];
+        if (!isset($this->cmdMapping[$cmdName])) {
+            echo "命令“{$cmdName}”不存在~\n";
+            exit(-1);
+        }
+
+        $cmdClass = $this->cmdMapping[$cmdName];
+
+        //构造“InputInterface”实例，并注册为名为“input”服务，以供程序中读取命令行参数
+        $args = array_slice($argv, 1, $argc - 1);
+        $input = new Input($args);
+        $this->appContext->getServiceContainer()->register('input', $input);
+
+        $propertyInjector = new ConsolePropertyInjector($this->appContext);
+        $classInvoker = new ClassInvoker($this->appContext, $propertyInjector);
+
+        try {
+            $classInvoker->invoke($cmdClass);
+        } catch (Exception $ex) {
+            echo "发生异常，异常消息：", $ex->getMessage(), "\n";
+            exit(-1);
+        }
+    }
+
     private function pringUsage() {
         $usage = "\n";
         $usage .= "Usage:\n";
-        $usage .= "    launch <cmd name> [arg1] [arg2] ... [argX]\n";
-        $usage .= "    launch -l\n\n";
+        $usage .= "    console <cmd name> [arg1] [arg2] ... [argX]\n";
+        $usage .= "    console -l\n\n";
         $usage .= "Options:\n";
         $usage .= "    -l, --list    列出所有命令\n";
         $usage .= "    -h, --help    显示此帮助\n";

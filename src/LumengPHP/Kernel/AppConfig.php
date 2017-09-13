@@ -23,40 +23,13 @@ class AppConfig {
     }
 
     /**
-     * 返回应用配置数据。支持多维搜索。<br />
-     * 所谓的"多维搜索"，其实就是使用像"foo.bar"这样的key来搜索
-     * 如果没找到则返回<b>null</b>
+     * 返回应用配置数据
      * 
      * @param string $key 配置key
-     * @return mixed|null
+     * @return mixed|null 存在则返回相应的值；否则返回<b>null</b>
      */
     public function get($key) {
-        if (strpos($key, '.') !== false) {
-            return $this->deepSearch($key);
-        }
-
         return isset($this->config[$key]) ? $this->config[$key] : null;
-    }
-
-    /**
-     * 深度搜索key
-     * 
-     * @param string $key 带英文句号"."的key
-     * @return mixed|null
-     */
-    private function deepSearch($key) {
-        $last = $this->config;
-
-        $keyComponents = explode('.', $key);
-        foreach ($keyComponents as $component) {
-            if (!isset($last[$component])) {
-                return null;
-            }
-
-            $last = $last[$component];
-        }
-
-        return $last;
     }
 
 }

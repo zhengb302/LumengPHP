@@ -2,6 +2,10 @@
 
 # 抽取HTTP应用和Console应用的属性注入器的相同代码部分，做成一个抽象
 
+### 2017-09-13
+
+# ~~去掉对配置文件配置项的“多维搜索”功能~~
+
 ### 2017-09-12
 
 # ~~“HttpAppSettingInterface”去掉“getControllerParentNamespace”方法，增加返回路由配置的方法~~

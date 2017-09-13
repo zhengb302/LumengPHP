@@ -11,8 +11,7 @@
 
 ### 注解及属性注入
 
-1. [HTTP应用](chapters/annotation_and_property_injecting/http.md)
-2. [控制台应用](chapters/annotation_and_property_injecting/console.md)
+1. [注解及属性注入](chapters/annotation_and_property_injecting.md)
 
 ### 控制器
 

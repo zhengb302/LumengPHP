@@ -140,14 +140,27 @@ class Application {
         return '';
     }
 
+    /**
+     * 打印帮助信息
+     */
+    private function pringUsage() {
+        $usage = "\n";
+        $usage .= "Usage:\n";
+        $usage .= "    {$this->launcherName} <cmd name> [arg 1] [arg 2] ... [arg n]\n";
+        $usage .= "    {$this->launcherName} -v <cmd name> [arg 1] [arg 2] ... [arg n]\n";
+        $usage .= "    {$this->launcherName} -l\n";
+        $usage .= "    {$this->launcherName} -h\n\n";
+        $usage .= "Options:\n";
+        $usage .= "    -l, --list       列出所有命令\n";
+        $usage .= "    -v, --verbose    尽可能多的显示输出信息，在调试的时候非常有用\n";
+        $usage .= "    -h, --help       显示此帮助\n";
+        $usage .= "    \n";
+
+        echo $usage;
+    }
+
     private function runCmd() {
-        $argc = $_SERVER['argc'];
-        $argv = $_SERVER['argv'];
-        if ($argc < 2) {
-            echo "参数错误~\n";
-            $this->pringUsage();
-            exit(-1);
-        }
+        list($argc, $argv) = $this->prepareCmdLineArgs();
 
         $cmdName = $argv[1];
         if (!isset($this->cmdMapping[$cmdName])) {
@@ -169,27 +182,31 @@ class Application {
             $classInvoker->invoke($cmdClass);
         } catch (Exception $ex) {
             echo "发生异常，异常消息：", $ex->getMessage(), "\n";
+            if ($this->isVerbose) {
+                echo "异常跟踪信息：\n", $ex->getTraceAsString(), "\n";
+            }
             exit(-1);
         }
     }
 
-    /**
-     * 打印帮助信息
-     */
-    private function pringUsage() {
-        $usage = "\n";
-        $usage .= "Usage:\n";
-        $usage .= "    {$this->launcherName} <cmd name> [arg 1] [arg 2] ... [arg n]\n";
-        $usage .= "    {$this->launcherName} -v <cmd name> [arg 1] [arg 2] ... [arg n]\n";
-        $usage .= "    {$this->launcherName} -l\n";
-        $usage .= "    {$this->launcherName} -h\n\n";
-        $usage .= "Options:\n";
-        $usage .= "    -l, --list       列出所有命令\n";
-        $usage .= "    -v, --verbose    尽可能多的显示输出信息，在调试的时候非常有用\n";
-        $usage .= "    -h, --help       显示此帮助\n";
-        $usage .= "    \n";
+    private function prepareCmdLineArgs() {
+        $argc = $_SERVER['argc'];
+        $argv = $_SERVER['argv'];
 
-        echo $usage;
+        //如果是“详细信息模式”，去掉中间的“-v”参数，
+        //保证 $argv 的第1个元素就是命令名称（下标从0开始）
+        if ($this->isVerbose) {
+            $argc = $argc - 1;
+            array_splice($argv, 1, 1);
+        }
+
+        if ($argc < 2) {
+            echo "参数错误~\n";
+            $this->pringUsage();
+            exit(-1);
+        }
+
+        return [$argc, $argv];
     }
 
 }

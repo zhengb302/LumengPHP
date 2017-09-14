@@ -30,6 +30,16 @@ class Application {
      */
     private $launcherName = 'console';
 
+    /**
+     * @var bool 如果有选项，就退出运行
+     */
+    private $exitWhenHasOpts = true;
+
+    /**
+     * @var bool 是否是详细信息模式
+     */
+    private $isVerbose = false;
+
     public function __construct(ConsoleAppSettingInterface $appSetting, $configFilePath) {
         $consoleAppSetting = new ConsoleAppSetting($appSetting);
 
@@ -53,10 +63,12 @@ class Application {
     }
 
     public function run() {
-        $opts = getopt('li:h', ['list', 'info:', 'help']);
+        $opts = getopt('lvh', ['list', 'verbose', 'help']);
         if ($opts) {
             $this->processOpts($opts);
-            return;
+            if ($this->exitWhenHasOpts) {
+                return;
+            }
         }
 
         $this->runCmd();
@@ -68,6 +80,11 @@ class Application {
                 case 'l':
                 case 'list':
                     $this->listAllCmds();
+                    break;
+                case 'v':
+                case 'verbose':
+                    $this->exitWhenHasOpts = false;
+                    $this->isVerbose = true;
                     break;
                 case 'h':
                 case 'help':
@@ -163,11 +180,13 @@ class Application {
         $usage = "\n";
         $usage .= "Usage:\n";
         $usage .= "    {$this->launcherName} <cmd name> [arg 1] [arg 2] ... [arg n]\n";
+        $usage .= "    {$this->launcherName} -v <cmd name> [arg 1] [arg 2] ... [arg n]\n";
         $usage .= "    {$this->launcherName} -l\n";
-        $usage .= "    {$this->launcherName} --list\n\n";
+        $usage .= "    {$this->launcherName} -h\n\n";
         $usage .= "Options:\n";
-        $usage .= "    -l, --list    列出所有命令\n";
-        $usage .= "    -h, --help    显示此帮助\n";
+        $usage .= "    -l, --list       列出所有命令\n";
+        $usage .= "    -v, --verbose    尽可能多的显示输出信息，在调试的时候非常有用\n";
+        $usage .= "    -h, --help       显示此帮助\n";
         $usage .= "    \n";
 
         echo $usage;

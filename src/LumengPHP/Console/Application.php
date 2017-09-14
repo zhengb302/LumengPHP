@@ -21,24 +21,33 @@ class Application {
     private $appContext;
 
     /**
-     * @var ConsoleAppSettingInterface 
-     */
-    private $consoleAppSetting;
-
-    /**
      * @var array 命令映射
      */
     private $cmdMapping;
 
+    /**
+     * @var string 启动器名称
+     */
+    private $launcherName = 'console';
+
     public function __construct(ConsoleAppSettingInterface $appSetting, $configFilePath) {
-        $this->consoleAppSetting = new ConsoleAppSetting($appSetting);
+        $consoleAppSetting = new ConsoleAppSetting($appSetting);
 
         $bootstrap = new Bootstrap();
-        $bootstrap->boot($this->consoleAppSetting, $configFilePath);
+        $bootstrap->boot($consoleAppSetting, $configFilePath);
 
         $this->appContext = $bootstrap->getAppContext();
 
-        $this->cmdMapping = $this->consoleAppSetting->getCmdMapping();
+        $this->cmdMapping = $consoleAppSetting->getCmdMapping();
+    }
+
+    /**
+     * 设置启动器名称
+     * 
+     * @param string $launcherName
+     */
+    public function setLauncherName($launcherName) {
+        $this->launcherName = $launcherName;
     }
 
     public function run() {
@@ -145,11 +154,15 @@ class Application {
         }
     }
 
+    /**
+     * 打印帮助信息
+     */
     private function pringUsage() {
         $usage = "\n";
         $usage .= "Usage:\n";
-        $usage .= "    console <cmd name> [arg1] [arg2] ... [argX]\n";
-        $usage .= "    console -l\n\n";
+        $usage .= "    {$this->launcherName} <cmd name> [arg 1] [arg 2] ... [arg n]\n";
+        $usage .= "    {$this->launcherName} -l\n";
+        $usage .= "    {$this->launcherName} --list\n\n";
         $usage .= "Options:\n";
         $usage .= "    -l, --list    列出所有命令\n";
         $usage .= "    -h, --help    显示此帮助\n";

@@ -83,4 +83,53 @@ class Dispatcher {
         }
     }
 
+    /**
+     * // 拦截器配置
+      [
+        Profiler::class => '*',
+        LogFlusher::class => '*',
+        UserAuth::class => '*, ~/user/login, ~/order/submit',
+      ];
+
+      //路由配置
+      [
+        '/helloWorld' => \Bear\BBS\Controllers\HelloWorld::class,
+        '/user/greetUser' => \Bear\BBS\Controllers\User\GreetUser::class,
+        '/user/showUser' => \Bear\BBS\Controllers\User\ShowUser::class,
+      ]
+     */
+    private function buildInterceptorCache() {
+        /* @var $appSetting HttpAppSettingInterface */
+        $appSetting = $this->appContext->getAppSetting();
+
+        $interceptors = $appSetting->getInterceptors();
+
+        $routingConfig = $appSetting->getRoutingConfig();
+        $uriPaths = array_keys($routingConfig);
+        foreach ($uriPaths as $uriPath) {
+            foreach ($interceptors as $interceptor => $patternVal) {
+                
+            }
+        }
+    }
+
+    private function parsePattern($patternVal) {
+        $patterns = [];
+        $excludePatterns = [];
+        foreach (explode(',', $patternVal) as $rawPattern) {
+            $pattern = trim($rawPattern);
+            if (!$pattern) {
+                continue;
+            }
+
+            if ($pattern[0] == '~') {
+                $excludePatterns[] = substr($pattern, 1);
+            } else {
+                $patterns[] = $pattern;
+            }
+        }
+
+        return [$patterns, $excludePatterns];
+    }
+
 }

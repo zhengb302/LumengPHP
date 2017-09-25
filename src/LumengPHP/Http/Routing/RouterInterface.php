@@ -18,4 +18,11 @@ interface RouterInterface {
      * @return string 控制器类的全限定名称
      */
     public function route(Request $request);
+
+    /**
+     * 返回“请求”的翻译过的pathinfo
+     * 
+     * @return string
+     */
+    public function getTranslatedPathInfo();
 }

@@ -19,19 +19,26 @@ use LumengPHP\Http\Request;
  */
 class SimpleRouter extends AbstractRouter {
 
+    /**
+     * @var string 
+     */
+    private $pathInfo;
+
     public function route(Request $request) {
         $requestUri = $request->getRequestUri();
-        $uriPath = $this->extractUriPath($requestUri);
-        if (!isset($this->routingConfig[$uriPath])) {
+        $pathInfo = $this->extractPathInfo($requestUri);
+        if (!isset($this->routingConfig[$pathInfo])) {
             throw new Exception('您请求的控制器不存在~');
         }
 
-        $controllerClass = $this->routingConfig[$uriPath];
+        $this->pathInfo = $pathInfo;
+
+        $controllerClass = $this->routingConfig[$pathInfo];
         return $controllerClass;
     }
 
     /**
-     * 从RequestUri提取Uri Path<br />
+     * 从RequestUri提取PathInfo<br />
      * 如：
      *     /foo/bar => /foo/bar
      *     /foo/bar?id=10086 => /foo/bar
@@ -39,13 +46,17 @@ class SimpleRouter extends AbstractRouter {
      * @param string $requestUri
      * @return string
      */
-    private function extractUriPath($requestUri) {
+    private function extractPathInfo($requestUri) {
         $questionMarkPos = strpos($requestUri, '?');
         if ($questionMarkPos === false) {
             return $requestUri;
         }
 
         return substr($requestUri, 0, $questionMarkPos);
+    }
+
+    public function getTranslatedPathInfo() {
+        return $this->pathInfo;
     }
 
 }

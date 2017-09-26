@@ -6,8 +6,8 @@ use Exception;
 use LumengPHP\Http\Request;
 
 /**
- * 简单的请求路由器<br />
- * 以“URI Path”作为key，映射到相应的控制器，配置格式：URI Path => 控制器的全限定类名称
+ * 默认请求路由器<br />
+ * 以请求的PATH_INFO作为key，映射到相应的控制器，配置格式：PATH_INFO => 控制器的全限定类名称
  * 只支持重写之后的URL类型
  * 配置示例：
  * [
@@ -17,7 +17,7 @@ use LumengPHP\Http\Request;
  *
  * @author zhengluming <luming.zheng@shandjj.com>
  */
-class SimpleRouter extends AbstractRouter {
+class DefaultRouter extends AbstractRouter {
 
     /**
      * @var string 
@@ -55,7 +55,7 @@ class SimpleRouter extends AbstractRouter {
         return substr($requestUri, 0, $questionMarkPos);
     }
 
-    public function getTranslatedPathInfo() {
+    public function getPathInfo() {
         return $this->pathInfo;
     }
 

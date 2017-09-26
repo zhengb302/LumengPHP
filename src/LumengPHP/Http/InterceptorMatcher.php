@@ -105,11 +105,12 @@ class InterceptorMatcher {
 
     /**
      * 把模式转化为正则表达式
+     * 
      * @param string $pattern
      * @return string
      */
     private function patternToRegex($pattern) {
-        $regex = '#^' . str_replace('*', '[A-Za-z0-9/]*', $pattern) . '$#';
+        $regex = '#^' . str_replace('*', '[A-Za-z0-9/_\-]*', $pattern) . '$#';
         return $regex;
     }
 

@@ -26,6 +26,14 @@ interface RouterInterface {
      * 或者是一坨屎一样的、全是查询字符串且根据GET请求参数进行路由的URL，
      * 都需要计算出一个统一的标识来识别当前请求，然后以<b>PATH_INFO</b>的形式返回。
      * 
+     * 【PATH_INFO规则(ABNF)】
+     * PATH_INFO = "/" path
+     * path      = lsegment *( "/" lsegment )
+     * lsegment  = 1*lchar
+     * lchar     = alpha | digit | "_" | "-"
+     * alpha     = <大小写英文字母>
+     * digit     = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+     * 
      * 【示例】
      * 重写过的URL：/user/login  -->  /user/login
      * PATH_INFO模式的URL：/index.php/user/login  -->  /user/login

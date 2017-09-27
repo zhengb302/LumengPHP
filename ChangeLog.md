@@ -1,5 +1,10 @@
 # Release Notes
 
+## [v0.2.2] - 2017-09-27
+
+### Fixed
+- 修复`SimpleRouter`重命名为`DefaultRouter`后，HTTP服务配置中未同步修改类名称的BUG
+
 ## [v0.2.1] - 2017-09-27
 
 ### Fixed

@@ -30,6 +30,10 @@ class ConsoleAppSetting implements ConsoleAppSettingInterface {
         return $this->appSetting->getExtensions() ?: [];
     }
 
+    public function getEventConfig() {
+        return [];
+    }
+
     public function getRootDir() {
         return $this->appSetting->getRootDir();
     }

@@ -47,6 +47,10 @@ class HttpAppSetting implements HttpAppSettingInterface {
         return $this->appSetting->getExtensions() ?: [];
     }
 
+    public function getEventConfig() {
+        return $this->appSetting->getEventConfig() ?: [];
+    }
+
     public function getRootDir() {
         return $this->appSetting->getRootDir();
     }

@@ -7,6 +7,7 @@ use LumengPHP\Http\Result\ResultHandlerInterface;
 use LumengPHP\Http\Routing\RouterInterface;
 use LumengPHP\Kernel\AppContextInterface;
 use LumengPHP\Kernel\ClassInvoker;
+use LumengPHP\Kernel\Event\EventManager;
 
 /**
  * HTTP请求派发器
@@ -40,14 +41,18 @@ class Dispatcher {
         $propertyInjector = new HttpPropertyInjector($this->appContext, $request);
         $classInvoker = new ClassInvoker($this->appContext, $propertyInjector);
 
+        /* @var $appSetting HttpAppSettingInterface */
+        $appSetting = $this->appContext->getAppSetting();
+
+        $eventConfig = $appSetting->getEventConfig();
+        $eventManager = new EventManager($eventConfig, $this->appContext, $classInvoker);
+
         try {
             //路由
             $controllerClass = $this->router->route($request);
             $pathInfo = $this->router->getPathInfo();
 
             //捞出当前pathinfo匹配的拦截器列表
-            /* @var $appSetting HttpAppSettingInterface */
-            $appSetting = $this->appContext->getAppSetting();
             $interceptors = $appSetting->getInterceptors();
             $interceptorMatcher = new InterceptorMatcher($pathInfo, $interceptors);
             $matchedInterceptors = $interceptorMatcher->match();
@@ -66,6 +71,8 @@ class Dispatcher {
             //处理异常
             $result = $this->resultHandler->handleException($ex);
         }
+
+        $eventManager->trigger('system.http.resultCreated');
 
         //处理最终的结果
         $this->resultHandler->handleResult($result);

@@ -17,24 +17,46 @@ interface AppSettingInterface {
 
     /**
      * 取得服务配置
+     * 
      * @return array 
      */
     public function getServices();
 
     /**
      * 取得扩展配置
+     * 
      * @return array 
      */
     public function getExtensions();
 
     /**
+     * 取得事件配置<br />
+     * 格式：事件名称/事件类的全限定名称 => 事件监听器列表
+     * 示例：
+     * [
+     *     'system.end' => [
+     *         SystemEndEvtListener::class,
+     *     ],
+     *     UserAuthFailed::class => [
+     *         UserAuthFailedSmsNotification::class,
+     *         UserAuthFailedEmailNotification::class,
+     *     ],
+     * ]
+     * 
+     * @return array 事件配置。如果应用不支持事件，则应该返回一个空数组
+     */
+    public function getEventConfig();
+
+    /**
      * 取得应用根目录
+     * 
      * @return string 
      */
     public function getRootDir();
 
     /**
      * 取得运行时目录
+     * 
      * @return string 
      */
     public function getRuntimeDir();

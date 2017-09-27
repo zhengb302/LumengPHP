@@ -2,8 +2,11 @@
 
 namespace tests\TestCases;
 
-use PHPUnit_Framework_TestCase;
 use LumengPHP\Kernel\DependencyInjection\ServiceContainer;
+use PHPUnit_Framework_TestCase;
+use tests\Services\Bar;
+use tests\Services\Foo;
+use tests\Services\FooBar;
 
 /**
  * 服务容器的测试
@@ -15,20 +18,20 @@ class ServiceContainerTest extends PHPUnit_Framework_TestCase {
     public function testNormal() {
         $configs = [
             'foo' => [
-                'class' => \tests\Services\Foo::class,
+                'class' => Foo::class,
             ],
         ];
         $container = new ServiceContainer($configs);
 
         $foo = $container->get('foo');
-        $this->assertInstanceOf(\tests\Services\Foo::class, $foo);
+        $this->assertInstanceOf(Foo::class, $foo);
         $this->assertEquals('foo', $foo->foo());
     }
 
     public function testServiceNotExists() {
         $configs = [
             'foo' => [
-                'class' => \tests\Services\Foo::class,
+                'class' => Foo::class,
             ],
         ];
         $container = new ServiceContainer($configs);
@@ -39,12 +42,12 @@ class ServiceContainerTest extends PHPUnit_Framework_TestCase {
 
     public function testRegService() {
         $container = new ServiceContainer([]);
-        $container->register('foo', new \tests\Services\Foo());
+        $container->register('foo', new Foo());
 
         $this->assertTrue($container->has('foo'));
 
         $foo = $container->get('foo');
-        $this->assertInstanceOf(\tests\Services\Foo::class, $foo);
+        $this->assertInstanceOf(Foo::class, $foo);
     }
 
     /**
@@ -53,17 +56,17 @@ class ServiceContainerTest extends PHPUnit_Framework_TestCase {
     public function testCallback() {
         $configs = [
             'foo' => [
-                'class' => \tests\Services\Foo::class,
+                'class' => Foo::class,
             ],
             'bar' => function($container) {
                 $foo = $container->get('foo');
-                return new \tests\Services\Bar($foo);
+                return new Bar($foo);
             },
         ];
         $container = new ServiceContainer($configs);
 
         $bar = $container->get('bar');
-        $this->assertInstanceOf(\tests\Services\Bar::class, $bar);
+        $this->assertInstanceOf(Bar::class, $bar);
         $this->assertEquals('fooBar', $bar->fooBar());
     }
 
@@ -73,17 +76,17 @@ class ServiceContainerTest extends PHPUnit_Framework_TestCase {
     public function testConstructorArgsAndServiceRef() {
         $configs = [
             'foo' => [
-                'class' => \tests\Services\Foo::class,
+                'class' => Foo::class,
             ],
             'bar' => [
-                'class' => \tests\Services\Bar::class,
+                'class' => Bar::class,
                 'constructor-args' => ['@foo'],
             ],
         ];
         $container = new ServiceContainer($configs);
 
         $bar = $container->get('bar');
-        $this->assertInstanceOf(\tests\Services\Bar::class, $bar);
+        $this->assertInstanceOf(Bar::class, $bar);
         $this->assertEquals('fooBar', $bar->fooBar());
     }
 
@@ -95,7 +98,7 @@ class ServiceContainerTest extends PHPUnit_Framework_TestCase {
     public function testInvalidConstructorArgs() {
         $configs = [
             'bar' => [
-                'class' => \tests\Services\Bar::class,
+                'class' => Bar::class,
                 'constructor-args' => '@foo',
             ],
         ];
@@ -109,14 +112,14 @@ class ServiceContainerTest extends PHPUnit_Framework_TestCase {
     public function testCalls() {
         $configs = [
             'foo' => [
-                'class' => \tests\Services\Foo::class,
+                'class' => Foo::class,
             ],
             'bar' => [
-                'class' => \tests\Services\Bar::class,
+                'class' => Bar::class,
                 'constructor-args' => ['@foo'],
             ],
             'fooBar' => [
-                'class' => \tests\Services\FooBar::class,
+                'class' => FooBar::class,
                 //服务配置里的方法调用
                 'calls' => [
                     //方法名称 => 方法参数数组
@@ -128,8 +131,33 @@ class ServiceContainerTest extends PHPUnit_Framework_TestCase {
         $container = new ServiceContainer($configs);
 
         $fooBar = $container->get('fooBar');
-        $this->assertInstanceOf(\tests\Services\FooBar::class, $fooBar);
+        $this->assertInstanceOf(FooBar::class, $fooBar);
         $this->assertEquals('fooBar', $fooBar->fooBar());
+    }
+
+    public function testAnonymousFunctionConfig() {
+        $configs = [
+            'foo' => function() {
+                return new Foo();
+            },
+        ];
+        $container = new ServiceContainer($configs);
+
+        $foo = $container->get('foo');
+        $this->assertInstanceOf(Foo::class, $foo);
+        $this->assertEquals('foo', $foo->foo());
+    }
+
+    public function testAnonymousFunctionRegister() {
+        $configs = [];
+        $container = new ServiceContainer($configs);
+        $container->register('foo', function() {
+            return new Foo();
+        });
+
+        $foo = $container->get('foo');
+        $this->assertInstanceOf(Foo::class, $foo);
+        $this->assertEquals('foo', $foo->foo());
     }
 
 }

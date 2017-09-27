@@ -2,6 +2,8 @@
 
 namespace LumengPHP\Kernel\DependencyInjection;
 
+use Closure;
+
 /**
  * 依赖注入服务容器<br />
  * Usage:
@@ -16,7 +18,7 @@ class ServiceContainer implements ContainerInterface {
 
     /**
      *
-     * @var array 服务配置Map，格式：service name => service config/callback
+     * @var array 服务配置Map，格式：service name => service config/匿名函数
      */
     private $configs;
 
@@ -33,7 +35,7 @@ class ServiceContainer implements ContainerInterface {
 
     /**
      * 使用服务配置构造一个服务容器
-     * @param array $configs 服务配置Map，格式：service name => service config/callback
+     * @param array $configs 服务配置Map，格式：service name => service config/匿名函数
      */
     public function __construct(array $configs) {
         $this->configs = $configs;
@@ -71,7 +73,7 @@ class ServiceContainer implements ContainerInterface {
 
     private function buildService($serviceName) {
         $serviceConfig = $this->configs[$serviceName];
-        if (!is_callable($serviceConfig) && !is_array($serviceConfig)) {
+        if (!($serviceConfig instanceof Closure) && !is_array($serviceConfig)) {
             throw new ServiceContainerException("无效的服务配置，服务名称：{$serviceName}");
         }
 
@@ -82,11 +84,11 @@ class ServiceContainer implements ContainerInterface {
      * 注册服务<br />
      * 如果服务容器中已经存在名称相同的服务，则会覆盖原来的服务对象
      * @param string $serviceName 服务名称
-     * @param mixed $serviceInstance 服务对象实例、或者是一个回调
+     * @param mixed $serviceInstance 服务对象实例、或者是一个匿名函数
      * @throws ServiceContainerException
      */
     public function register($serviceName, $serviceInstance) {
-        if (!is_object($serviceInstance) && !is_callable($serviceInstance)) {
+        if (!($serviceInstance instanceof Closure) && !is_object($serviceInstance)) {
             throw new ServiceContainerException("{$serviceName} is not a valid service.");
         }
 
@@ -98,15 +100,15 @@ class ServiceContainer implements ContainerInterface {
         $this->configs[$serviceName] = null;
         unset($this->configs[$serviceName]);
 
-        if (is_object($serviceInstance)) {
+        if ($serviceInstance instanceof Closure) {
             //set the new one
-            $this->services[$serviceName] = $serviceInstance;
+            $this->configs[$serviceName] = $serviceInstance;
             return;
         }
 
-        if (is_callable($serviceInstance)) {
+        if (is_object($serviceInstance)) {
             //set the new one
-            $this->configs[$serviceName] = $serviceInstance;
+            $this->services[$serviceName] = $serviceInstance;
             return;
         }
     }

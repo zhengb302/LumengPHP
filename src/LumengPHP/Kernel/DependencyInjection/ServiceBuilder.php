@@ -2,6 +2,7 @@
 
 namespace LumengPHP\Kernel\DependencyInjection;
 
+use Closure;
 use ReflectionClass;
 
 /**
@@ -26,8 +27,8 @@ class ServiceBuilder {
      * @return mixed 服务对象实例
      */
     public function build($serviceConfig) {
-        //“服务配置”可以是一个回调函数
-        if (is_callable($serviceConfig)) {
+        //“服务配置”可以是一个匿名函数
+        if ($serviceConfig instanceof Closure) {
             $callback = $serviceConfig;
             return $callback($this->serviceContainer);
         }

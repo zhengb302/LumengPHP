@@ -70,7 +70,7 @@ class InterceptorChain implements InterceptorChainInterface {
     }
 
     public function invoke() {
-        //拦截器已经调用完了
+        //拦截器已经调用完了，那么，调用控制器类
         if ($this->pos >= $this->interceptorCount) {
             $current = $this->controllerClass;
         }

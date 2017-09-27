@@ -52,8 +52,9 @@ class Dispatcher {
             $interceptorMatcher = new InterceptorMatcher($pathInfo, $interceptors);
             $matchedInterceptors = $interceptorMatcher->match();
 
-            //执行拦截器链
+            //创建拦截器链对象，并且把其注册为服务，然后再执行拦截器链
             $interceptorChain = new InterceptorChain($matchedInterceptors, $controllerClass, $classInvoker);
+            $this->appContext->getServiceContainer()->register('interceptorChain', $interceptorChain);
             $return = $interceptorChain->invoke();
             if ($interceptorChain->hasException()) {
                 throw $interceptorChain->getException();

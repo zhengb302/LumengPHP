@@ -4,3 +4,6 @@ nbproject/
 
 # 忽略vendor目录
 vendor/
+
+#
+composer.lock

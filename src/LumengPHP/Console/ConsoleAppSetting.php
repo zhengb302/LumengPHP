@@ -31,7 +31,7 @@ class ConsoleAppSetting implements ConsoleAppSettingInterface {
     }
 
     public function getEventConfig() {
-        return [];
+        return $this->appSetting->getEventConfig() ?: [];
     }
 
     public function getRootDir() {

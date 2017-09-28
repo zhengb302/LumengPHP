@@ -30,7 +30,7 @@ class Token {
     const T_VAR = 3;
 
     /**
-     * 属性注入注解，有@get、@post、@request、@session、@config、@service
+     * 属性注入注解，有@get、@post、@request、@session、@config、@service、@currentEvent
      */
     const T_PROPERTY_INJECTOR = 4;
 

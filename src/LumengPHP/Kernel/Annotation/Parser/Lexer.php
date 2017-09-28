@@ -120,6 +120,7 @@ class Lexer {
             case '@session':
             case '@config':
             case '@service':
+            case '@currentEvent':
                 $tokenType = Token::T_PROPERTY_INJECTOR;
                 break;
             case '@keepDefault':

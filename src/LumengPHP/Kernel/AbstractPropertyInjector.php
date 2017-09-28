@@ -49,7 +49,7 @@ abstract class AbstractPropertyInjector implements PropertyInjectorInterface {
             return;
         }
 
-        if ($source == 'service') {
+        if (in_array($source, ['service', 'currentEvent'])) {
             $value = $rawValue;
         } else {
             $value = $this->convertValue($metadata['type'], $rawValue);

@@ -70,7 +70,7 @@ class Parser {
     }
 
     /**
-     * 属性注入注解："@get"、"@post"、"@request"、"@session"、”@config“、"@service"
+     * 属性注入注解："@get"、"@post"、"@request"、"@session"、"@config"、"@service"、"@currentEvent"
      */
     private function propertyInjectorTag() {
         $this->match(Token::T_PROPERTY_INJECTOR);

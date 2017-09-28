@@ -1,5 +1,10 @@
 # Release Notes
 
+## [v0.2.6] - 2017-09-28
+
+### Added
+- `Result`类增加`more`属性
+
 ## [v0.2.5] - 2017-09-28
 
 ### Fixed

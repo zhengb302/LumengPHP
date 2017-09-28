@@ -5,7 +5,6 @@ namespace LumengPHP\Http;
 use Exception;
 use LumengPHP\Kernel\AbstractPropertyInjector;
 use LumengPHP\Kernel\AppContextInterface;
-use LumengPHP\Kernel\Event\EventManagerInterface;
 
 /**
  * HTTP属性注入器
@@ -18,11 +17,6 @@ class HttpPropertyInjector extends AbstractPropertyInjector {
      * @var AppContextInterface
      */
     private $appContext;
-
-    /**
-     * @var EventManagerInterface 
-     */
-    private $eventManager;
 
     /**
      * @var Request 
@@ -51,7 +45,6 @@ class HttpPropertyInjector extends AbstractPropertyInjector {
 
     public function __construct(AppContextInterface $appContext, Request $request) {
         $this->appContext = $appContext;
-        $this->eventManager = $appContext->getService('eventManager');
 
         $this->requestObj = $request;
         $this->get = $this->requestObj->get;
@@ -81,7 +74,7 @@ class HttpPropertyInjector extends AbstractPropertyInjector {
                 $rawValue = $this->appContext->getService($paramName);
                 break;
             case 'currentEvent':
-                $rawValue = $this->eventManager->getCurrentEvent();
+                $rawValue = $this->appContext->getService('eventManager')->getCurrentEvent();
                 break;
             default:
                 throw new Exception("不支持的数据源：{$source}");

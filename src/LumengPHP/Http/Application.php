@@ -54,8 +54,8 @@ class Application {
         $container->register('eventManager', $eventManager);
 
         //构造请求派发器
-        $router = $container->getService('httpRouter');
-        $resultHandler = $container->getService('httpResultHandler');
+        $router = $container->get('httpRouter');
+        $resultHandler = $container->get('httpResultHandler');
         $dispatcher = new Dispatcher($this->appContext, $router, $resultHandler);
 
         //执行派发动作

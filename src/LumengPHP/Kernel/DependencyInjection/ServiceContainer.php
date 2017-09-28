@@ -46,7 +46,7 @@ class ServiceContainer implements ContainerInterface {
     /**
      * 根据服务名称检查服务容器中是否存在相应的服务对象
      * @param string $serviceName 服务名称
-     * @return boolean 存在则返回true，不存在则返回false
+     * @return bool 存在则返回true，不存在则返回false
      */
     public function has($serviceName) {
         return isset($this->services[$serviceName]) ||
@@ -54,9 +54,9 @@ class ServiceContainer implements ContainerInterface {
     }
 
     /**
-     * 根据服务名称返回一个服务对象
+     * 根据服务名称获取一个服务对象
      * @param string $serviceName 服务名称
-     * @return mixed|null 一个服务对象。如果服务不存在，返回null
+     * @return object|null 一个服务对象。如果服务不存在，则返回null
      */
     public function get($serviceName) {
         if (isset($this->services[$serviceName])) {

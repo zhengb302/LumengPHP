@@ -9,18 +9,18 @@ namespace LumengPHP\Kernel\DependencyInjection;
 interface ContainerInterface {
 
     /**
-     * 检查容器中是否存在键值为$key的对象
-     * @param string $key
-     * @return boolean 存在则返回true，不存在则返回false
+     * 根据服务名称检查服务容器中是否存在相应的服务对象
+     * @param string $serviceName 服务名称
+     * @return bool 存在则返回true，不存在则返回false
      */
-    public function has($key);
+    public function has($serviceName);
 
     /**
-     * 获取一个对象
-     * @param string $key
-     * @return mixed|null 存在则返回相应的对象，不存在则返回null
+     * 根据服务名称获取一个服务对象
+     * @param string $serviceName 服务名称
+     * @return object|null 一个服务对象。如果服务不存在，则返回null
      */
-    public function get($key);
+    public function get($serviceName);
 
     /**
      * 注册服务<br />

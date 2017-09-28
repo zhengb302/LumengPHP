@@ -60,6 +60,9 @@ class Application {
 
         //执行派发动作
         $dispatcher->dispatch($request);
+
+        //触发HTTP应用执行完毕事件
+        $eventManager->trigger('system.http.end');
     }
 
 }

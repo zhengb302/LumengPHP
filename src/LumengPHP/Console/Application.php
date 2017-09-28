@@ -6,6 +6,7 @@ use Exception;
 use LumengPHP\Kernel\AppContextInterface;
 use LumengPHP\Kernel\Bootstrap;
 use LumengPHP\Kernel\ClassInvoker;
+use LumengPHP\Kernel\Event\EventManager;
 use ReflectionClass;
 
 /**
@@ -168,17 +169,27 @@ class Application {
             exit(-1);
         }
 
-        $cmdClass = $this->cmdMapping[$cmdName];
+        $container = $this->appContext->getServiceContainer();
 
         //构造“InputInterface”实例，并注册为名为“input”服务，以供程序中读取命令行参数
         $args = array_slice($argv, 1, $argc - 1);
         $input = new Input($args);
-        $this->appContext->getServiceContainer()->register('input', $input);
+        $container->register('input', $input);
 
+        //构造 ClassInvoker 对象，并把其注册为服务
         $propertyInjector = new ConsolePropertyInjector($this->appContext);
         $classInvoker = new ClassInvoker($this->appContext, $propertyInjector);
+        $container->register('classInvoker', $classInvoker);
+
+        //构造事件管理器，请把其注册为服务
+        /* @var $appSetting ConsoleAppSettingInterface */
+        $appSetting = $this->appContext->getAppSetting();
+        $eventConfig = $appSetting->getEventConfig();
+        $eventManager = new EventManager($eventConfig, $this->appContext, $classInvoker);
+        $container->register('eventManager', $eventManager);
 
         try {
+            $cmdClass = $this->cmdMapping[$cmdName];
             $classInvoker->invoke($cmdClass);
         } catch (Exception $ex) {
             echo "发生异常，异常消息：", $ex->getMessage(), "\n";

@@ -4,6 +4,8 @@ namespace LumengPHP\Http;
 
 use LumengPHP\Kernel\AppContextInterface;
 use LumengPHP\Kernel\Bootstrap;
+use LumengPHP\Kernel\ClassInvoker;
+use LumengPHP\Kernel\Event\EventManager;
 
 /**
  * HTTP应用<br />
@@ -24,11 +26,6 @@ class Application {
      */
     private $appContext;
 
-    /**
-     * @var Dispatcher
-     */
-    private $dispatcher;
-
     public function __construct(HttpAppSettingInterface $appSetting, $configFilePath) {
         $httpAppSetting = new HttpAppSetting($appSetting);
 
@@ -36,22 +33,33 @@ class Application {
         $bootstrap->boot($httpAppSetting, $configFilePath);
 
         $this->appContext = $bootstrap->getAppContext();
-
-        $this->buildDispatcher();
-    }
-
-    private function buildDispatcher() {
-        $router = $this->appContext->getService('httpRouter');
-        $resultHandler = $this->appContext->getService('httpResultHandler');
-        $this->dispatcher = new Dispatcher($this->appContext, $router, $resultHandler);
     }
 
     public function handle(Request $request) {
+        $container = $this->appContext->getServiceContainer();
+
         //把Request实例注册为服务
-        $this->appContext->getServiceContainer()->register('request', $request);
+        $container->register('request', $request);
+
+        //构造 ClassInvoker 对象，并把其注册为服务
+        $propertyInjector = new HttpPropertyInjector($this->appContext, $request);
+        $classInvoker = new ClassInvoker($this->appContext, $propertyInjector);
+        $container->register('classInvoker', $classInvoker);
+
+        //构造事件管理器，请把其注册为服务
+        /* @var $appSetting HttpAppSettingInterface */
+        $appSetting = $this->appContext->getAppSetting();
+        $eventConfig = $appSetting->getEventConfig();
+        $eventManager = new EventManager($eventConfig, $this->appContext, $classInvoker);
+        $container->register('eventManager', $eventManager);
+
+        //构造请求派发器
+        $router = $container->getService('httpRouter');
+        $resultHandler = $container->getService('httpResultHandler');
+        $dispatcher = new Dispatcher($this->appContext, $router, $resultHandler);
 
         //执行派发动作
-        $this->dispatcher->doDispatcher($request);
+        $dispatcher->dispatch($request);
     }
 
 }

@@ -37,9 +37,6 @@ class EventManager implements EventManagerInterface {
         $this->eventConfig = $eventConfig;
         $this->appContext = $appContext;
         $this->classInvoker = $classInvoker;
-
-        //把当前对象注册为“eventManager”的服务
-        $this->appContext->getServiceContainer()->register('eventManager', $this);
     }
 
     public function trigger($event) {

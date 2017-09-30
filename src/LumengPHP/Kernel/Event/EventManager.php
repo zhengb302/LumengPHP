@@ -29,7 +29,7 @@ class EventManager implements EventManagerInterface {
     private $classInvoker;
 
     /**
-     * @var string|object 事件名称，或事件对象，取决于触发事件时传递的参数值
+     * @var object 当前事件对象
      */
     private $currentEvent;
 
@@ -42,12 +42,8 @@ class EventManager implements EventManagerInterface {
     public function trigger($event) {
         $this->currentEvent = $event;
 
-        if (is_string($event)) {
-            $eventName = $event;
-        } else {
-            $refObj = new ReflectionClass($event);
-            $eventName = $refObj->getName();
-        }
+        $refObj = new ReflectionClass($event);
+        $eventName = $refObj->getName();
 
         //如果当前事件未注册监听器，那么直接退出
         if (!isset($this->eventConfig[$eventName])) {

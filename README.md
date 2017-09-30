@@ -17,3 +17,8 @@ LumengPHP
 ----
 
 [LumengPHP开发手册](docs/manual.md)
+
+变更日志
+--------
+
+[变更日志](ChangeLog.md)

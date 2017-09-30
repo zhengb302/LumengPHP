@@ -2,6 +2,7 @@
 
 namespace LumengPHP\Http;
 
+use LumengPHP\Http\Events\HttpEnd;
 use LumengPHP\Kernel\AppContextInterface;
 use LumengPHP\Kernel\Bootstrap;
 use LumengPHP\Kernel\ClassInvoker;
@@ -62,7 +63,7 @@ class Application {
         $dispatcher->dispatch($request);
 
         //触发HTTP应用执行完毕事件
-        $eventManager->trigger('system.http.end');
+        $eventManager->trigger(new HttpEnd());
     }
 
 }

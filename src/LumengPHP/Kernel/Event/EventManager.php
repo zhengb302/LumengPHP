@@ -2,6 +2,8 @@
 
 namespace LumengPHP\Kernel\Event;
 
+use LumengPHP\Components\Queue\QueueInterface;
+use LumengPHP\Kernel\Annotation\ClassMetadataLoader;
 use LumengPHP\Kernel\AppContextInterface;
 use LumengPHP\Kernel\ClassInvoker;
 use ReflectionClass;
@@ -47,6 +49,17 @@ class EventManager implements EventManagerInterface {
 
         //如果当前事件未注册监听器，那么直接退出
         if (!isset($this->eventConfig[$eventName])) {
+            return;
+        }
+
+        //加载类元数据
+        $metadataLoader = new ClassMetadataLoader($this->appContext, $refObj);
+        $classMetadata = $metadataLoader->load();
+        if (isset($classMetadata['queued'])) {
+            $queueServiceName = $classMetadata['queued'] ?: 'defaultEventQueue';
+            /* @var $queueService QueueInterface */
+            $queueService = $this->appContext->getService($queueServiceName);
+            $queueService->enqueue($event);
             return;
         }
 

@@ -13,24 +13,9 @@ use ReflectionClass;
 class ClassInvoker {
 
     /**
-     * @var string 入口方法名称
+     * 默认的入口方法名称
      */
-    private $entryMethod = 'execute';
-
-    /**
-     * @var object 要调用的对象
-     */
-    private $classObject;
-
-    /**
-     * @var ReflectionClass 
-     */
-    private $reflectionObj;
-
-    /**
-     * @var array 类注解元数据
-     */
-    private $classMetadata;
+    const ENTRY_METHOD = 'execute';
 
     /**
      * @var AppContextInterface
@@ -58,25 +43,25 @@ class ClassInvoker {
      * @return type
      */
     public function invoke($class) {
-        $this->classObject = new $class();
-        $this->reflectionObj = new ReflectionClass($class);
+        $classObject = new $class();
+        $reflectionObj = new ReflectionClass($class);
 
         //加载类元数据
-        $metadataLoader = new ClassMetadataLoader($this->appContext, $this->reflectionObj);
-        $this->classMetadata = $metadataLoader->load();
+        $metadataLoader = new ClassMetadataLoader($this->appContext, $reflectionObj);
+        $classMetadata = $metadataLoader->load();
 
         //注入属性
-        $propertyMetadata = $this->classMetadata['propertyMetadata'];
-        $this->propertyInjector->inject($this->classObject, $this->reflectionObj, $propertyMetadata);
+        $propertyMetadata = $classMetadata['propertyMetadata'];
+        $this->propertyInjector->inject($classObject, $reflectionObj, $propertyMetadata);
 
         //如果有init方法，先执行init方法
-        if ($this->reflectionObj->hasMethod('init')) {
-            $this->classObject->init();
+        if ($reflectionObj->hasMethod('init')) {
+            $classObject->init();
         }
 
         //执行类入口方法并返回
-        $method = $this->entryMethod;
-        $return = $this->classObject->$method();
+        $method = self::ENTRY_METHOD;
+        $return = $classObject->$method();
         return $return;
     }
 

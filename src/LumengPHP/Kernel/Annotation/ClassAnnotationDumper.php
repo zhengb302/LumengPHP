@@ -19,6 +19,11 @@ class ClassAnnotationDumper {
     private $reflectionObj;
 
     /**
+     * @var array 类自身的元数据
+     */
+    private $classMetadata = [];
+
+    /**
      * @var array 属性元数据，属性名称作为key
      */
     private $propertyMetadata = [];
@@ -38,10 +43,12 @@ class ClassAnnotationDumper {
      * @return array 类的注解
      */
     public function dump($path) {
+        $this->parseClassAnnotation();
         $this->parsePropertyAnnotation();
         $this->parseMethodAnnotation();
 
         $classMetadata = [
+            'classMetadata' => $this->classMetadata,
             'propertyMetadata' => $this->propertyMetadata,
             'methodMetadata' => $this->methodMetadata,
         ];
@@ -49,6 +56,20 @@ class ClassAnnotationDumper {
         file_put_contents($path, "<?php\nreturn " . var_export($classMetadata, true) . ";\n");
 
         return $classMetadata;
+    }
+
+    /**
+     * 解析类自身的注解
+     */
+    private function parseClassAnnotation() {
+        $docComment = $this->reflectionObj->getDocComment();
+
+        $metaData = new Metadata();
+
+        $parser = new Parser(new Lexer($docComment), $metaData);
+        $parser->parse();
+
+        $this->classMetadata = $metaData->getAllMetadata();
     }
 
     /**

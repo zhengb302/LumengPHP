@@ -2,8 +2,8 @@
 
 namespace LumengPHP\Kernel;
 
+use LumengPHP\Kernel\Annotation\ClassMetadataLoader;
 use ReflectionClass;
-use LumengPHP\Kernel\Annotation\ClassAnnotationDumper;
 
 /**
  * 类调用者
@@ -18,7 +18,7 @@ class ClassInvoker {
     private $entryMethod = 'execute';
 
     /**
-     * @var mixed 要调用的对象
+     * @var object 要调用的对象
      */
     private $classObject;
 
@@ -54,7 +54,7 @@ class ClassInvoker {
 
     /**
      * 调用类并返回一个结果对象
-     * @param string $class 要调用的类的全限定名称
+     * @param string $class 要被调用的类的全限定名称
      * @return type
      */
     public function invoke($class) {
@@ -62,7 +62,8 @@ class ClassInvoker {
         $this->reflectionObj = new ReflectionClass($class);
 
         //加载类元数据
-        $this->loadClassMetadata();
+        $metadataLoader = new ClassMetadataLoader($this->appContext, $this->reflectionObj);
+        $this->classMetadata = $metadataLoader->load();
 
         //注入属性
         $propertyMetadata = $this->classMetadata['propertyMetadata'];
@@ -77,35 +78,6 @@ class ClassInvoker {
         $method = $this->entryMethod;
         $return = $this->classObject->$method();
         return $return;
-    }
-
-    /**
-     * 加载类元数据
-     */
-    private function loadClassMetadata() {
-        $metadataCacheDir = $this->appContext->getRuntimeDir() . '/cache/class-metadata';
-        if (!is_dir($metadataCacheDir)) {
-            mkdir($metadataCacheDir, 0755, true);
-        }
-
-        //inode、最后修改时间
-        $classFilePath = $this->reflectionObj->getFileName();
-        $inode = fileinode($classFilePath);
-        $lastModifiedTime = filemtime($classFilePath);
-
-        //类的全限定名称
-        $classFullName = $this->reflectionObj->getName();
-
-        //类元数据缓存文件名及路径
-        $cacheFileName = str_replace('\\', '.', $classFullName) . ".{$inode}.{$lastModifiedTime}.php";
-        $cacheFilePath = $metadataCacheDir . '/' . $cacheFileName;
-
-        if (is_file($cacheFilePath)) {
-            $this->classMetadata = require($cacheFilePath);
-        } else {
-            $classAnnotationDumper = new ClassAnnotationDumper($this->reflectionObj);
-            $this->classMetadata = $classAnnotationDumper->dump($cacheFilePath);
-        }
     }
 
 }

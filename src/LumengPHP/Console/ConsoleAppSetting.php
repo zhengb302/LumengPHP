@@ -43,7 +43,15 @@ class ConsoleAppSetting implements ConsoleAppSettingInterface {
     }
 
     public function getCmdMapping() {
-        return $this->appSetting->getCmdMapping() ?: [];
+        //Console应用系统自带的一些命令
+        $defaultMapping = [
+            'event:listen' => \LumengPHP\Console\Commands\Event\Listen::class,
+        ];
+
+        //应用特定的命令
+        $appMapping = $this->appSetting->getCmdMapping() ?: [];
+
+        return array_merge($defaultMapping, $appMapping);
     }
 
 }

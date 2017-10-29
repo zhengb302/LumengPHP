@@ -34,27 +34,7 @@ class Listen {
     private $eventManager;
 
     public function execute() {
-        $evtConfig = $this->appContext->getAppSetting()->getEventConfig();
-        if (empty($evtConfig)) {
-            return;
-        }
-
-        $queueServices = [];
-        foreach (array_keys($evtConfig) as $evtName) {
-            $refObj = new ReflectionClass($evtName);
-            $metadataLoader = new ClassMetadataLoader($this->appContext, $refObj);
-            $classMetadata = $metadataLoader->load();
-
-            //如果不是队列化的异步事件
-            if (!isset($classMetadata['queued'])) {
-                continue;
-            }
-
-            $queueServiceName = $classMetadata['queued'] ?: 'defaultEventQueue';
-            if (!in_array($queueServiceName, $queueServices)) {
-                $queueServices[] = $queueServiceName;
-            }
-        }
+        $queueServices = $this->extraQueueServices();
 
         //如果没有(需要)队列化的异步事件
         if (empty($queueServices)) {
@@ -71,18 +51,49 @@ class Listen {
             }
             //父进程
             else if ($pid) {
-                $status = 0;
-                pcntl_wait($status);
+                
             }
             //子进程
             else {
-                /* @var $queueService QueueInterface */
-                $queueService = $this->appContext->getService($queueServiceName);
-                while ($event = $queueService->dequeue()) {
-                    $this->eventManager->trigger($event);
-                }
+                $this->listenQueue($queueServiceName);
+
+                //必须返回啊，不然就跑去执行主进程的代码了
+                return;
             }
         }
+
+        //这后边也是父进程的代码
+    }
+
+    /**
+     * 提取出所有的事件队列名称
+     * 
+     * @return array
+     */
+    private function extraQueueServices() {
+        $eventConfig = $this->appContext->getAppSetting()->getEventConfig();
+        if (empty($eventConfig)) {
+            return [];
+        }
+
+        $queueServices = [];
+        foreach (array_keys($eventConfig) as $eventName) {
+            $refObj = new ReflectionClass($eventName);
+            $metadataLoader = new ClassMetadataLoader($this->appContext, $refObj);
+            $classMetadata = $metadataLoader->load();
+
+            //如果不是队列化的异步事件
+            if (!isset($classMetadata['queued'])) {
+                continue;
+            }
+
+            $queueServiceName = $classMetadata['queued'] ?: 'defaultEventQueue';
+            if (!in_array($queueServiceName, $queueServices)) {
+                $queueServices[] = $queueServiceName;
+            }
+        }
+
+        return $queueServices;
     }
 
     /**
@@ -90,6 +101,19 @@ class Listen {
      */
     private function daemon() {
         
+    }
+
+    /**
+     * 监听队列
+     * 
+     * @param string $queueServiceName 队列服务名称
+     */
+    private function listenQueue($queueServiceName) {
+        /* @var $queueService QueueInterface */
+        $queueService = $this->appContext->getService($queueServiceName);
+        while ($event = $queueService->dequeue()) {
+            $this->eventManager->trigger($event);
+        }
     }
 
 }

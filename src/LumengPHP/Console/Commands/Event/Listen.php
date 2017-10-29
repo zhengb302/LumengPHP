@@ -112,7 +112,7 @@ class Listen {
         /* @var $queueService QueueInterface */
         $queueService = $this->appContext->getService($queueServiceName);
         while ($event = $queueService->dequeue()) {
-            $this->eventManager->trigger($event);
+            $this->eventManager->trigger($event, true);
         }
     }
 

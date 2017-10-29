@@ -41,12 +41,7 @@ class EventManager implements EventManagerInterface {
         $this->classInvoker = $classInvoker;
     }
 
-    /**
-     * 触发一个事件
-     * 
-     * @param object $event 事件对象
-     */
-    public function trigger($event) {
+    public function trigger($event, $immediately = false) {
         $this->currentEvent = $event;
 
         $refObj = new ReflectionClass($event);
@@ -54,6 +49,12 @@ class EventManager implements EventManagerInterface {
 
         //如果当前事件未注册监听器，那么直接退出
         if (!isset($this->eventConfig[$eventName])) {
+            return;
+        }
+
+        //如果要求立即执行事件的监听器
+        if ($immediately) {
+            $this->executeListeners($eventName);
             return;
         }
 
@@ -68,7 +69,16 @@ class EventManager implements EventManagerInterface {
             return;
         }
 
-        //如果是未队列化的同步事件，则逐个执行事件监听器
+        //如果是未队列化的同步事件，则执行事件的监听器
+        $this->executeListeners($eventName);
+    }
+
+    /**
+     * (逐个)执行事件的监听器
+     * 
+     * @param string $eventName 事件名称
+     */
+    private function executeListeners($eventName) {
         $listeners = $this->eventConfig[$eventName];
         foreach ($listeners as $listener) {
             $return = $this->classInvoker->invoke($listener);

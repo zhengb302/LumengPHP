@@ -52,7 +52,7 @@ class EventManager implements EventManagerInterface {
             return;
         }
 
-        //加载类元数据
+        //如果是队列化的异步事件，则把事件对象序列化之后放入队列中，然后直接返回
         $metadataLoader = new ClassMetadataLoader($this->appContext, $refObj);
         $classMetadata = $metadataLoader->load();
         if (isset($classMetadata['queued'])) {
@@ -63,11 +63,12 @@ class EventManager implements EventManagerInterface {
             return;
         }
 
+        //如果是未队列化的同步事件，则逐个执行事件监听器
         $listeners = $this->eventConfig[$eventName];
         foreach ($listeners as $listener) {
             $return = $this->classInvoker->invoke($listener);
 
-            //如果某个事件监听器返回的是“false”，则停止事件的传播
+            //如果某个事件监听器返回“false”，则停止事件的传播
             if ($return === false) {
                 break;
             }

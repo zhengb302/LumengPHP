@@ -26,6 +26,12 @@ class BlockingRedisQueue implements QueueInterface {
      */
     private $timeout = 0;
 
+    /**
+     * 构造一个<b>BlockingRedisQueue</b>实例
+     * 
+     * @param Redis $redis Redis实例
+     * @param string $queueName redis队列名称
+     */
     public function __construct(Redis $redis, $queueName) {
         $this->redis = $redis;
         $this->queueName = $queueName;

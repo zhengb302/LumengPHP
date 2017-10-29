@@ -100,7 +100,31 @@ class Listen {
      * 转为守护进程
      */
     private function daemon() {
-        
+        umask(0);
+        $pid = pcntl_fork();
+
+        //创建子进程出错
+        if ($pid < 0) {
+            _throw('创建子进程出错');
+        }
+
+        //父进程，退出
+        if ($pid > 0) {
+            echo "daemon process started\n";
+            exit(0);
+        }
+
+        //使当前进程成为会话领导进程
+        $sid = posix_setsid();
+        if ($sid < 0) {
+            _throw('设置当前进程为会话领导进程出错');
+        }
+
+        chdir('/');
+
+        $projectName = basename($this->appContext->getRootDir());
+        $pidFilename = "/var/run/{$projectName}.pid";
+        file_put_contents($pidFilename, getmypid());
     }
 
     /**

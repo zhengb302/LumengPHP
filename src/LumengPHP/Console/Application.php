@@ -182,9 +182,7 @@ class Application {
         $container->register('classInvoker', $classInvoker);
 
         //构造事件管理器，请把其注册为服务
-        /* @var $appSetting ConsoleAppSettingInterface */
-        $appSetting = $this->appContext->getAppSetting();
-        $eventConfig = $appSetting->getEventConfig();
+        $eventConfig = $this->appContext->getAppSetting()->getEventConfig();
         $eventManager = new EventManager($eventConfig, $this->appContext, $classInvoker);
         $container->register('eventManager', $eventManager);
 

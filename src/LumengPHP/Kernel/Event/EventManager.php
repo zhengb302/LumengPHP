@@ -41,6 +41,11 @@ class EventManager implements EventManagerInterface {
         $this->classInvoker = $classInvoker;
     }
 
+    /**
+     * 触发一个事件
+     * 
+     * @param object $event 事件对象
+     */
     public function trigger($event) {
         $this->currentEvent = $event;
 

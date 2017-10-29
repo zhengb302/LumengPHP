@@ -45,6 +45,11 @@ class Listen {
      */
     private $pidFile;
 
+    /**
+     * @var array 工作进程Map，格式：工作进程ID => 事件队列服务对象名称
+     */
+    private $workerMap = [];
+
     public function init() {
         $projectName = basename($this->appContext->getRootDir());
         $this->pidFile = "/var/run/{$projectName}.pid";
@@ -93,30 +98,12 @@ class Listen {
         //当前进程转为守护进程
         $this->daemon();
 
-        $children = [];
         foreach ($queueServices as $queueServiceName) {
-            $pid = pcntl_fork();
-            if ($pid == -1) {
-                _throw('创建子进程失败');
-            }
-            //父进程
-            else if ($pid) {
-                $children[] = $pid;
-            }
-            //子进程
-            else {
-                $this->listenQueue($queueServiceName);
-
-                //必须返回啊，不然就跑去执行主进程的代码了
-                return;
-            }
+            $this->startWorker($queueServiceName);
         }
 
-        //
-        while (count($children > 0)) {
-            $pid = pcntl_wait($status);
-            
-        }
+        //监控工作进程
+        $this->monitorWorker();
     }
 
     /**
@@ -201,6 +188,29 @@ class Listen {
     }
 
     /**
+     * 启动工作进程
+     * 
+     * @param string $queueServiceName
+     */
+    private function startWorker($queueServiceName) {
+        $pid = pcntl_fork();
+        if ($pid == -1) {
+            _throw('创建工作进程失败');
+        }
+        //父进程
+        else if ($pid) {
+            $this->workerMap[$pid] = $queueServiceName;
+        }
+        //子进程
+        else {
+            $this->listenQueue($queueServiceName);
+
+            //必须退出啊，不然就跑去执行主进程的代码了
+            exit(0);
+        }
+    }
+
+    /**
      * 监听队列
      * 
      * @param string $queueServiceName 队列服务名称
@@ -214,13 +224,34 @@ class Listen {
     }
 
     /**
+     * 监控工作进程
+     * 
+     * 如果某个工作进程退出了，则启动一个新的工作进程
+     */
+    private function monitorWorker() {
+        while (true) {
+            $status = 0;
+            $workerPid = pcntl_wait($status);
+            $queueServiceName = $this->workerMap[$workerPid];
+
+            unset($this->workerMap[$workerPid]);
+
+            $this->startWorker($queueServiceName);
+        }
+    }
+
+    /**
      * 停止
      * 
      * 示例：
      *     ./console event:listen stop
      */
     private function stop() {
-        
+        if (!file_exists($this->pidFile)) {
+            _throw('事件监听守护进程尚未运行');
+        }
+
+        $masterPid = file_get_contents($this->pidFile);
     }
 
     /**
@@ -230,7 +261,8 @@ class Listen {
      *     ./console event:listen restart
      */
     private function restart() {
-        
+        $this->stop();
+        $this->start();
     }
 
 }

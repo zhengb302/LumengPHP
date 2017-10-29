@@ -48,8 +48,12 @@ class Bootstrap {
         //构造服务容器
         $this->buildServiceContainer();
 
+        //构造 AppContextInterface 实例并注册为服务
         $this->appContext = new AppContext($appSetting, $appConfig, $this->container);
         $this->container->register('appContext', $this->appContext);
+
+        //把 AppSettingInterface 实例也注册为服务
+        $this->container->register('appSetting', $this->appSetting);
 
         //加载扩展
         $this->loadExtensions();

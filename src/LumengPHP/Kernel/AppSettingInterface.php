@@ -30,12 +30,14 @@ interface AppSettingInterface {
     public function getExtensions();
 
     /**
-     * 取得事件配置<br />
-     * 格式：事件名称/事件类的全限定名称 => 事件监听器列表
+     * 取得事件配置
+     * 
+     * 格式：事件类的全限定名称 => 事件监听器列表
+     * 
      * 示例：
      * [
-     *     'system.end' => [
-     *         SystemEndEvtListener::class,
+     *     HttpEnd::class => [
+     *         HttpEndEvtListener::class,
      *     ],
      *     UserAuthFailed::class => [
      *         UserAuthFailedSmsNotification::class,

@@ -3,6 +3,7 @@
 namespace LumengPHP\Console\Commands\Event;
 
 use LumengPHP\Components\Queue\QueueInterface;
+use LumengPHP\Console\InputInterface;
 use LumengPHP\Kernel\Annotation\ClassMetadataLoader;
 use LumengPHP\Kernel\AppContextInterface;
 use LumengPHP\Kernel\Event\EventManagerInterface;
@@ -28,22 +29,71 @@ class Listen {
     private $appContext;
 
     /**
+     * @var InputInterface 
+     * @service
+     */
+    private $input;
+
+    /**
      * @var EventManagerInterface 
      * @service
      */
     private $eventManager;
 
+    /**
+     * @var string pid文件路径
+     */
+    private $pidFile;
+
+    public function init() {
+        $projectName = basename($this->appContext->getRootDir());
+        $this->pidFile = "/var/run/{$projectName}.pid";
+    }
+
     public function execute() {
+        $action = $this->input->getArg(1);
+        if (!$action) {
+            $action = 'start';
+        }
+
+        switch ($action) {
+            case 'start':
+                $this->start();
+                break;
+            case 'stop':
+                $this->stop();
+                break;
+            case 'restart':
+                $this->restart();
+                break;
+            default:
+                _throw("未知的操作：{$action}");
+        }
+    }
+
+    /**
+     * 启动
+     * 
+     * 示例：
+     *     ./console event:listen
+     *     ./console event:listen start
+     */
+    private function start() {
+        if (file_exists($this->pidFile)) {
+            _throw('事件监听守护进程已经在运行中');
+        }
+
         $queueServices = $this->extraQueueServices();
 
         //如果没有(需要)队列化的异步事件
         if (empty($queueServices)) {
-            return;
+            _throw('没有需要队列化的异步事件');
         }
 
         //当前进程转为守护进程
         $this->daemon();
 
+        $children = [];
         foreach ($queueServices as $queueServiceName) {
             $pid = pcntl_fork();
             if ($pid == -1) {
@@ -51,7 +101,7 @@ class Listen {
             }
             //父进程
             else if ($pid) {
-                
+                $children[] = $pid;
             }
             //子进程
             else {
@@ -62,7 +112,11 @@ class Listen {
             }
         }
 
-        //这后边也是父进程的代码
+        //
+        while (count($children > 0)) {
+            $pid = pcntl_wait($status);
+            
+        }
     }
 
     /**
@@ -87,7 +141,7 @@ class Listen {
                 continue;
             }
 
-            $queueServiceName = $classMetadata['queued'] ?: 'defaultEventQueue';
+            $queueServiceName = $classMetadata['queued'] ? : 'defaultEventQueue';
             if (!in_array($queueServiceName, $queueServices)) {
                 $queueServices[] = $queueServiceName;
             }
@@ -100,7 +154,6 @@ class Listen {
      * 转为守护进程
      */
     private function daemon() {
-        umask(0);
         $pid = pcntl_fork();
 
         //创建子进程出错
@@ -110,21 +163,41 @@ class Listen {
 
         //父进程，退出
         if ($pid > 0) {
-            echo "daemon process started\n";
             exit(0);
         }
 
-        //使当前进程成为会话领导进程
+        //使当前进程成为会话领导进程(从控制终端脱离)
         $sid = posix_setsid();
-        if ($sid < 0) {
+        if ($sid == -1) {
             _throw('设置当前进程为会话领导进程出错');
         }
 
-        chdir('/');
+        //设置信号处理器
+        $sigHandler = [$this, 'sigHandler'];
+        pcntl_signal(SIGTERM, $sigHandler);
+        pcntl_signal(SIGHUP, $sigHandler);
 
-        $projectName = basename($this->appContext->getRootDir());
-        $pidFilename = "/var/run/{$projectName}.pid";
-        file_put_contents($pidFilename, getmypid());
+        //已成功转为守护进程，把主进程ID写入pid文件中
+        file_put_contents($this->pidFile, getmypid());
+    }
+
+    /**
+     * 信号处理器
+     * 
+     * @param int $signo
+     */
+    private function sigHandler($signo) {
+        switch ($signo) {
+            //关闭
+            case SIGTERM:
+                $this->stop();
+                exit;
+                break;
+            //重启
+            case SIGHUP:
+                $this->restart();
+                break;
+        }
     }
 
     /**
@@ -138,6 +211,26 @@ class Listen {
         while ($event = $queueService->dequeue()) {
             $this->eventManager->trigger($event, true);
         }
+    }
+
+    /**
+     * 停止
+     * 
+     * 示例：
+     *     ./console event:listen stop
+     */
+    private function stop() {
+        
+    }
+
+    /**
+     * 重启
+     * 
+     * 示例：
+     *     ./console event:listen restart
+     */
+    private function restart() {
+        
     }
 
 }

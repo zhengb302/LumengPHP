@@ -128,7 +128,7 @@ class Listen {
                 continue;
             }
 
-            $queueServiceName = $classMetadata['queued'] ? : 'defaultEventQueue';
+            $queueServiceName = $classMetadata['queued'] ?: 'defaultEventQueue';
             if (!in_array($queueServiceName, $queueServices)) {
                 $queueServices[] = $queueServiceName;
             }
@@ -141,22 +141,32 @@ class Listen {
      * 转为守护进程
      */
     private function daemon() {
+        umask(0);
+
         $pid = pcntl_fork();
 
         //创建子进程出错
         if ($pid < 0) {
             _throw('创建子进程出错');
         }
-
         //父进程，退出
-        if ($pid > 0) {
+        elseif ($pid) {
             exit(0);
         }
 
         //使当前进程成为会话领导进程(从控制终端脱离)
-        $sid = posix_setsid();
-        if ($sid == -1) {
+        if (posix_setsid() == -1) {
             _throw('设置当前进程为会话领导进程出错');
+        }
+
+        //切换工作目录到根目录
+        if (!chdir('/')) {
+            _throw('切换工作目录到根目录出错');
+        }
+
+        //关闭所有已打开的文件描述符
+        for ($i = 0; $i < 1024; $i++) {
+            fclose($i);
         }
 
         //设置信号处理器

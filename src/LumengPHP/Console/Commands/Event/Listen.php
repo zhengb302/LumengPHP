@@ -14,9 +14,9 @@ use ReflectionClass;
  * 
  * 要求安装并启用了<b>PCNTL</b>和<b>POSIX</b>扩展
  * 
- * 根据事件配置，会为每一个事件队列开启一个子进程，一个队列对应一个子进程，多个事件可以共享一个队列。
- * 子进程会监听队列里的事件数据，一旦有事件到达，便执行此事件的监听器，执行完此事件所有的监听器之后，
- * 子进程会继续监听事件数据，如果没有新的事件到达，要么阻塞(使用了阻塞型的队列)，要么退出(使用了非阻塞型的队列或阻塞超时)。
+ * 根据事件配置，会为每一个事件队列开启一个工作进程(worker)，一个队列对应一个工作进程，多个事件可以共享一个队列。
+ * 工作进程会监听队列里的事件数据，一旦有事件到达，便执行此事件的监听器，在执行完此事件所有的监听器之后，
+ * 工作进程会继续监听事件数据，如果没有新的事件到达，要么阻塞(使用了阻塞型的队列)，要么退出(使用了非阻塞型的队列或阻塞超时)。
  *
  * @author zhengluming <luming.zheng@shandjj.com>
  */
@@ -35,12 +35,6 @@ class Listen {
     private $input;
 
     /**
-     * @var EventManagerInterface 
-     * @service
-     */
-    private $eventManager;
-
-    /**
      * @var string pid文件路径
      */
     private $pidFile;
@@ -50,9 +44,20 @@ class Listen {
      */
     private $workerMap = [];
 
+    /**
+     * @var bool 是否当前进程为工作进程
+     */
+    private $isWorker = false;
+
+    /**
+     * @var EventManagerInterface 
+     * @service
+     */
+    private $eventManager;
+
     public function init() {
         $projectName = basename($this->appContext->getRootDir());
-        $this->pidFile = "/var/run/{$projectName}.pid";
+        $this->pidFile = "/var/run/{$projectName}.event-listend.pid";
     }
 
     public function execute() {
@@ -98,6 +103,7 @@ class Listen {
         //当前进程转为守护进程
         $this->daemon();
 
+        //为每个事件队列分别开启一个工作进程
         foreach ($queueServices as $queueServiceName) {
             $this->startWorker($queueServiceName);
         }
@@ -128,7 +134,7 @@ class Listen {
                 continue;
             }
 
-            $queueServiceName = $classMetadata['queued'] ?: 'defaultEventQueue';
+            $queueServiceName = $classMetadata['queued'] ? : 'defaultEventQueue';
             if (!in_array($queueServiceName, $queueServices)) {
                 $queueServices[] = $queueServiceName;
             }
@@ -165,9 +171,11 @@ class Listen {
         }
 
         //关闭所有已打开的文件描述符
-        for ($i = 0; $i < 1024; $i++) {
-            fclose($i);
-        }
+        /*
+          for ($i = 0; $i < 1024; $i++) {
+          fclose($i);
+          }
+         */
 
         //设置信号处理器
         $sigHandler = [$this, 'sigHandler'];
@@ -187,12 +195,12 @@ class Listen {
         switch ($signo) {
             //关闭
             case SIGTERM:
-                $this->stop();
-                exit;
+
+                exit(0);
                 break;
             //重启
             case SIGHUP:
-                $this->restart();
+
                 break;
         }
     }
@@ -213,6 +221,8 @@ class Listen {
         }
         //子进程
         else {
+            $this->isWorker = true;
+
             $this->listenQueue($queueServiceName);
 
             //必须退出啊，不然就跑去执行主进程的代码了
@@ -262,6 +272,7 @@ class Listen {
         }
 
         $masterPid = file_get_contents($this->pidFile);
+        posix_kill($masterPid, SIGTERM);
     }
 
     /**

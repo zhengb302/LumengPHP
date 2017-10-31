@@ -149,7 +149,7 @@ class Listen {
                 continue;
             }
 
-            $queueServiceName = $classMetadata['queued'] ?: 'defaultEventQueue';
+            $queueServiceName = $classMetadata['queued'] ? : 'defaultEventQueue';
             if (!in_array($queueServiceName, $queueServices)) {
                 $queueServices[] = $queueServiceName;
             }
@@ -168,7 +168,7 @@ class Listen {
 
         //创建子进程出错
         if ($pid < 0) {
-            _throw('创建子进程出错');
+            _throw('转为守护进程失败：创建子进程出错');
         }
         //父进程，退出
         elseif ($pid) {
@@ -177,15 +177,14 @@ class Listen {
 
         //使当前进程成为会话领导进程(从控制终端脱离)
         if (posix_setsid() == -1) {
-            _throw('设置当前进程为会话领导进程出错');
+            _throw('转为守护进程失败：设置当前进程为会话领导进程出错');
         }
 
         //切换工作目录到根目录
-        if (!chdir('/')) {
-            _throw('切换工作目录到根目录出错');
-        }
+        chdir('/');
 
-        //关闭标准输入、输出、错误，并重定向到/dev/null
+        //关闭标准输入、输出、错误，并都重定向到/dev/null
+        //应用如果有输出日志消息的需求，那么最好定义自己的logger
         fclose(STDIN);
         fclose(STDOUT);
         fclose(STDERR);
@@ -196,9 +195,14 @@ class Listen {
         //设置信号处理器
         $sigHandler = [$this, 'sigTermHandler'];
         pcntl_signal(SIGTERM, $sigHandler);
+        pcntl_signal(SIGHUP, SIG_IGN);
+
+        $masterPid = getmypid();
 
         //已成功转为守护进程，把主进程ID写入pid文件中
-        file_put_contents($this->pidFile, getmypid());
+        file_put_contents($this->pidFile, $masterPid);
+
+        $this->log("[master] 启动成功，进程ID：{$masterPid}");
     }
 
     /**
@@ -228,7 +232,7 @@ class Listen {
     private function startWorker($queueServiceName) {
         $pid = pcntl_fork();
         if ($pid == -1) {
-            _throw('创建工作进程失败');
+            $this->log("[master] 创建工作进程失败，队列服务名称：{$queueServiceName}", 'error');
         }
         //父进程
         else if ($pid) {
@@ -237,6 +241,8 @@ class Listen {
         //子进程
         else {
             $this->isMaster = false;
+
+            $this->log("[worker] 启动成功，进程ID：" . getmypid() . "，队列服务名称：{$queueServiceName}");
 
             $this->listenQueue($queueServiceName);
 
@@ -288,6 +294,28 @@ class Listen {
                 $this->startWorker($queueServiceName);
             }
         }
+    }
+
+    /**
+     * 记录运行日志
+     * 
+     * @param string $msg
+     * @param string $level 日志级别：info、error、warning
+     */
+    private function log($msg, $level = 'info') {
+        static $logFile = null;
+        if (is_null($logFile)) {
+            $logDir = $this->appContext->getRuntimeDir() . '/log';
+            if (!is_dir($logDir)) {
+                mkdir($logDir, 0755, true);
+            }
+            $logFilePath = "$logDir/event-listend.log";
+            $logFile = fopen($logFilePath, 'a');
+        }
+
+        $time = date('Y-m-d H:i:s');
+        $logData = "[{$level}] [{$time}] {$msg}";
+        fwrite($logFile, $logData);
     }
 
     /**

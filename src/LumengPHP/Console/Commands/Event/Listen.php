@@ -50,7 +50,7 @@ class Listen {
     private $isMaster = true;
 
     /**
-     * @var bool 指示是否收到SIGTERM信号要退出执行
+     * @var bool 指示是否收到SIGTERM信号要退出运行
      */
     private $shouldExit = false;
 

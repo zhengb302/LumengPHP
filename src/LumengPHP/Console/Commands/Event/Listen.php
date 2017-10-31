@@ -63,6 +63,9 @@ class Listen {
     public function init() {
         $projectName = basename($this->appContext->getRootDir());
         $this->pidFile = "/var/run/{$projectName}.event-listend.pid";
+
+        $title = "{$projectName}.event-listend";
+        cli_set_process_title($title);
     }
 
     public function execute() {

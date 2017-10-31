@@ -117,6 +117,7 @@ class Listen {
         while (true) {
             //如果收到SIGTERM信号要求退出，且工作进程已经全部退出，则删除PID文件，然后退出
             if ($this->shouldExit && empty($this->workerMap)) {
+                $this->log('[master] 工作进程已经全部退出，结束运行，进程ID：' . getmypid());
                 unlink($this->pidFile);
                 exit(0);
             }
@@ -213,13 +214,16 @@ class Listen {
     private function sigTermHandler($signo) {
         //主进程收到SIGTERM信号，设置标志，挨个向工作进程发送SIGTERM信号
         if ($this->isMaster) {
+            $this->log('[master] 收到SIGTERM信号，向各个工作进程发送SIGTERM信号');
+
             $this->shouldExit = true;
             foreach (array_keys($this->workerMap) as $workPid) {
                 posix_kill($workPid, SIGTERM);
             }
         }
-        //工作进程收到SIGTERM信号，退出执行
+        //工作进程收到SIGTERM信号，退出运行
         else {
+            $this->log('[worker] 收到SIGTERM信号，退出运行，进程ID：' . getmypid());
             exit(0);
         }
     }
@@ -282,6 +286,7 @@ class Listen {
                 $pid = pcntl_waitpid($workerPid, $status, WNOHANG);
                 if ($pid == $workerPid) {
                     unset($this->workerMap[$workerPid]);
+                    $this->log("[master] 工作进程已退出运行，进程ID：{$workerPid}");
                 }
             }
         } else {
@@ -291,6 +296,7 @@ class Listen {
             if ($pid > 0) {
                 $queueServiceName = $this->workerMap[$pid];
                 unset($this->workerMap[$pid]);
+                $this->log("[master] 工作进程已退出运行，进程ID：{$pid}，队列服务名称：{$queueServiceName}，即将启动一个新的工作进程");
                 $this->startWorker($queueServiceName);
             }
         }
@@ -314,7 +320,7 @@ class Listen {
         }
 
         $time = date('Y-m-d H:i:s');
-        $logData = "[{$level}] [{$time}] {$msg}";
+        $logData = "[{$level}] [{$time}] {$msg}\n";
         fwrite($logFile, $logData);
     }
 

@@ -185,12 +185,13 @@ class Listen {
             _throw('切换工作目录到根目录出错');
         }
 
-        //关闭所有已打开的文件描述符
-        /*
-          for ($i = 0; $i < 1024; $i++) {
-          fclose($i);
-          }
-         */
+        //关闭标准输入、输出、错误，并重定向到/dev/null
+        fclose(STDIN);
+        fclose(STDOUT);
+        fclose(STDERR);
+        fopen('/dev/null', 'r');
+        fopen('/dev/null', 'a');
+        fopen('/dev/null', 'a');
 
         //设置信号处理器
         $sigHandler = [$this, 'sigTermHandler'];

@@ -45,9 +45,14 @@ class Listen {
     private $workerMap = [];
 
     /**
-     * @var bool 是否当前进程为工作进程
+     * @var bool 当前进程是否为主进程
      */
-    private $isWorker = false;
+    private $isMaster = true;
+
+    /**
+     * @var bool 指示是否收到SIGTERM信号要退出执行
+     */
+    private $shouldExit = false;
 
     /**
      * @var EventManagerInterface 
@@ -108,8 +113,18 @@ class Listen {
             $this->startWorker($queueServiceName);
         }
 
-        //监控工作进程
-        $this->monitorWorker();
+        //主进程做一些管理工作
+        while (true) {
+            //如果收到SIGTERM信号要求退出，且工作进程已经全部退出，则删除PID文件，然后退出
+            if ($this->shouldExit && empty($this->workerMap)) {
+                unlink($this->pidFile);
+                exit(0);
+            }
+
+            pcntl_signal_dispatch();
+            $this->waitWorker();
+            sleep(3);
+        }
     }
 
     /**
@@ -134,7 +149,7 @@ class Listen {
                 continue;
             }
 
-            $queueServiceName = $classMetadata['queued'] ? : 'defaultEventQueue';
+            $queueServiceName = $classMetadata['queued'] ?: 'defaultEventQueue';
             if (!in_array($queueServiceName, $queueServices)) {
                 $queueServices[] = $queueServiceName;
             }
@@ -178,30 +193,29 @@ class Listen {
          */
 
         //设置信号处理器
-        $sigHandler = [$this, 'sigHandler'];
+        $sigHandler = [$this, 'sigTermHandler'];
         pcntl_signal(SIGTERM, $sigHandler);
-        pcntl_signal(SIGHUP, $sigHandler);
 
         //已成功转为守护进程，把主进程ID写入pid文件中
         file_put_contents($this->pidFile, getmypid());
     }
 
     /**
-     * 信号处理器
+     * SIGTERM信号处理器
      * 
      * @param int $signo
      */
-    private function sigHandler($signo) {
-        switch ($signo) {
-            //关闭
-            case SIGTERM:
-
-                exit(0);
-                break;
-            //重启
-            case SIGHUP:
-
-                break;
+    private function sigTermHandler($signo) {
+        //主进程收到SIGTERM信号，设置标志，挨个向工作进程发送SIGTERM信号
+        if ($this->isMaster) {
+            $this->shouldExit = true;
+            foreach (array_keys($this->workerMap) as $workPid) {
+                posix_kill($workPid, SIGTERM);
+            }
+        }
+        //工作进程收到SIGTERM信号，退出执行
+        else {
+            exit(0);
         }
     }
 
@@ -221,7 +235,7 @@ class Listen {
         }
         //子进程
         else {
-            $this->isWorker = true;
+            $this->isMaster = false;
 
             $this->listenQueue($queueServiceName);
 
@@ -240,23 +254,38 @@ class Listen {
         $queueService = $this->appContext->getService($queueServiceName);
         while ($event = $queueService->dequeue()) {
             $this->eventManager->trigger($event, true);
+
+            pcntl_signal_dispatch();
         }
     }
 
     /**
-     * 监控工作进程
-     * 
-     * 如果某个工作进程退出了，则启动一个新的工作进程
+     * 等待工作进程
      */
-    private function monitorWorker() {
-        while (true) {
-            $status = 0;
-            $workerPid = pcntl_wait($status);
-            $queueServiceName = $this->workerMap[$workerPid];
+    private function waitWorker() {
+        if (empty($this->workerMap)) {
+            return;
+        }
 
-            unset($this->workerMap[$workerPid]);
+        $status = 0;
+        if ($this->shouldExit) {
+            //收到SIGTERM信号要求退出，挨个等待工作进程，等到了就从workerMap里删除，
+            //没等到就下一次再来等
+            foreach (array_keys($this->workerMap) as $workerPid) {
+                $pid = pcntl_waitpid($workerPid, $status, WNOHANG);
+                if ($pid == $workerPid) {
+                    unset($this->workerMap[$workerPid]);
+                }
+            }
+        } else {
+            $pid = pcntl_wait($status, WNOHANG);
 
-            $this->startWorker($queueServiceName);
+            //如果某个工作进程退出了，则启动一个新的工作进程
+            if ($pid > 0) {
+                $queueServiceName = $this->workerMap[$pid];
+                unset($this->workerMap[$pid]);
+                $this->startWorker($queueServiceName);
+            }
         }
     }
 
@@ -273,6 +302,13 @@ class Listen {
 
         $masterPid = file_get_contents($this->pidFile);
         posix_kill($masterPid, SIGTERM);
+
+        //检查是否已停止运行
+        while (file_exists($this->pidFile)) {
+            sleep(3);
+        }
+
+        echo "事件监听守护进程已停止运行\n";
     }
 
     /**
@@ -283,6 +319,9 @@ class Listen {
      */
     private function restart() {
         $this->stop();
+
+        echo "正在启动事件监听守护进程...\n";
+
         $this->start();
     }
 

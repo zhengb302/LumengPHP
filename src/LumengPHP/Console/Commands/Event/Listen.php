@@ -7,7 +7,6 @@ use LumengPHP\Console\InputInterface;
 use LumengPHP\Kernel\Annotation\ClassMetadataLoader;
 use LumengPHP\Kernel\AppContextInterface;
 use LumengPHP\Kernel\Event\EventManagerInterface;
-use ReflectionClass;
 
 /**
  * 事件监听命令
@@ -154,7 +153,7 @@ class Listen {
                 continue;
             }
 
-            $queueServiceName = $classMetadata['queued'] ?: 'defaultEventQueue';
+            $queueServiceName = $classMetadata['queued'] ? : 'defaultEventQueue';
             if (!in_array($queueServiceName, $queueServices)) {
                 $queueServices[] = $queueServiceName;
             }

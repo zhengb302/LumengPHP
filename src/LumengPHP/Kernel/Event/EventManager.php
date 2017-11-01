@@ -66,8 +66,12 @@ class EventManager implements EventManagerInterface {
 
         //如果是队列化的异步事件，则把事件对象序列化之后放入队列中，然后直接返回
         $classMetadata = $this->classMetadataLoader->load($eventName);
-        if (isset($classMetadata['queued'])) {
-            $queueServiceName = $classMetadata['queued'] ?: 'defaultEventQueue';
+        if (isset($classMetadata['classMetadata']['queued'])) {
+            $queueServiceName = $classMetadata['classMetadata']['queued'];
+            if ($queueServiceName === true) {
+                $queueServiceName = 'defaultEventQueue';
+            }
+
             /* @var $queueService QueueInterface */
             $queueService = $this->appContext->getService($queueServiceName);
             $queueService->enqueue($event);

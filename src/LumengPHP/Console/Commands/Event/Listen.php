@@ -149,11 +149,15 @@ class Listen {
             $classMetadata = $classMetadataLoader->load($eventName);
 
             //如果不是队列化的异步事件
-            if (!isset($classMetadata['queued'])) {
+            if (!isset($classMetadata['classMetadata']['queued'])) {
                 continue;
             }
 
-            $queueServiceName = $classMetadata['queued'] ? : 'defaultEventQueue';
+            $queueServiceName = $classMetadata['classMetadata']['queued'];
+            if ($queueServiceName === true) {
+                $queueServiceName = 'defaultEventQueue';
+            }
+
             if (!in_array($queueServiceName, $queueServices)) {
                 $queueServices[] = $queueServiceName;
             }

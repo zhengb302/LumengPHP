@@ -89,12 +89,27 @@ class Parser {
     }
 
     /**
-     * 动作注解：“@keepDefault”
+     * 动作注解：“@keepDefault”、“@queued”
      */
     private function actionTag() {
         $this->match(Token::T_ACTION, true);
+
         $action = ltrim($this->lastToken->getText(), '@');
-        $this->metadata->addMetadata($action, true);
+        $value = true;
+
+        if ($this->lookahead->getType() == Token::T_LEFT_PARENTHESIS) {
+            $this->match(Token::T_LEFT_PARENTHESIS);
+            $this->match(Token::T_ID);
+            $value = $this->lastToken->getText();
+            $this->match(Token::T_RIGHT_PARENTHESIS);
+        }
+
+        $this->metadata->addMetadata($action, $value);
+
+        if (!$this->lookahead->isAnnotation()) {
+            $this->lexer->gotoNextAnnotation();
+            $this->consume();
+        }
     }
 
     /**

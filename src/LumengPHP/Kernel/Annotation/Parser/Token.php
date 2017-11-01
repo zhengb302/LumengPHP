@@ -35,7 +35,7 @@ class Token {
     const T_PROPERTY_INJECTOR = 4;
 
     /**
-     * 动作注解，有@keepDefault
+     * 动作注解，有@keepDefault、@queued
      */
     const T_ACTION = 5;
 

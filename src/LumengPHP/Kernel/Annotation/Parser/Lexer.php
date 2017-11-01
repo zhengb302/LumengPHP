@@ -124,6 +124,7 @@ class Lexer {
                 $tokenType = Token::T_PROPERTY_INJECTOR;
                 break;
             case '@keepDefault':
+            case '@queued':
                 $tokenType = Token::T_ACTION;
                 break;
             default:

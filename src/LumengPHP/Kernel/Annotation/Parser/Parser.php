@@ -92,7 +92,7 @@ class Parser {
      * 动作注解：“@keepDefault”、“@queued”
      */
     private function actionTag() {
-        $this->match(Token::T_ACTION, true);
+        $this->match(Token::T_ACTION);
 
         $action = ltrim($this->lastToken->getText(), '@');
         $value = true;

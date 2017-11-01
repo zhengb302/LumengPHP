@@ -142,18 +142,19 @@ class Listen {
             return [];
         }
 
+        /* @var $classMetadataLoader ClassMetadataLoader */
+        $classMetadataLoader = $this->appContext->getService('classMetadataLoader');
+
         $queueServices = [];
         foreach (array_keys($eventConfig) as $eventName) {
-            $refObj = new ReflectionClass($eventName);
-            $metadataLoader = new ClassMetadataLoader($this->appContext, $refObj);
-            $classMetadata = $metadataLoader->load();
+            $classMetadata = $classMetadataLoader->load($eventName);
 
             //如果不是队列化的异步事件
             if (!isset($classMetadata['queued'])) {
                 continue;
             }
 
-            $queueServiceName = $classMetadata['queued'] ? : 'defaultEventQueue';
+            $queueServiceName = $classMetadata['queued'] ?: 'defaultEventQueue';
             if (!in_array($queueServiceName, $queueServices)) {
                 $queueServices[] = $queueServiceName;
             }

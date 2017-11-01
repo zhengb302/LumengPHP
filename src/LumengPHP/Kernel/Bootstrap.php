@@ -2,11 +2,12 @@
 
 namespace LumengPHP\Kernel;
 
+use Dotenv\Dotenv;
+use Exception;
+use LumengPHP\Kernel\Annotation\ClassMetadataLoader;
 use LumengPHP\Kernel\DependencyInjection\ContainerInterface;
 use LumengPHP\Kernel\DependencyInjection\ServiceContainer;
 use LumengPHP\Kernel\Extension\ExtensionInterface;
-use Dotenv\Dotenv;
-use Exception;
 
 /**
  * 应用引导程序<br />
@@ -50,6 +51,10 @@ class Bootstrap {
         $appConfig = new AppConfig($config);
         $this->appContext = new AppContext($appSetting, $appConfig, $this->container);
         $this->container->register('appContext', $this->appContext);
+
+        //构造 ClassMetadataLoader 实例并注册为服务
+        $classMetadataLoader = new ClassMetadataLoader($this->appContext);
+        $this->container->register('classMetadataLoader', $classMetadataLoader);
 
         //加载扩展
         $this->loadExtensions();

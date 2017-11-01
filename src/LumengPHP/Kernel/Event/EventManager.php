@@ -31,6 +31,11 @@ class EventManager implements EventManagerInterface {
     private $classInvoker;
 
     /**
+     * @var ClassMetadataLoader 类元数据加载程序
+     */
+    private $classMetadataLoader;
+
+    /**
      * @var object 当前事件对象
      */
     private $currentEvent;
@@ -39,13 +44,14 @@ class EventManager implements EventManagerInterface {
         $this->eventConfig = $eventConfig;
         $this->appContext = $appContext;
         $this->classInvoker = $classInvoker;
+        $this->classMetadataLoader = $appContext->getService('classMetadataLoader');
     }
 
     public function trigger($event, $immediately = false) {
         $this->currentEvent = $event;
 
-        $refObj = new ReflectionClass($event);
-        $eventName = $refObj->getName();
+        $eventRefObj = new ReflectionClass($event);
+        $eventName = $eventRefObj->getName();
 
         //如果当前事件未注册监听器，那么直接退出
         if (!isset($this->eventConfig[$eventName])) {
@@ -59,8 +65,7 @@ class EventManager implements EventManagerInterface {
         }
 
         //如果是队列化的异步事件，则把事件对象序列化之后放入队列中，然后直接返回
-        $metadataLoader = new ClassMetadataLoader($this->appContext, $refObj);
-        $classMetadata = $metadataLoader->load();
+        $classMetadata = $this->classMetadataLoader->load($eventName);
         if (isset($classMetadata['queued'])) {
             $queueServiceName = $classMetadata['queued'] ?: 'defaultEventQueue';
             /* @var $queueService QueueInterface */

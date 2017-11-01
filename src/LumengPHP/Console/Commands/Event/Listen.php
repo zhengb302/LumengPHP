@@ -270,8 +270,12 @@ class Listen {
     private function listenQueue($queueServiceName) {
         /* @var $queueService QueueInterface */
         $queueService = $this->appContext->getService($queueServiceName);
-        while ($event = $queueService->dequeue()) {
-            $this->eventManager->trigger($event, true);
+        while (true) {
+            while ($event = $queueService->dequeue()) {
+                $this->eventManager->trigger($event, true);
+
+                pcntl_signal_dispatch();
+            }
 
             pcntl_signal_dispatch();
         }

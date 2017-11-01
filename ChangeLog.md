@@ -10,6 +10,9 @@
 ### Changed
 - 事件全部使用`类`来描述
 
+### Removed
+- 去掉了“filter_field”、“index2map”函数，使用PHP自带的“array_column”代替
+
 ## [v0.2.8] - 2017-09-28
 
 ### Fixed

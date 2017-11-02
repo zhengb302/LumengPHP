@@ -2,6 +2,7 @@
 
 namespace LumengPHP\Console\Commands\Event;
 
+use Exception;
 use LumengPHP\Components\Queue\QueueInterface;
 use LumengPHP\Console\InputInterface;
 use LumengPHP\Kernel\Annotation\ClassMetadataLoader;
@@ -174,8 +175,13 @@ class Listen {
      * 转为守护进程
      */
     private function daemon() {
+        //先检查一下运行用户配置情况
+        list($userInfo, $groupInfo) = $this->checkUser();
+
+        //
         umask(0);
 
+        //fuck一下
         $pid = pcntl_fork();
 
         //创建子进程出错
@@ -215,15 +221,18 @@ class Listen {
         file_put_contents($this->pidFile, $masterPid);
 
         //切换运行用户和用户组
-        $this->switchUser();
+        $this->switchUser($userInfo, $groupInfo);
 
         $this->log("[master] 启动成功，进程ID：{$masterPid}");
     }
 
     /**
-     * 切换运行用户和用户组
+     * 先检查一下运行用户配置情况
+     * 
+     * @throws Exception 如果检查失败，则抛出异常
+     * @return array 成功的情况下会返回用户及用户组信息，格式：[用户信息, 用户组信息]
      */
-    private function switchUser() {
+    private function checkUser() {
         //事件监听守护进程的配置(跟事件及其监听器的配置是两码事)
         $config = $this->appContext->getConfig('eventListend') ?: [];
         $username = isset($config['user']) ? $config['user'] : 'nobody';
@@ -231,21 +240,24 @@ class Listen {
 
         $userInfo = posix_getpwnam($username);
         if (!$userInfo) {
-            $this->log("[master] 用户“{$username}”不存在，启动失败，退出运行", 'error');
-            unlink($this->pidFile);
-            exit(-1);
+            _throw("用户“{$username}”不存在，启动失败");
         }
 
         $groupInfo = posix_getgrnam($groupName);
         if (!$groupInfo) {
-            $this->log("[master] 用户组“{$groupName}”不存在，启动失败，退出运行", 'error');
-            unlink($this->pidFile);
-            exit(-1);
+            _throw("用户组“{$groupName}”不存在，启动失败");
         }
 
+        return [$userInfo, $groupInfo];
+    }
+
+    /**
+     * 切换运行用户和用户组
+     */
+    private function switchUser($userInfo, $groupInfo) {
         //趁还没转换成低权限用户的时候，赶紧变更一下pid文件的所属用户和用户组
-        chown($this->pidFile, $username);
-        chgrp($this->pidFile, $groupName);
+        chown($this->pidFile, $userInfo['uid']);
+        chgrp($this->pidFile, $groupInfo['gid']);
 
         posix_setuid($userInfo['uid']);
         posix_seteuid($userInfo['uid']);

@@ -10,13 +10,15 @@ use LumengPHP\Kernel\AppContextInterface;
 use LumengPHP\Kernel\Event\EventManagerInterface;
 
 /**
- * 事件监听命令
+ * 事件监听守护进程
  * 
  * 要求安装并启用了<b>PCNTL</b>和<b>POSIX</b>扩展
  * 
  * 根据事件配置，会为每一个事件队列开启一个工作进程(worker)，一个队列对应一个工作进程，多个事件可以共享一个队列。
  * 工作进程会监听队列里的事件数据，一旦有事件到达，便执行此事件的监听器，在执行完此事件所有的监听器之后，
- * 工作进程会继续监听事件数据，如果没有新的事件到达，要么阻塞(使用了阻塞型的队列)，要么退出(使用了非阻塞型的队列或阻塞超时)。
+ * 工作进程会继续监听事件数据，如果没有新的事件到达，工作进程将一直阻塞直到新的事件到达。
+ * 
+ * 注意：请使用阻塞型的队列，如果使用非阻塞型的队列，将会造成工作进程执行死循环代码，大量占用CPU资源。
  *
  * @author zhengluming <luming.zheng@shandjj.com>
  */
@@ -234,7 +236,7 @@ class Listen {
      */
     private function checkUser() {
         //事件监听守护进程的配置(跟事件及其监听器的配置是两码事)
-        $config = $this->appContext->getConfig('eventListend') ?: [];
+        $config = $this->appContext->getConfig('eventListend') ? : [];
         $username = isset($config['user']) ? $config['user'] : 'nobody';
         $groupName = isset($config['group']) ? $config['group'] : 'nobody';
 
@@ -323,7 +325,14 @@ class Listen {
         /* @var $queueService QueueInterface */
         $queueService = $this->appContext->getService($queueServiceName);
         while (true) {
-            while ($event = $queueService->dequeue()) {
+            while (true) {
+                //出队并判断会不会是因为超时返回，如果是超时返回(返回值为null)，则继续监听队列；
+                //如果不是超时而是异步事件到达(返回值不为null)，则执行其对应的事件监听器
+                $event = $queueService->dequeue();
+                if (is_null($event)) {
+                    break;
+                }
+
                 $this->eventManager->trigger($event, true);
 
                 pcntl_signal_dispatch();

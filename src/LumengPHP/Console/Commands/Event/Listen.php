@@ -358,7 +358,9 @@ class Listen {
                 $pid = pcntl_waitpid($workerPid, $status, WNOHANG);
                 if ($pid == $workerPid) {
                     unset($this->workerMap[$workerPid]);
-                    $this->log("[master] 工作进程已退出运行，进程ID：{$workerPid}");
+
+                    $exitReason = $this->parseExitReason($status);
+                    $this->log("[master] 工作进程已退出运行，进程ID：{$workerPid}，{$exitReason}");
                 }
             }
         } else {
@@ -368,10 +370,31 @@ class Listen {
             if ($pid > 0) {
                 $queueServiceName = $this->workerMap[$pid];
                 unset($this->workerMap[$pid]);
-                $this->log("[master] 工作进程已退出运行，进程ID：{$pid}，队列服务名称：{$queueServiceName}，即将启动一个新的工作进程");
+
+                $exitReason = $this->parseExitReason($status);
+                $this->log("[master] 工作进程已退出运行，进程ID：{$pid}，{$exitReason}，队列服务名称：{$queueServiceName}，即将启动一个新的工作进程");
+
                 $this->startWorker($queueServiceName);
             }
         }
+    }
+
+    /**
+     * 解析工作进程退出原因
+     * 
+     * @param int $status
+     * @return string
+     */
+    private function parseExitReason($status) {
+        if (pcntl_wifexited($status)) {
+            $exitCode = pcntl_wexitstatus($status);
+            return "退出原因：正常退出，退出状态码：{$exitCode}";
+        } elseif (pcntl_wifsignaled($status)) {
+            $sigNum = pcntl_wtermsig($status);
+            return "退出原因：被信号终止，信号代号：{$sigNum}";
+        }
+
+        return '退出原因：未知';
     }
 
     /**

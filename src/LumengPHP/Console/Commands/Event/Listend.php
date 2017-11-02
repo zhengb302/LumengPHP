@@ -22,7 +22,7 @@ use LumengPHP\Kernel\Event\EventManagerInterface;
  *
  * @author zhengluming <luming.zheng@shandjj.com>
  */
-class Listen {
+class Listend {
 
     /**
      * @var AppContextInterface

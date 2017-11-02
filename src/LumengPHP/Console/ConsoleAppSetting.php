@@ -23,15 +23,15 @@ class ConsoleAppSetting implements ConsoleAppSettingInterface {
     }
 
     public function getServices() {
-        return $this->appSetting->getServices() ?: [];
+        return $this->appSetting->getServices() ? : [];
     }
 
     public function getExtensions() {
-        return $this->appSetting->getExtensions() ?: [];
+        return $this->appSetting->getExtensions() ? : [];
     }
 
     public function getEventConfig() {
-        return $this->appSetting->getEventConfig() ?: [];
+        return $this->appSetting->getEventConfig() ? : [];
     }
 
     public function getRootDir() {
@@ -45,11 +45,11 @@ class ConsoleAppSetting implements ConsoleAppSettingInterface {
     public function getCmdMapping() {
         //Console应用系统自带的一些命令
         $defaultMapping = [
-            'event:listen' => \LumengPHP\Console\Commands\Event\Listen::class,
+            'event:listend' => \LumengPHP\Console\Commands\Event\Listend::class,
         ];
 
         //应用特定的命令
-        $appMapping = $this->appSetting->getCmdMapping() ?: [];
+        $appMapping = $this->appSetting->getCmdMapping() ? : [];
 
         return array_merge($defaultMapping, $appMapping);
     }

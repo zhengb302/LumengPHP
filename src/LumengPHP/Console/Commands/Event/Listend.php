@@ -99,8 +99,8 @@ class Listend {
      * 启动
      * 
      * 示例：
-     *     ./console event:listen
-     *     ./console event:listen start
+     *     ./console event:listend
+     *     ./console event:listend start
      */
     private function start() {
         if (file_exists($this->pidFile)) {
@@ -423,7 +423,7 @@ class Listend {
      * 停止
      * 
      * 示例：
-     *     ./console event:listen stop
+     *     ./console event:listend stop
      */
     private function stop() {
         if (!file_exists($this->pidFile)) {
@@ -445,7 +445,7 @@ class Listend {
      * 重启
      * 
      * 示例：
-     *     ./console event:listen restart
+     *     ./console event:listend restart
      */
     private function restart() {
         $this->stop();

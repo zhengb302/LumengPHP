@@ -50,12 +50,6 @@ class Listend {
      */
     private $shouldExit = false;
 
-    /**
-     * @var EventManagerInterface 
-     * @service
-     */
-    private $eventManager;
-
     public function init() {
         $projectName = $this->getProjectName();
         $this->pidFile = "/var/run/{$projectName}/event-listend.pid";
@@ -334,6 +328,9 @@ class Listend {
     private function listenQueue($queueServiceName) {
         /* @var $queueService QueueInterface */
         $queueService = $this->appContext->getService($queueServiceName);
+        /* @var $eventManager EventManagerInterface */
+        $eventManager = $this->appContext->getService('eventManager');
+
         while (true) {
             while (true) {
                 //出队并判断会不会是因为超时返回，如果是超时返回(返回值为null)，则继续监听队列；
@@ -343,7 +340,7 @@ class Listend {
                     break;
                 }
 
-                $this->eventManager->trigger($event, true);
+                $eventManager->trigger($event, true);
 
                 pcntl_signal_dispatch();
             }

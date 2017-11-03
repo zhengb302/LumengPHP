@@ -31,12 +31,6 @@ class Listend {
     private $appContext;
 
     /**
-     * @var InputInterface 
-     * @service
-     */
-    private $input;
-
-    /**
      * @var string pid文件路径
      */
     private $pidFile;
@@ -63,11 +57,17 @@ class Listend {
     private $eventManager;
 
     public function init() {
-        $projectName = basename($this->appContext->getRootDir());
-        $this->pidFile = "/var/run/{$projectName}.event-listend.pid";
+        $projectName = $this->getProjectName();
+        $this->pidFile = "/var/run/{$projectName}/event-listend.pid";
+    }
 
-        $title = "{$projectName}.event-listend";
-        cli_set_process_title($title);
+    /**
+     * 返回当前项目的名称
+     * 
+     * @return string
+     */
+    private function getProjectName() {
+        return basename($this->appContext->getRootDir());
     }
 
     public function execute() {
@@ -75,7 +75,9 @@ class Listend {
             _throw('您不是 root 用户，请在 root 用户下操作~');
         }
 
-        $action = $this->input->getArg(1);
+        /* @var $input InputInterface */
+        $input = $this->appContext->getService('input');
+        $action = $input->getArg(1);
         if (!$action) {
             $action = 'start';
         }
@@ -217,15 +219,18 @@ class Listend {
         pcntl_signal(SIGTERM, $sigHandler);
         pcntl_signal(SIGHUP, SIG_IGN);
 
-        $masterPid = getmypid();
-
-        //已成功转为守护进程，把主进程ID写入pid文件中
-        file_put_contents($this->pidFile, $masterPid);
-
-        //切换运行用户和用户组
+        //切换运行用户和用户组。switchUser方法执行之前进程所属用户是root用户，
+        //执行之后，就是某个低权限用户
         $this->switchUser($userInfo, $groupInfo);
 
-        $this->log("[master] 启动成功，进程ID：{$masterPid}");
+        //把主进程ID写入pid文件中
+        file_put_contents($this->pidFile, getmypid());
+
+        //设置进程标题
+        $projectName = $this->getProjectName();
+        cli_set_process_title("{$projectName}.event-listend");
+
+        $this->log('[master] 启动成功，进程ID：' . getmypid());
     }
 
     /**
@@ -236,7 +241,7 @@ class Listend {
      */
     private function checkUser() {
         //事件监听守护进程的配置(跟事件及其监听器的配置是两码事)
-        $config = $this->appContext->getConfig('eventListend') ? : [];
+        $config = $this->appContext->getConfig('eventListend') ?: [];
         $username = isset($config['user']) ? $config['user'] : 'nobody';
         $groupName = isset($config['group']) ? $config['group'] : 'nobody';
 
@@ -257,10 +262,15 @@ class Listend {
      * 切换运行用户和用户组
      */
     private function switchUser($userInfo, $groupInfo) {
-        //趁还没转换成低权限用户的时候，赶紧变更一下pid文件的所属用户和用户组
-        chown($this->pidFile, $userInfo['uid']);
-        chgrp($this->pidFile, $groupInfo['gid']);
+        //准备PID文件目录，并变更其所属的用户和用户组。此时还是root用户。
+        $pidDir = dirname($this->pidFile);
+        if (!is_dir($pidDir)) {
+            mkdir($pidDir, 0755);
+        }
+        chown($pidDir, $userInfo['uid']);
+        chgrp($pidDir, $groupInfo['gid']);
 
+        //切换用户
         posix_setuid($userInfo['uid']);
         posix_seteuid($userInfo['uid']);
         posix_setgid($groupInfo['gid']);

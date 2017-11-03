@@ -367,7 +367,7 @@ class Listend {
                     unset($this->workerMap[$workerPid]);
 
                     $exitReason = $this->parseExitReason($status);
-                    $this->log("[master] 工作进程已退出运行，进程ID：{$workerPid}，{$exitReason}");
+                    $this->log("[master] 工作进程“{$workerPid}”已退出运行，{$exitReason}");
                 }
             }
         } else {
@@ -379,7 +379,7 @@ class Listend {
                 unset($this->workerMap[$pid]);
 
                 $exitReason = $this->parseExitReason($status);
-                $this->log("[master] 工作进程已退出运行，进程ID：{$pid}，{$exitReason}，队列服务名称：{$queueServiceName}，即将启动一个新的工作进程");
+                $this->log("[master] 工作进程“{$pid}”已退出运行，{$exitReason}，队列服务名称：{$queueServiceName}，即将启动一个新的工作进程");
 
                 $this->startWorker($queueServiceName);
             }

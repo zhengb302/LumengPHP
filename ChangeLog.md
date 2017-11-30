@@ -6,6 +6,7 @@
 - 新增队列接口
 - 支持队列化的事件
 - 新增一些系统自带的控制台应用命令，如清理runtime目录、清理缓存等
+- 新增多个快捷函数：app_context、config、service_container、service等
 
 ### Changed
 - 事件全部使用`类`来描述

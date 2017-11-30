@@ -12,6 +12,20 @@ use LumengPHP\Kernel\DependencyInjection\ContainerInterface;
 class AppContext implements AppContextInterface {
 
     /**
+     * @var AppContext 
+     */
+    private static $instance;
+
+    /**
+     * 返回<b>AppContext</b>实例
+     * 
+     * @return AppContext
+     */
+    public static function getInstance() {
+        return self::$instance;
+    }
+
+    /**
      * @var AppSettingInterface 应用特定配置
      */
     private $appSetting;
@@ -30,6 +44,8 @@ class AppContext implements AppContextInterface {
         $this->appSetting = $appSetting;
         $this->appConfig = $appConfig;
         $this->serviceContainer = $serviceContainer;
+
+        self::$instance = $this;
     }
 
     /**

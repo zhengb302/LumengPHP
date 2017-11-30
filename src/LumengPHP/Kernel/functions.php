@@ -1,5 +1,9 @@
 <?php
 
+use LumengPHP\Kernel\AppContext;
+use LumengPHP\Kernel\AppContextInterface;
+use LumengPHP\Kernel\Event\EventManagerInterface;
+
 /*
  * 基础通用函数
  */
@@ -190,4 +194,42 @@ function sort_by_values(array $rows, array $refValues, $refFieldName, $limitNum 
     }
 
     return $sortedRows;
+}
+
+/**
+ * 返回系统中<b>AppContextInterface</b>的实例
+ * 
+ * @return AppContextInterface
+ */
+function app_context() {
+    return AppContext::getInstance();
+}
+
+/**
+ * 取得应用配置数据
+ * 
+ * @param string $key 配置key
+ * @return mixed|null 应用配置数据。如果配置不存在，则返回null
+ */
+function config($key) {
+    return app_context()->getConfig($key);
+}
+
+/**
+ * 获取一个服务对象
+ * 
+ * @param string $serviceName 服务名称
+ * @return object|null 一个服务对象。如果服务不存在，则返回null
+ */
+function service($serviceName) {
+    return app_context()->getService($serviceName);
+}
+
+/**
+ * 返回事件管理器实例
+ * 
+ * @return EventManagerInterface
+ */
+function event_manager() {
+    return service('eventManager');
 }

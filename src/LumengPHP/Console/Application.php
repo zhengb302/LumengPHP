@@ -22,9 +22,9 @@ class Application {
     private $appContext;
 
     /**
-     * @var array 命令映射
+     * @var array 命令配置
      */
-    private $cmdMapping;
+    private $cmds;
 
     /**
      * @var string 启动器名称
@@ -41,6 +41,12 @@ class Application {
      */
     private $isVerbose = false;
 
+    /**
+     * 创建一个控制台应用
+     * 
+     * @param ConsoleAppSettingInterface $appSetting 应用特定的控制台setting对象
+     * @param string $configFilePath 配置文件路径
+     */
     public function __construct(ConsoleAppSettingInterface $appSetting, $configFilePath) {
         $consoleAppSetting = new ConsoleAppSetting($appSetting);
 
@@ -49,7 +55,7 @@ class Application {
 
         $this->appContext = $bootstrap->getAppContext();
 
-        $this->cmdMapping = $consoleAppSetting->getCmdMapping();
+        $this->cmds = $consoleAppSetting->getCmds();
     }
 
     /**
@@ -102,13 +108,13 @@ class Application {
      * 列出所有命令
      */
     private function listAllCmds() {
-        if (empty($this->cmdMapping)) {
+        if (empty($this->cmds)) {
             echo "您尚未定义任何命令~\n";
             return;
         }
 
         $cmdInfos = "\n";
-        foreach ($this->cmdMapping as $cmdName => $cmdClass) {
+        foreach ($this->cmds as $cmdName => $cmdClass) {
             $cmdInfos = $cmdInfos . $this->buildCmdInfo($cmdName, $cmdClass);
         }
 
@@ -164,7 +170,7 @@ class Application {
         list($argc, $argv) = $this->prepareCmdLineArgs();
 
         $cmdName = $argv[1];
-        if (!isset($this->cmdMapping[$cmdName])) {
+        if (!isset($this->cmds[$cmdName])) {
             echo "命令“{$cmdName}”不存在~\n";
             exit(-1);
         }
@@ -187,7 +193,7 @@ class Application {
         $container->register('eventManager', $eventManager);
 
         try {
-            $cmdClass = $this->cmdMapping[$cmdName];
+            $cmdClass = $this->cmds[$cmdName];
             $classInvoker->invoke($cmdClass);
         } catch (Exception $ex) {
             echo "发生异常，异常消息：", $ex->getMessage(), "\n";

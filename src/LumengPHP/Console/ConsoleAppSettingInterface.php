@@ -12,9 +12,20 @@ use LumengPHP\Kernel\AppSettingInterface;
 interface ConsoleAppSettingInterface extends AppSettingInterface {
 
     /**
-     * 返回命令映射
+     * 返回命令配置
      * 
-     * @return array 关联数组，格式：命令名称 => 命令类全限定名称
+     * 配置格式：命令名称 => 命令类全限定名称
+     * 
+     * 示例：
+     * <pre>
+     * [
+     *     'cache:clear' => \MyApp\Console\Commands\Cache\Clear::class,
+     *     'user:create' => \MyApp\Console\Commands\User\Create::class,
+     *     'user:delete' => \MyApp\Console\Commands\User\Delete::class,
+     * ]
+     * </pre>
+     * 
+     * @return array
      */
-    public function getCmdMapping();
+    public function getCmds();
 }

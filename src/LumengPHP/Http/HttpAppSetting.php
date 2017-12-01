@@ -19,6 +19,7 @@ class HttpAppSetting implements HttpAppSettingInterface {
 
     /**
      * 构造一个<b>HttpAppSetting</b>实例
+     * 
      * @param HttpAppSettingInterface $appSetting 应用特定配置
      */
     public function __construct(HttpAppSettingInterface $appSetting) {

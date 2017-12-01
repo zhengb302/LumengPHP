@@ -31,18 +31,27 @@ class Listen {
     private $appContext;
 
     /**
+     * @var bool 是否禁用了多进程模式
+     */
+    private $disableMultiWorkers;
+
+    /**
+     * @var int 每次处理的最大事件数量
+     */
+    private $maxEventNum;
+
+    /**
      * @var array 工作进程Map，格式：工作进程ID => 事件队列服务对象名称
      */
     private $workerMap = [];
 
-    public function execute() {
-        $this->start();
+    public function init() {
+        $config = $this->appContext->getConfig('eventListen') ?: [];
+        $this->disableMultiWorkers = isset($config['disableMultiWorkers']) ? $config['disableMultiWorkers'] : false;
+        $this->maxEventNum = $config['maxEventNum'] ?: 1000;
     }
 
-    /**
-     * 启动
-     */
-    private function start() {
+    public function execute() {
         //检查锁文件
         $lockFile = $this->appContext->getRuntimeDir() . '/event-listen.lock';
         if (file_exists($lockFile)) {
@@ -59,24 +68,17 @@ class Listen {
         //创建锁文件
         touch($lockFile);
 
-        //为每个事件队列分别开启一个工作进程
-        foreach ($queueServices as $queueServiceName) {
-            $this->startWorker($queueServiceName);
+        //非多进程模式，直接监听各队列
+        if ($this->disableMultiWorkers) {
+            $this->listenQueues($queueServices);
+        }
+        //多进程模式，启动各工作进程
+        else {
+            $this->startWorkers($queueServices);
         }
 
-        //主进程做一些管理工作
-        while (true) {
-            //如果工作进程已经全部退出，则删除锁文件，然后退出
-            if (empty($this->workerMap)) {
-                $this->log('[master] 工作进程已经全部退出，结束运行，进程ID：' . getmypid());
-                unlink($lockFile);
-                exit(0);
-            }
-
-            $this->waitWorker();
-
-            sleep(1);
-        }
+        //删除锁文件，解锁
+        unlink($lockFile);
     }
 
     /**
@@ -116,6 +118,44 @@ class Listen {
     }
 
     /**
+     * 非多进程模式，直接监听各队列
+     * 
+     * @param array $queueServices
+     */
+    private function listenQueues($queueServices) {
+        //逐个监听各事件队列
+        foreach ($queueServices as $queueServiceName) {
+            $this->listenQueue($queueServiceName);
+        }
+
+        $this->log('[master] 已全部监听完毕，即将结束运行，进程ID：' . getmypid());
+    }
+
+    /**
+     * 多进程模式，启动各工作进程
+     * 
+     * @param array $queueServices
+     */
+    private function startWorkers($queueServices) {
+        //为每个事件队列分别开启一个工作进程
+        foreach ($queueServices as $queueServiceName) {
+            $this->startWorker($queueServiceName);
+        }
+
+        while (true) {
+            //如果工作进程已经全部退出
+            if (empty($this->workerMap)) {
+                $this->log('[master] 工作进程已经全部退出，即将结束运行，进程ID：' . getmypid());
+                return;
+            }
+
+            $this->waitWorker();
+
+            sleep(1);
+        }
+    }
+
+    /**
      * 启动工作进程
      * 
      * @param string $queueServiceName
@@ -135,7 +175,7 @@ class Listen {
 
             $this->listenQueue($queueServiceName);
 
-            //必须退出啊，不然就跑去执行主进程的代码了
+            //这里必须退出，不然就跑去执行主进程的代码了
             exit(0);
         }
     }
@@ -151,7 +191,10 @@ class Listen {
         /* @var $eventManager EventManagerInterface */
         $eventManager = $this->appContext->getService('eventManager');
 
-        for ($i = 0; $i < 1000; $i++) {
+        //记录开始时间
+        $startTime = time();
+
+        for ($i = 0; $i < $this->maxEventNum; $i++) {
             $event = $queueService->dequeue();
             if (is_null($event)) {
                 break;
@@ -160,7 +203,16 @@ class Listen {
             $eventManager->trigger($event, true);
         }
 
-        $this->log("[worker] 已监听{$i}个事件，进程ID：" . getmypid() . "，队列服务名称：{$queueServiceName}，即将退出运行");
+        //处理这些事件的耗时，以秒为单位
+        $timeUsed = (time() - $startTime) . 's';
+
+        if ($this->disableMultiWorkers) {
+            $msg = "[master] 已监听{$i}个事件，用时：{$timeUsed}，队列服务名称：{$queueServiceName}";
+        } else {
+            $msg = "[worker] 已监听{$i}个事件，用时：{$timeUsed}，进程ID：" . getmypid() .
+                    "，队列服务名称：{$queueServiceName}，即将退出运行";
+        }
+        $this->log($msg);
     }
 
     /**

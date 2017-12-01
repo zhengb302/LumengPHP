@@ -47,7 +47,7 @@ interface AppSettingInterface {
      * 
      * @return array 事件配置。如果应用不支持事件，则应该返回一个空数组
      */
-    public function getEventConfig();
+    public function getEvents();
 
     /**
      * 取得应用根目录

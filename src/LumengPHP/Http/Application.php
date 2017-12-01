@@ -50,7 +50,7 @@ class Application {
         //构造事件管理器，请把其注册为服务
         /* @var $appSetting HttpAppSettingInterface */
         $appSetting = $this->appContext->getAppSetting();
-        $eventConfig = $appSetting->getEventConfig();
+        $eventConfig = $appSetting->getEvents();
         $eventManager = new EventManager($eventConfig, $this->appContext, $classInvoker);
         $container->register('eventManager', $eventManager);
 

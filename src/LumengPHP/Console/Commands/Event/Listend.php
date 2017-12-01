@@ -139,7 +139,7 @@ class Listend {
      * @return array
      */
     private function extraQueueServices() {
-        $eventConfig = $this->appContext->getAppSetting()->getEventConfig();
+        $eventConfig = $this->appContext->getAppSetting()->getEvents();
         if (empty($eventConfig)) {
             return [];
         }

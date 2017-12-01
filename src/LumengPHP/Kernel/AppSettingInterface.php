@@ -18,12 +18,34 @@ interface AppSettingInterface {
     /**
      * 取得服务配置
      * 
+     * 格式：服务名称 => 服务配置
+     * 
+     * 示例：
+     * <pre>
+     * [
+     *     'foo' => [
+     *         'class' => \MyApp\Somewhere\Foo:class,
+     *     ],
+     *     'bar' => [
+     *         'class' => \MyApp\Somewhere\Boo:class,
+     *     ],
+     * ]
+     * </pre>
+     * 
      * @return array 
      */
     public function getServices();
 
     /**
      * 取得扩展配置
+     * 
+     * 示例：
+     * <pre>
+     * [
+     *     \LumengPHP\Extensions\DatabaseExtension::class,
+     *     \LumengPHP\Extensions\FooExtension::class,
+     * ]
+     * </pre>
      * 
      * @return array 
      */
@@ -35,6 +57,7 @@ interface AppSettingInterface {
      * 格式：事件类的全限定名称 => 事件监听器列表
      * 
      * 示例：
+     * <pre>
      * [
      *     HttpEnd::class => [
      *         HttpEndEvtListener::class,
@@ -44,6 +67,7 @@ interface AppSettingInterface {
      *         UserAuthFailedEmailNotification::class,
      *     ],
      * ]
+     * </pre>
      * 
      * @return array 事件配置。如果应用不支持事件，则应该返回一个空数组
      */

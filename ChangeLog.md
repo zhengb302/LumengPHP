@@ -3,10 +3,18 @@
 ## Unreleased
 
 ### Added
-- 新增队列接口
-- 支持队列化的事件
 - 新增一些系统自带的控制台应用命令，如清理runtime目录、清理缓存等
-- 新增多个快捷函数：app_context、config、service_container、service等
+
+### Changed
+
+### Removed
+
+## [v0.2.14] - 2017-12-07
+
+### Added
+- 新增队列接口
+- 支持队列化的异步事件
+- 新增多个快捷函数：app_context、config、service、event_manager等
 
 ### Changed
 - 事件全部使用`类`来描述
@@ -14,7 +22,7 @@
 - AppSettingInterface::getEventConfig更名为AppSettingInterface::getEvents
 
 ### Removed
-- 去掉了“filter_field”、“index2map”函数，使用PHP自带的“array_column”代替
+- 去掉了“filter_field”、“index2map”函数，使用PHP自带的“array_column”函数代替
 
 ## [v0.2.8] - 2017-09-28
 

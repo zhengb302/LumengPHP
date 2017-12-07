@@ -3,9 +3,11 @@
 ## Unreleased
 
 ### Added
+- 新增快捷函数：trigger_event
 - 新增一些系统自带的控制台应用命令，如清理runtime目录、清理缓存等
 
 ### Changed
+- 优化了事件监听任务的日志消息
 
 ### Removed
 

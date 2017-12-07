@@ -59,14 +59,14 @@ class Listen {
         }
 
         $queueServices = $this->extraQueueServices();
-
-        //如果没有(需要)队列化的异步事件
         if (empty($queueServices)) {
             _throw('没有需要队列化的异步事件');
         }
 
         //创建锁文件
         touch($lockFile);
+
+        $this->log('[master] 开始执行事件监听任务，进程ID：' . getmypid());
 
         //非多进程模式，直接监听各队列
         if ($this->disableMultiWorkers) {
@@ -77,7 +77,7 @@ class Listen {
             $this->startWorkers($queueServices);
         }
 
-        //删除锁文件，解锁
+        //运行结束，删除锁文件，解锁
         unlink($lockFile);
     }
 

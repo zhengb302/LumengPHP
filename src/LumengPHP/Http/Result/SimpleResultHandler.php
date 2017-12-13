@@ -12,8 +12,8 @@ use Exception;
 class SimpleResultHandler implements ResultHandlerInterface {
 
     public function handleReturn($return) {
-        //控制器方法可以直接返回一个Result对象
-        if ($return instanceof Result) {
+        //控制器方法可以直接返回一个ResultInterface实例
+        if ($return instanceof ResultInterface) {
             $result = $return;
         }
         //啥都没返回，或者返回null
@@ -39,7 +39,7 @@ class SimpleResultHandler implements ResultHandlerInterface {
         return $result;
     }
 
-    public function handleResult(Result $result) {
+    public function handleResult(ResultInterface $result) {
         header('Content-Type:application/json; charset=utf-8');
         echo $result;
     }

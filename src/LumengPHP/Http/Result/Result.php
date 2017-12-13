@@ -7,33 +7,49 @@ namespace LumengPHP\Http\Result;
  *
  * @author zhengluming <luming.zheng@baozun.cn>
  */
-class Result {
+class Result implements ResultInterface {
+
+    /**
+     * 成功
+     */
+    const SUCCESS = 1;
+
+    /**
+     * 失败
+     */
+    const FAILED = 0;
 
     /**
      * @var int 结果状态
      */
-    private $status;
+    protected $status;
 
     /**
      * @var string 消息
      */
-    private $msg;
+    protected $msg;
 
     /**
-     * @var array (携带的)数据。这个数据是比较正式的数据。
+     * @var mixed (携带的)数据。这个数据是比较正式的数据。
      */
-    private $data;
+    protected $data;
 
     /**
-     * @var array 更多数据。用于携带除了正式数据之外的数据，如调试信息等。
+     * @var mixed 更多数据。用于携带除了正式数据之外的数据，如调试信息等。
      */
-    private $more;
+    protected $more;
 
-    public function __construct($status, $msg = '', array $data = []) {
+    /**
+     * 构造一个<b>Result</b>实例
+     * 
+     * @param int $status 结果状态
+     * @param string $msg 消息
+     * @param mixed $data (携带的)数据
+     */
+    public function __construct($status, $msg = '', $data = null) {
         $this->status = $status;
         $this->msg = $msg;
         $this->data = $data;
-        $this->more = [];
     }
 
     public function getStatus() {
@@ -60,11 +76,11 @@ class Result {
         $this->msg = $msg;
     }
 
-    public function setData(array $data) {
+    public function setData($data) {
         $this->data = $data;
     }
 
-    public function setMore(array $more) {
+    public function setMore($more) {
         $this->more = $more;
     }
 

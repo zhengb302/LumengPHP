@@ -9,6 +9,15 @@
 
 ### Removed
 
+## [v1.0.1] - 2017-12-13
+
+### Added
+- 新增`LumengPHP\Http\Result\ResultInterface`接口
+- `LumengPHP\Http\Result\Result`新增`SUCCESS`、`FAILED`两个常量
+
+### Fixed
+- `LumengPHP\Http\Result\Result`可以携带任意类型的数据，而不仅仅是数组
+
 ## [v1.0.0] - 2017-12-07
 
 1.0.0版正式发布

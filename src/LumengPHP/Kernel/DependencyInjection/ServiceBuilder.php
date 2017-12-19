@@ -62,7 +62,7 @@ class ServiceBuilder {
      */
     private function parseArgs($rawArgs) {
         if (!is_array($rawArgs)) {
-            throw new ServiceContainerException('constructor-args must be array!');
+            throw new ServiceContainerException('constructor-args or call argument must be array!');
         }
 
         if (empty($rawArgs)) {

@@ -20,7 +20,7 @@ class JobRedisQueue extends RedisQueue implements JobQueueInterface {
      * @param string $queueName redis队列名称
      * @param int $maxJobNum 单次处理的最大Job数量
      */
-    public function __construct(Redis $redis, $queueName, $maxJobNum) {
+    public function __construct(Redis $redis, $queueName, $maxJobNum = 1000) {
         parent::__construct($redis, $queueName);
         $this->maxJobNum = $maxJobNum;
     }

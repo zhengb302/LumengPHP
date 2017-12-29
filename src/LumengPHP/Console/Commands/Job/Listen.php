@@ -2,10 +2,8 @@
 
 namespace LumengPHP\Console\Commands\Job;
 
-use LumengPHP\Components\Queue\QueueInterface;
-use LumengPHP\Kernel\Annotation\ClassMetadataLoader;
+use LumengPHP\Components\Queue\JobQueueInterface;
 use LumengPHP\Kernel\AppContextInterface;
-use LumengPHP\Kernel\Event\EventManagerInterface;
 
 /**
  * 任务监听
@@ -36,11 +34,6 @@ class Listen {
     private $disableMultiWorkers;
 
     /**
-     * @var int 每次处理的最大任务数量
-     */
-    private $maxEventNum;
-
-    /**
      * @var array 工作进程Map，格式：工作进程ID => 任务队列名称
      */
     private $workerMap = [];
@@ -48,18 +41,17 @@ class Listen {
     public function init() {
         $config = $this->appContext->getConfig('jobListen') ?: [];
         $this->disableMultiWorkers = isset($config['disableMultiWorkers']) ? $config['disableMultiWorkers'] : false;
-        $this->maxEventNum = $config['maxEventNum'] ?: 1000;
     }
 
     public function execute() {
         //检查锁文件
-        $lockFile = $this->appContext->getRuntimeDir() . '/event-listen.lock';
+        $lockFile = $this->appContext->getRuntimeDir() . '/job-listen.lock';
         if (file_exists($lockFile)) {
             _throw('任务监听任务已经在运行中');
         }
 
-        $queueServices = $this->extraQueueServices();
-        if (empty($queueServices)) {
+        $jobQueues = $this->extraJobQueues();
+        if (empty($jobQueues)) {
             _throw('没有需要队列化的异步任务');
         }
 
@@ -70,11 +62,11 @@ class Listen {
 
         //非多进程模式，直接监听各队列
         if ($this->disableMultiWorkers) {
-            $this->listenQueues($queueServices);
+            $this->listenQueues($jobQueues);
         }
         //多进程模式，启动各工作进程
         else {
-            $this->startWorkers($queueServices);
+            $this->startWorkers($jobQueues);
         }
 
         //运行结束，删除锁文件，解锁
@@ -86,46 +78,20 @@ class Listen {
      * 
      * @return array
      */
-    private function extraQueueServices() {
-        $eventConfig = $this->appContext->getAppSetting()->getEvents();
-        if (empty($eventConfig)) {
-            return [];
-        }
-
-        /* @var $classMetadataLoader ClassMetadataLoader */
-        $classMetadataLoader = $this->appContext->getService('classMetadataLoader');
-
-        $queueServices = [];
-        foreach (array_keys($eventConfig) as $eventName) {
-            $classMetadata = $classMetadataLoader->load($eventName);
-
-            //如果不是队列化的异步任务
-            if (!isset($classMetadata['classMetadata']['queued'])) {
-                continue;
-            }
-
-            $queueServiceName = $classMetadata['classMetadata']['queued'];
-            if ($queueServiceName === true) {
-                $queueServiceName = 'defaultEventQueue';
-            }
-
-            if (!in_array($queueServiceName, $queueServices)) {
-                $queueServices[] = $queueServiceName;
-            }
-        }
-
-        return $queueServices;
+    private function extraJobQueues() {
+        $jobQueueConfig = $this->appContext->getAppSetting()->getJobQueues() ?: [];
+        return array_keys($jobQueueConfig) ?: [];
     }
 
     /**
      * 非多进程模式，直接监听各队列
      * 
-     * @param array $queueServices
+     * @param array $jobQueues
      */
-    private function listenQueues($queueServices) {
+    private function listenQueues($jobQueues) {
         //逐个监听各任务队列
-        foreach ($queueServices as $queueServiceName) {
-            $this->listenQueue($queueServiceName);
+        foreach ($jobQueues as $jobQueueName) {
+            $this->listenQueue($jobQueueName);
         }
 
         $this->log('[master] 已全部监听完毕，即将结束运行，进程ID：' . getmypid());
@@ -134,12 +100,12 @@ class Listen {
     /**
      * 多进程模式，启动各工作进程
      * 
-     * @param array $queueServices
+     * @param array $jobQueues
      */
-    private function startWorkers($queueServices) {
+    private function startWorkers($jobQueues) {
         //为每个任务队列分别开启一个工作进程
-        foreach ($queueServices as $queueServiceName) {
-            $this->startWorker($queueServiceName);
+        foreach ($jobQueues as $jobQueueName) {
+            $this->startWorker($jobQueueName);
         }
 
         while (true) {
@@ -158,22 +124,22 @@ class Listen {
     /**
      * 启动工作进程
      * 
-     * @param string $queueServiceName
+     * @param string $jobQueueName
      */
-    private function startWorker($queueServiceName) {
+    private function startWorker($jobQueueName) {
         $pid = pcntl_fork();
         if ($pid == -1) {
-            $this->log("[master] 创建工作进程失败，队列服务名称：{$queueServiceName}", 'error');
+            $this->log("[master] 创建工作进程失败，队列名称：{$jobQueueName}", 'error');
         }
         //父进程
         else if ($pid) {
-            $this->workerMap[$pid] = $queueServiceName;
+            $this->workerMap[$pid] = $jobQueueName;
         }
         //子进程
         else {
-            $this->log("[worker] 启动成功，进程ID：" . getmypid() . "，队列服务名称：{$queueServiceName}");
+            $this->log("[worker] 启动成功，进程ID：" . getmypid() . "，队列名称：{$jobQueueName}");
 
-            $this->listenQueue($queueServiceName);
+            $this->listenQueue($jobQueueName);
 
             //这里必须退出，不然就跑去执行主进程的代码了
             exit(0);
@@ -183,34 +149,34 @@ class Listen {
     /**
      * 监听队列
      * 
-     * @param string $queueServiceName 队列服务名称
+     * @param string $jobQueueName 队列服务名称
      */
-    private function listenQueue($queueServiceName) {
-        /* @var $queueService QueueInterface */
-        $queueService = $this->appContext->getService($queueServiceName);
-        /* @var $eventManager EventManagerInterface */
-        $eventManager = $this->appContext->getService('eventManager');
+    private function listenQueue($jobQueueName) {
+        /* @var $jobQueue JobQueueInterface */
+        $jobQueue = $this->appContext->getService($jobQueueName);
 
         //记录开始时间
         $startTime = time();
 
-        for ($i = 0; $i < $this->maxEventNum; $i++) {
-            $event = $queueService->dequeue();
-            if (is_null($event)) {
+        $maxJobNum = $jobQueue->getMaxJobNum();
+        for ($i = 0; $i < $maxJobNum; $i++) {
+            $job = $jobQueue->dequeue();
+            if (is_null($job)) {
                 break;
             }
 
-            $eventManager->trigger($event, true);
+            //执行任务
+            $job->execute();
         }
 
         //处理这些任务的耗时，以秒为单位
         $timeUsed = (time() - $startTime) . 's';
 
         if ($this->disableMultiWorkers) {
-            $msg = "[master] 已执行{$i}个任务，用时：{$timeUsed}，队列名称：{$queueServiceName}";
+            $msg = "[master] 已执行{$i}个任务，用时：{$timeUsed}，队列名称：{$jobQueueName}";
         } else {
             $msg = "[worker] 已执行{$i}个任务，用时：{$timeUsed}，进程ID：" . getmypid() .
-                    "，队列名称：{$queueServiceName}，即将退出运行";
+                    "，队列名称：{$jobQueueName}，即将退出运行";
         }
         $this->log($msg);
     }
@@ -267,7 +233,7 @@ class Listen {
             if (!is_dir($logDir)) {
                 mkdir($logDir, 0755, true);
             }
-            $logFilePath = "$logDir/event-listen.log";
+            $logFilePath = "$logDir/job-listen.log";
             $logFile = fopen($logFilePath, 'a');
         }
 

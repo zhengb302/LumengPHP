@@ -1,6 +1,6 @@
 <?php
 
-namespace LumengPHP\Console\Commands\Event;
+namespace LumengPHP\Console\Commands\Job;
 
 use LumengPHP\Components\Queue\QueueInterface;
 use LumengPHP\Kernel\Annotation\ClassMetadataLoader;
@@ -8,14 +8,14 @@ use LumengPHP\Kernel\AppContextInterface;
 use LumengPHP\Kernel\Event\EventManagerInterface;
 
 /**
- * 事件监听
+ * 任务监听
  * 
  * 要求安装并启用了<b>PCNTL</b>扩展
  * 
- * CRON定时调用(每分钟)事件监听入口，根据事件配置，会为每一个事件队列开启一个工作进程(worker)，
- * 一个队列对应一个工作进程，多个事件可以共享一个队列。工作进程会弹出队列里的事件数据，
- * 如果有事件数据，便执行此事件的监听器，在执行完此事件所有的监听器之后，继续弹出下一个事件数据，
- * 如果此时事件队列为空或已监听的事件数量达到上限，则工作进程退出执行。
+ * CRON定时调用(每分钟)任务监听入口，根据任务队列配置，会为每一个任务队列开启一个工作进程(worker)，
+ * 一个队列对应一个工作进程，多个任务可以共享一个任务队列。工作进程会弹出队列里的任务数据，
+ * 如果有任务数据，便执行此任务，在执行完此任务之后，继续弹出下一个任务数据，
+ * 如果此时任务队列为空或已监听的任务数量达到上限，则工作进程退出执行。
  * 在所有的工作进程退出执行之后，主进程也退出。
  * 
  * 注意：请使用非阻塞型的队列，如果使用阻塞型的队列，将会造成工作进程一直等待。
@@ -36,17 +36,17 @@ class Listen {
     private $disableMultiWorkers;
 
     /**
-     * @var int 每次处理的最大事件数量
+     * @var int 每次处理的最大任务数量
      */
     private $maxEventNum;
 
     /**
-     * @var array 工作进程Map，格式：工作进程ID => 事件队列服务对象名称
+     * @var array 工作进程Map，格式：工作进程ID => 任务队列名称
      */
     private $workerMap = [];
 
     public function init() {
-        $config = $this->appContext->getConfig('eventListen') ?: [];
+        $config = $this->appContext->getConfig('jobListen') ?: [];
         $this->disableMultiWorkers = isset($config['disableMultiWorkers']) ? $config['disableMultiWorkers'] : false;
         $this->maxEventNum = $config['maxEventNum'] ?: 1000;
     }
@@ -55,18 +55,18 @@ class Listen {
         //检查锁文件
         $lockFile = $this->appContext->getRuntimeDir() . '/event-listen.lock';
         if (file_exists($lockFile)) {
-            _throw('事件监听任务已经在运行中');
+            _throw('任务监听任务已经在运行中');
         }
 
         $queueServices = $this->extraQueueServices();
         if (empty($queueServices)) {
-            _throw('没有需要队列化的异步事件');
+            _throw('没有需要队列化的异步任务');
         }
 
         //创建锁文件
         touch($lockFile);
 
-        $this->log('[master] 开始执行事件监听任务，进程ID：' . getmypid());
+        $this->log('[master] 开始执行任务监听任务，进程ID：' . getmypid());
 
         //非多进程模式，直接监听各队列
         if ($this->disableMultiWorkers) {
@@ -82,7 +82,7 @@ class Listen {
     }
 
     /**
-     * 提取出所有的事件队列名称
+     * 提取出所有的任务队列名称
      * 
      * @return array
      */
@@ -99,7 +99,7 @@ class Listen {
         foreach (array_keys($eventConfig) as $eventName) {
             $classMetadata = $classMetadataLoader->load($eventName);
 
-            //如果不是队列化的异步事件
+            //如果不是队列化的异步任务
             if (!isset($classMetadata['classMetadata']['queued'])) {
                 continue;
             }
@@ -123,7 +123,7 @@ class Listen {
      * @param array $queueServices
      */
     private function listenQueues($queueServices) {
-        //逐个监听各事件队列
+        //逐个监听各任务队列
         foreach ($queueServices as $queueServiceName) {
             $this->listenQueue($queueServiceName);
         }
@@ -137,7 +137,7 @@ class Listen {
      * @param array $queueServices
      */
     private function startWorkers($queueServices) {
-        //为每个事件队列分别开启一个工作进程
+        //为每个任务队列分别开启一个工作进程
         foreach ($queueServices as $queueServiceName) {
             $this->startWorker($queueServiceName);
         }
@@ -203,14 +203,14 @@ class Listen {
             $eventManager->trigger($event, true);
         }
 
-        //处理这些事件的耗时，以秒为单位
+        //处理这些任务的耗时，以秒为单位
         $timeUsed = (time() - $startTime) . 's';
 
         if ($this->disableMultiWorkers) {
-            $msg = "[master] 已监听{$i}个事件，用时：{$timeUsed}，队列服务名称：{$queueServiceName}";
+            $msg = "[master] 已执行{$i}个任务，用时：{$timeUsed}，队列名称：{$queueServiceName}";
         } else {
-            $msg = "[worker] 已监听{$i}个事件，用时：{$timeUsed}，进程ID：" . getmypid() .
-                    "，队列服务名称：{$queueServiceName}，即将退出运行";
+            $msg = "[worker] 已执行{$i}个任务，用时：{$timeUsed}，进程ID：" . getmypid() .
+                    "，队列名称：{$queueServiceName}，即将退出运行";
         }
         $this->log($msg);
     }
@@ -232,7 +232,7 @@ class Listen {
             unset($this->workerMap[$pid]);
 
             $exitReason = $this->parseExitReason($status);
-            $this->log("[master] 工作进程“{$pid}”已退出运行，{$exitReason}，队列服务名称：{$queueServiceName}");
+            $this->log("[master] 工作进程“{$pid}”已退出运行，{$exitReason}，队列名称：{$queueServiceName}");
         }
     }
 

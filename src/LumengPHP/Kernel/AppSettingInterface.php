@@ -53,6 +53,29 @@ interface AppSettingInterface {
     public function getExtensions();
 
     /**
+     * 取得Job队列配置
+     * 
+     * 格式：队列名称 => 队列服务配置
+     * 
+     * 示例：
+     * <pre>
+     * [
+     *     'fooQueue' => [
+     *         'class' => \LumengPHP\Components\Queue\JobRedisQueue:class,
+     *         'constructor-args' => ['redis conn', 'some queue name', 1000],
+     *     ],
+     *     'barQueue' => [
+     *         'class' => \LumengPHP\Components\Queue\JobRedisQueue:class,
+     *         'constructor-args' => ['redis conn', 'some queue name', 1000],
+     *     ],
+     * ]
+     * </pre>
+     * 
+     * @return array
+     */
+    public function getJobQueues();
+
+    /**
      * 取得事件配置
      * 
      * 格式：事件类的全限定名称 => 事件监听器列表

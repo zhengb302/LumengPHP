@@ -1,6 +1,6 @@
 <?php
 
-namespace LumengPHP\Console\Commands\Event;
+namespace LumengPHP\Console\Commands\Job;
 
 use Exception;
 use LumengPHP\Components\Queue\QueueInterface;

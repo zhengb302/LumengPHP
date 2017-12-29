@@ -194,11 +194,11 @@ class Listen {
 
         //如果某个工作进程退出了
         if ($pid > 0) {
-            $queueServiceName = $this->workerMap[$pid];
+            $jobQueueName = $this->workerMap[$pid];
             unset($this->workerMap[$pid]);
 
             $exitReason = $this->parseExitReason($status);
-            $this->log("[master] 工作进程“{$pid}”已退出运行，{$exitReason}，队列名称：{$queueServiceName}");
+            $this->log("[master] 工作进程“{$pid}”已退出运行，{$exitReason}，队列名称：{$jobQueueName}");
         }
     }
 

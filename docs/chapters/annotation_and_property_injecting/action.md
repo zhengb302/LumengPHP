@@ -10,7 +10,7 @@
 
 ### 示例
 
-从`$_POST`中获取`age`参数，并转化为`int`类型，注入到`age`属性中：
+1，从`$_POST`中获取`age`参数，并转化为`int`类型，注入到`age`属性中：
 ```php
    /**
     * @var int 年龄
@@ -22,8 +22,10 @@
 > 说明：如果`$_POST`中不存在`age`参数，因为设置了`@keepDefault`注解的缘故，`age`属性的值将不会被改变，仍然为`18`。
 如果此时不设置`@keepDefault`注解，则`age`属性的值会被注入为`0`。
 
-异步触发`用户登录事件`：
+2，异步触发`用户登录事件`：
 ```php
+namespace Bear\BBS\Events;
+
 /**
  * 用户登录事件
  *
@@ -34,12 +36,14 @@ class UserLogined {
 }
 ```
 
-设置`发送邮件任务`的任务队列名称：
+3，设置`发送邮件任务`的任务队列名称：
 ```php
+namespace Bear\BBS\Jobs;
+
 /**
  * 发送邮件任务
  *
- * @queue(userEventQueue)
+ * @queue(sendEmailQueue)
  */
 class SendEmail {
     //...

@@ -53,7 +53,7 @@ class Application {
         $container->register('jobManager', $jobManager);
 
         //构造事件管理器，请把其注册为服务
-        $eventManager = new EventManager($this->appContext, $classInvoker);
+        $eventManager = new EventManager($this->appContext, $classInvoker, $jobManager);
         $container->register('eventManager', $eventManager);
 
         //构造请求派发器

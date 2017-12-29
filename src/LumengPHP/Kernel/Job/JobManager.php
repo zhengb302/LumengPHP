@@ -35,13 +35,16 @@ class JobManager implements JobManagerInterface {
         $this->classMetadataLoader = $appContext->getService('classMetadataLoader');
     }
 
-    public function delayJob($job) {
-        $jobRefObj = new ReflectionClass($job);
-        $jobClass = $jobRefObj->getName();
-        $classMetadata = $this->classMetadataLoader->load($jobClass);
-        $jobQueueName = isset($classMetadata['classMetadata']['queue']) ?
-                $classMetadata['classMetadata']['queue'] :
-                'defaultJobQueue';
+    public function delayJob($job, $jobQueueName = '') {
+        if (!$jobQueueName) {
+            $jobRefObj = new ReflectionClass($job);
+            $jobClass = $jobRefObj->getName();
+            $classMetadata = $this->classMetadataLoader->load($jobClass);
+            $jobQueueName = isset($classMetadata['classMetadata']['queue']) ?
+                    $classMetadata['classMetadata']['queue'] :
+                    'defaultJobQueue';
+        }
+
         if (!isset($this->jobQueueConfig[$jobQueueName])) {
             _throw("任务队列不存在，队列名称：{$jobQueueName}");
         }

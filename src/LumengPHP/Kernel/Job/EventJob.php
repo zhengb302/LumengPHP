@@ -3,7 +3,7 @@
 namespace LumengPHP\Kernel\Job;
 
 /**
- * 事件Job - 用于异步触发事件
+ * 事件Job - 用于处理队列化的异步事件
  *
  * @author zhengluming <luming.zheng@shandjj.com>
  */
@@ -24,7 +24,7 @@ class EventJob {
     }
 
     public function execute() {
-        trigger_event($this->event, true);
+        event_manager()->trigger($this->event, true);
     }
 
 }

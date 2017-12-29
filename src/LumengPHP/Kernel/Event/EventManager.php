@@ -2,11 +2,11 @@
 
 namespace LumengPHP\Kernel\Event;
 
-use LumengPHP\Components\Queue\JobQueueInterface;
 use LumengPHP\Kernel\Annotation\ClassMetadataLoader;
 use LumengPHP\Kernel\AppContextInterface;
 use LumengPHP\Kernel\ClassInvoker;
 use LumengPHP\Kernel\Job\EventJob;
+use LumengPHP\Kernel\Job\JobManagerInterface;
 use ReflectionClass;
 
 /**
@@ -27,25 +27,33 @@ class EventManager implements EventManagerInterface {
     private $eventConfig;
 
     /**
+     * @var ClassMetadataLoader 类元数据加载程序
+     */
+    private $classMetadataLoader;
+
+    /**
      * @var ClassInvoker 
      */
     private $classInvoker;
 
     /**
-     * @var ClassMetadataLoader 类元数据加载程序
+     * @var JobManagerInterface Job管理器
      */
-    private $classMetadataLoader;
+    private $jobManager;
 
     /**
      * @var object 当前事件对象
      */
     private $currentEvent;
 
-    public function __construct(AppContextInterface $appContext, ClassInvoker $classInvoker) {
+    public function __construct(AppContextInterface $appContext, ClassInvoker $classInvoker, JobManagerInterface $jobManager) {
         $this->appContext = $appContext;
         $this->eventConfig = $appContext->getAppSetting()->getEvents();
-        $this->classInvoker = $classInvoker;
         $this->classMetadataLoader = $appContext->getService('classMetadataLoader');
+
+        $this->classInvoker = $classInvoker;
+
+        $this->jobManager = $jobManager;
     }
 
     public function trigger($event, $immediately = false) {
@@ -68,14 +76,12 @@ class EventManager implements EventManagerInterface {
         //如果是队列化的异步事件，则把事件对象序列化之后放入队列中，然后直接返回
         $classMetadata = $this->classMetadataLoader->load($eventName);
         if (isset($classMetadata['classMetadata']['queued'])) {
-            $queueServiceName = $classMetadata['classMetadata']['queued'];
-            if ($queueServiceName === true) {
-                $queueServiceName = 'defaultJobQueue';
+            $jobQueueName = $classMetadata['classMetadata']['queued'];
+            if ($jobQueueName === true) {
+                $jobQueueName = 'defaultJobQueue';
             }
 
-            /* @var $jobQueue JobQueueInterface */
-            $jobQueue = $this->appContext->getService($queueServiceName);
-            $jobQueue->enqueue(new EventJob($event));
+            $this->jobManager->delayJob(new EventJob($event), $jobQueueName);
             return;
         }
 

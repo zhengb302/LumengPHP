@@ -16,14 +16,14 @@ use ReflectionClass;
 class EventManager implements EventManagerInterface {
 
     /**
-     * @var array 事件配置，格式：事件类的全限定名称 => 事件监听器列表
-     */
-    private $eventConfig;
-
-    /**
      * @var AppContextInterface
      */
     private $appContext;
+
+    /**
+     * @var array 事件配置，格式：事件类的全限定名称 => 事件监听器列表
+     */
+    private $eventConfig;
 
     /**
      * @var ClassInvoker 
@@ -40,9 +40,9 @@ class EventManager implements EventManagerInterface {
      */
     private $currentEvent;
 
-    public function __construct(array $eventConfig, AppContextInterface $appContext, ClassInvoker $classInvoker) {
-        $this->eventConfig = $eventConfig;
+    public function __construct(AppContextInterface $appContext, ClassInvoker $classInvoker) {
         $this->appContext = $appContext;
+        $this->eventConfig = $appContext->getAppSetting()->getEvents();
         $this->classInvoker = $classInvoker;
         $this->classMetadataLoader = $appContext->getService('classMetadataLoader');
     }

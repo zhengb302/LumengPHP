@@ -11,6 +11,9 @@ use Redis;
  */
 class JobRedisQueue extends RedisQueue implements JobQueueInterface {
 
+    /**
+     * @var int 单次处理的最大Job数量
+     */
     private $maxJobNum;
 
     /**

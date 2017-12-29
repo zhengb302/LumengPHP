@@ -7,6 +7,7 @@ use LumengPHP\Kernel\AppContextInterface;
 use LumengPHP\Kernel\Bootstrap;
 use LumengPHP\Kernel\ClassInvoker;
 use LumengPHP\Kernel\Event\EventManager;
+use LumengPHP\Kernel\Job\JobManager;
 use ReflectionClass;
 
 /**
@@ -187,9 +188,12 @@ class Application {
         $classInvoker = new ClassInvoker($this->appContext, $propertyInjector);
         $container->register('classInvoker', $classInvoker);
 
-        //构造事件管理器，请把其注册为服务
-        $eventConfig = $this->appContext->getAppSetting()->getEvents();
-        $eventManager = new EventManager($eventConfig, $this->appContext, $classInvoker);
+        //构造Job管理器，并把其注册为服务
+        $jobManager = new JobManager($this->appContext);
+        $container->register('jobManager', $jobManager);
+
+        //构造事件管理器，并把其注册为服务
+        $eventManager = new EventManager($this->appContext, $classInvoker);
         $container->register('eventManager', $eventManager);
 
         try {

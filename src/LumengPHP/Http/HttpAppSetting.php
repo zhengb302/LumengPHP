@@ -48,6 +48,10 @@ class HttpAppSetting implements HttpAppSettingInterface {
         return $this->appSetting->getExtensions() ?: [];
     }
 
+    public function getJobQueues() {
+        return $this->appSetting->getJobQueues() ?: [];
+    }
+
     public function getEvents() {
         return $this->appSetting->getEvents() ?: [];
     }

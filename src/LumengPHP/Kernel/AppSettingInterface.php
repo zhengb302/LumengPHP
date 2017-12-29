@@ -62,11 +62,11 @@ interface AppSettingInterface {
      * [
      *     'fooQueue' => [
      *         'class' => \LumengPHP\Components\Queue\JobRedisQueue:class,
-     *         'constructor-args' => ['redis conn', 'some queue name', 1000],
+     *         'constructor-args' => ['redis conn', 'some queue name', 1500],
      *     ],
      *     'barQueue' => [
      *         'class' => \LumengPHP\Components\Queue\JobRedisQueue:class,
-     *         'constructor-args' => ['redis conn', 'some queue name', 1000],
+     *         'constructor-args' => ['redis conn', 'some queue name'],
      *     ],
      * ]
      * </pre>

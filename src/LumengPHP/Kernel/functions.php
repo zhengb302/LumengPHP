@@ -3,6 +3,7 @@
 use LumengPHP\Kernel\AppContext;
 use LumengPHP\Kernel\AppContextInterface;
 use LumengPHP\Kernel\Event\EventManagerInterface;
+use LumengPHP\Kernel\Job\JobManagerInterface;
 
 /*
  * 基础通用函数
@@ -243,4 +244,22 @@ function event_manager() {
  */
 function trigger_event($event, $immediately = false) {
     event_manager()->trigger($event, $immediately);
+}
+
+/**
+ * 返回Job管理器实例
+ * 
+ * @return JobManagerInterface
+ */
+function job_manager() {
+    return service('jobManager');
+}
+
+/**
+ * 延迟执行Job
+ * 
+ * @param object $job Job对象
+ */
+function delay_job($job) {
+    job_manager()->delayJob($job);
 }

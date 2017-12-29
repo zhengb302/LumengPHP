@@ -31,6 +31,10 @@ class ConsoleAppSetting implements ConsoleAppSettingInterface {
         return $this->appSetting->getExtensions() ?: [];
     }
 
+    public function getJobQueues() {
+        return $this->appSetting->getJobQueues() ?: [];
+    }
+
     public function getEvents() {
         return $this->appSetting->getEvents() ?: [];
     }
@@ -46,7 +50,7 @@ class ConsoleAppSetting implements ConsoleAppSettingInterface {
     public function getCmds() {
         //Console应用系统自带的一些命令
         $defaultCmds = [
-            'event:listen' => \LumengPHP\Console\Commands\Event\Listen::class,
+            'job:listen' => \LumengPHP\Console\Commands\Job\Listen::class,
         ];
 
         //应用特定的命令

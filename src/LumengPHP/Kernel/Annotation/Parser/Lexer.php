@@ -125,6 +125,7 @@ class Lexer {
                 break;
             case '@keepDefault':
             case '@queued':
+            case '@queue':
                 $tokenType = Token::T_ACTION;
                 break;
             default:

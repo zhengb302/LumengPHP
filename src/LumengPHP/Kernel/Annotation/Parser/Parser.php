@@ -89,9 +89,36 @@ class Parser {
     }
 
     /**
-     * 动作注解：“@keepDefault”、“@queued”
+     * 动作注解：“@keepDefault”、“@queued”、“@queue”
      */
     private function actionTag() {
+        switch ($this->lookahead->getText()) {
+            case '@keepDefault':
+                $this->actionKeepDefault();
+                break;
+            case '@queued':
+                $this->actionQueued();
+                break;
+            case '@queue':
+                $this->actionQueue();
+                break;
+        }
+    }
+
+    /**
+     * 注解“@keepDefault”后不能有参数
+     */
+    private function actionKeepDefault() {
+        $this->match(Token::T_ACTION, true);
+
+        $action = ltrim($this->lastToken->getText(), '@');
+        $this->metadata->addMetadata($action, true);
+    }
+
+    /**
+     * 注解“@queued”的参数可选
+     */
+    private function actionQueued() {
         $this->match(Token::T_ACTION);
 
         $action = ltrim($this->lastToken->getText(), '@');
@@ -103,6 +130,27 @@ class Parser {
             $value = $this->lastToken->getText();
             $this->match(Token::T_RIGHT_PARENTHESIS);
         }
+
+        $this->metadata->addMetadata($action, $value);
+
+        if (!$this->lookahead->isAnnotation()) {
+            $this->lexer->gotoNextAnnotation();
+            $this->consume();
+        }
+    }
+
+    /**
+     * 注解“@queue”必须带有一个参数
+     */
+    private function actionQueue() {
+        $this->match(Token::T_ACTION);
+
+        $action = ltrim($this->lastToken->getText(), '@');
+
+        $this->match(Token::T_LEFT_PARENTHESIS);
+        $this->match(Token::T_ID);
+        $value = $this->lastToken->getText();
+        $this->match(Token::T_RIGHT_PARENTHESIS);
 
         $this->metadata->addMetadata($action, $value);
 

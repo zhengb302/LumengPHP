@@ -2,10 +2,11 @@
 
 namespace LumengPHP\Kernel\Event;
 
-use LumengPHP\Components\Queue\QueueInterface;
+use LumengPHP\Components\Queue\JobQueueInterface;
 use LumengPHP\Kernel\Annotation\ClassMetadataLoader;
 use LumengPHP\Kernel\AppContextInterface;
 use LumengPHP\Kernel\ClassInvoker;
+use LumengPHP\Kernel\Job\EventJob;
 use ReflectionClass;
 
 /**
@@ -69,12 +70,12 @@ class EventManager implements EventManagerInterface {
         if (isset($classMetadata['classMetadata']['queued'])) {
             $queueServiceName = $classMetadata['classMetadata']['queued'];
             if ($queueServiceName === true) {
-                $queueServiceName = 'defaultEventQueue';
+                $queueServiceName = 'defaultJobQueue';
             }
 
-            /* @var $queueService QueueInterface */
-            $queueService = $this->appContext->getService($queueServiceName);
-            $queueService->enqueue($event);
+            /* @var $jobQueue JobQueueInterface */
+            $jobQueue = $this->appContext->getService($queueServiceName);
+            $jobQueue->enqueue(new EventJob($event));
             return;
         }
 

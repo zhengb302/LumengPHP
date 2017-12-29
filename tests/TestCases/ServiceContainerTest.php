@@ -71,6 +71,22 @@ class ServiceContainerTest extends PHPUnit_Framework_TestCase {
     }
 
     /**
+     * 测试不带参数的回调
+     */
+    public function testCallbackWithoutArgument() {
+        $configs = [
+            'foo' => function() {
+                return new Foo();
+            },
+        ];
+        $container = new ServiceContainer($configs);
+
+        $foo = $container->get('foo');
+        $this->assertInstanceOf(Foo::class, $foo);
+        $this->assertEquals('foo', $foo->foo());
+    }
+
+    /**
      * 测试构造器参数及服务引用
      */
     public function testConstructorArgsAndServiceRef() {
@@ -92,8 +108,9 @@ class ServiceContainerTest extends PHPUnit_Framework_TestCase {
 
     /**
      * 测试无效的服务构造器参数
+     * 
      * @expectedException \LumengPHP\Kernel\DependencyInjection\ServiceContainerException
-     * @expectedExceptionMessage constructor-args must be array!
+     * @expectedExceptionMessage constructor-args or call argument must be array!
      */
     public function testInvalidConstructorArgs() {
         $configs = [

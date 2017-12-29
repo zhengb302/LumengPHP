@@ -4,6 +4,7 @@ namespace LumengPHP\Kernel\DependencyInjection;
 
 use Closure;
 use ReflectionClass;
+use ReflectionFunction;
 
 /**
  * 服务对象实例构造器
@@ -30,7 +31,8 @@ class ServiceBuilder {
         //“服务配置”可以是一个匿名函数
         if ($serviceConfig instanceof Closure) {
             $callback = $serviceConfig;
-            return $callback($this->serviceContainer);
+            $refFunc = new ReflectionFunction($callback);
+            return $refFunc->getNumberOfParameters() == 1 ? $callback($this->serviceContainer) : $callback();
         }
 
         /*

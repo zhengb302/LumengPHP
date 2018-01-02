@@ -4,6 +4,8 @@ namespace LumengPHP\Console\Commands\Job;
 
 use LumengPHP\Components\Queue\JobQueueInterface;
 use LumengPHP\Kernel\AppContextInterface;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 /**
  * 任务监听
@@ -17,6 +19,16 @@ use LumengPHP\Kernel\AppContextInterface;
  * 在所有的工作进程退出执行之后，主进程也退出。
  * 
  * 注意：请使用非阻塞型的队列，如果使用阻塞型的队列，将会造成工作进程一直等待。
+ * 
+ * 配置示例：
+ * <pre>
+ * [
+ *     'jobListen' => [
+ *         'logger' => 'service name of logger',
+ *         'disableMultiWorkers' => false,
+ *     ],
+ * ]
+ * </pre>
  *
  * @author zhengluming <luming.zheng@shandjj.com>
  */
@@ -27,6 +39,11 @@ class Listen {
      * @service
      */
     private $appContext;
+
+    /**
+     * @var LoggerInterface 日志组件
+     */
+    private $logger;
 
     /**
      * @var bool 是否禁用了多进程模式
@@ -40,6 +57,13 @@ class Listen {
 
     public function init() {
         $config = $this->appContext->getConfig('jobListen') ?: [];
+
+        if (isset($config['logger']) && $config['logger']) {
+            $this->logger = $this->appContext->getService($config['logger']);
+        } else {
+            $this->logger = new NullLogger();
+        }
+
         $this->disableMultiWorkers = isset($config['disableMultiWorkers']) ? $config['disableMultiWorkers'] : false;
     }
 
@@ -58,7 +82,7 @@ class Listen {
         //创建锁文件
         touch($lockFile);
 
-        $this->log('[master] 开始执行任务监听任务，进程ID：' . getmypid());
+        $this->logger->info('[master] 开始执行任务监听任务，进程ID：' . getmypid());
 
         //非多进程模式，直接监听各队列
         if ($this->disableMultiWorkers) {
@@ -94,7 +118,7 @@ class Listen {
             $this->listenQueue($jobQueueName);
         }
 
-        $this->log('[master] 已全部监听完毕，即将结束运行，进程ID：' . getmypid());
+        $this->logger->info('[master] 已全部监听完毕，即将结束运行，进程ID：' . getmypid());
     }
 
     /**
@@ -111,7 +135,7 @@ class Listen {
         while (true) {
             //如果工作进程已经全部退出
             if (empty($this->workerMap)) {
-                $this->log('[master] 工作进程已经全部退出，即将结束运行，进程ID：' . getmypid());
+                $this->logger->info('[master] 工作进程已经全部退出，即将结束运行，进程ID：' . getmypid());
                 return;
             }
 
@@ -129,7 +153,7 @@ class Listen {
     private function startWorker($jobQueueName) {
         $pid = pcntl_fork();
         if ($pid == -1) {
-            $this->log("[master] 创建工作进程失败，队列名称：{$jobQueueName}", 'error');
+            $this->logger->error("[master] 创建工作进程失败，队列名称：{$jobQueueName}，进程ID：" . getmypid());
         }
         //父进程
         else if ($pid) {
@@ -137,7 +161,7 @@ class Listen {
         }
         //子进程
         else {
-            $this->log("[worker] 启动成功，进程ID：" . getmypid() . "，队列名称：{$jobQueueName}");
+            $this->logger->info("[worker] 启动成功，进程ID：" . getmypid() . "，队列名称：{$jobQueueName}");
 
             $this->listenQueue($jobQueueName);
 
@@ -178,7 +202,7 @@ class Listen {
             $msg = "[worker] 已执行{$i}个任务，用时：{$timeUsed}，进程ID：" . getmypid() .
                     "，队列名称：{$jobQueueName}，即将退出运行";
         }
-        $this->log($msg);
+        $this->logger->info($msg);
     }
 
     /**
@@ -198,7 +222,7 @@ class Listen {
             unset($this->workerMap[$pid]);
 
             $exitReason = $this->parseExitReason($status);
-            $this->log("[master] 工作进程“{$pid}”已退出运行，{$exitReason}，队列名称：{$jobQueueName}");
+            $this->logger->info("[master] 工作进程“{$pid}”已退出运行，{$exitReason}，队列名称：{$jobQueueName}");
         }
     }
 
@@ -218,28 +242,6 @@ class Listen {
         }
 
         return '退出原因：未知';
-    }
-
-    /**
-     * 记录运行日志
-     * 
-     * @param string $msg
-     * @param string $level 日志级别：info、error、warning
-     */
-    private function log($msg, $level = 'info') {
-        static $logFile = null;
-        if (is_null($logFile)) {
-            $logDir = $this->appContext->getRuntimeDir() . '/log';
-            if (!is_dir($logDir)) {
-                mkdir($logDir, 0755, true);
-            }
-            $logFilePath = "$logDir/job-listen.log";
-            $logFile = fopen($logFilePath, 'a');
-        }
-
-        $time = date('Y-m-d H:i:s');
-        $logData = "[{$level}] [{$time}] {$msg}\n";
-        fwrite($logFile, $logData);
     }
 
 }

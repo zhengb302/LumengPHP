@@ -28,6 +28,11 @@ class ServiceContainerTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals('foo', $foo->foo());
     }
 
+    /**
+     * 测试服务不存在时，获取的时候应该抛出异常
+     * 
+     * @expectedException \LumengPHP\Kernel\DependencyInjection\ServiceNotFoundException
+     */
     public function testServiceNotExists() {
         $configs = [
             'foo' => [
@@ -35,9 +40,7 @@ class ServiceContainerTest extends PHPUnit_Framework_TestCase {
             ],
         ];
         $container = new ServiceContainer($configs);
-
-        $bar = $container->get('bar');
-        $this->assertNull($bar);
+        $container->get('bar');
     }
 
     /**

@@ -27,7 +27,7 @@ interface ContainerInterface {
     public function get($serviceName);
 
     /**
-     * 注册服务
+     * 注册一个服务
      * 
      * 如果服务容器中已经存在名称相同的服务，则会覆盖原来的服务对象
      * 

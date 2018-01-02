@@ -40,20 +40,10 @@ class ServiceContainerTest extends PHPUnit_Framework_TestCase {
         $this->assertNull($bar);
     }
 
-    public function testRegService() {
-        $container = new ServiceContainer([]);
-        $container->register('foo', new Foo());
-
-        $this->assertTrue($container->has('foo'));
-
-        $foo = $container->get('foo');
-        $this->assertInstanceOf(Foo::class, $foo);
-    }
-
     /**
      * 测试回调
      */
-    public function testCallback() {
+    public function testCallbackConfig() {
         $configs = [
             'foo' => [
                 'class' => Foo::class,
@@ -73,7 +63,7 @@ class ServiceContainerTest extends PHPUnit_Framework_TestCase {
     /**
      * 测试不带参数的回调
      */
-    public function testCallbackWithoutArgument() {
+    public function testCallbackConfigWithoutArgument() {
         $configs = [
             'foo' => function() {
                 return new Foo();
@@ -150,19 +140,6 @@ class ServiceContainerTest extends PHPUnit_Framework_TestCase {
         $fooBar = $container->get('fooBar');
         $this->assertInstanceOf(FooBar::class, $fooBar);
         $this->assertEquals('fooBar', $fooBar->fooBar());
-    }
-
-    public function testAnonymousFunctionConfig() {
-        $configs = [
-            'foo' => function() {
-                return new Foo();
-            },
-        ];
-        $container = new ServiceContainer($configs);
-
-        $foo = $container->get('foo');
-        $this->assertInstanceOf(Foo::class, $foo);
-        $this->assertEquals('foo', $foo->foo());
     }
 
     /**

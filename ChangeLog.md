@@ -3,16 +3,24 @@
 ## Unreleased
 
 ### Added
+
+### Changed
+
+### Removed
+
+### Fixed
+
+## [v1.1.1] - 2018-01-02
+
+### Added
 - `ContainerInterface::register`方法支持注册服务配置
 - 服务容器实现PSR-11标准
 
 ### Changed
 - Job监听任务使用日志组件，而不是自己写的日志程序
 
-### Removed
-
 ### Fixed
-- Job队列未注册为服务
+- 修复Job队列未注册为服务的BUG
 
 ## [v1.1.0] - 2017-12-29
 

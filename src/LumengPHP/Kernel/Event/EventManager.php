@@ -5,7 +5,6 @@ namespace LumengPHP\Kernel\Event;
 use LumengPHP\Kernel\Annotation\ClassMetadataLoader;
 use LumengPHP\Kernel\AppContextInterface;
 use LumengPHP\Kernel\ClassInvoker;
-use LumengPHP\Kernel\Job\EventJob;
 use LumengPHP\Kernel\Job\JobManagerInterface;
 use ReflectionClass;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace LumengPHP\Kernel\Job;
+namespace LumengPHP\Kernel\Event;
 
 /**
  * 事件Job - 用于处理队列化的异步事件

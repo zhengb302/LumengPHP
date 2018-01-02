@@ -13,7 +13,7 @@ interface JobManagerInterface {
      * 延迟执行Job
      * 
      * @param object $job Job对象
-     * @param string $jobQueueName Job队列名称
+     * @param string|null $jobQueueName Job队列名称
      */
-    public function delayJob($job, $jobQueueName = '');
+    public function delayJob($job, $jobQueueName = null);
 }

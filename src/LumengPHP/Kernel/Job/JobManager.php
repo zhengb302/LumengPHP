@@ -31,12 +31,19 @@ class JobManager implements JobManagerInterface {
 
     public function __construct(AppContextInterface $appContext) {
         $this->appContext = $appContext;
+
+        //把Job队列注册为服务，Job队列名称即服务名称
         $this->jobQueueConfig = $appContext->getAppSetting()->getJobQueues();
+        $container = $appContext->getServiceContainer();
+        foreach ($this->jobQueueConfig as $jobQueueName => $jobQueueConfig) {
+            $container->register($jobQueueName, $jobQueueConfig);
+        }
+
         $this->classMetadataLoader = $appContext->getService('classMetadataLoader');
     }
 
-    public function delayJob($job, $jobQueueName = '') {
-        if (!$jobQueueName) {
+    public function delayJob($job, $jobQueueName = null) {
+        if (is_null($jobQueueName)) {
             $jobRefObj = new ReflectionClass($job);
             $jobClass = $jobRefObj->getName();
             $classMetadata = $this->classMetadataLoader->load($jobClass);

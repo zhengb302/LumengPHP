@@ -80,15 +80,8 @@ class ServiceContainer implements ContainerInterface {
         $this->services[$serviceName] = $this->serviceBuilder->build($serviceConfig);
     }
 
-    /**
-     * 注册服务<br />
-     * 如果服务容器中已经存在名称相同的服务，则会覆盖原来的服务对象
-     * @param string $serviceName 服务名称
-     * @param mixed $serviceInstance 服务对象实例、或者是一个匿名函数
-     * @throws ServiceContainerException
-     */
-    public function register($serviceName, $serviceInstance) {
-        if (!($serviceInstance instanceof Closure) && !is_object($serviceInstance)) {
+    public function register($serviceName, $service) {
+        if (!is_array($service) && !($service instanceof Closure) && !is_object($service)) {
             throw new ServiceContainerException("{$serviceName} is not a valid service.");
         }
 
@@ -100,15 +93,18 @@ class ServiceContainer implements ContainerInterface {
         $this->configs[$serviceName] = null;
         unset($this->configs[$serviceName]);
 
-        if ($serviceInstance instanceof Closure) {
+        //如果是服务配置或回调函数
+        if (is_array($service) || $service instanceof Closure) {
             //set the new one
-            $this->configs[$serviceName] = $serviceInstance;
+            $this->configs[$serviceName] = $service;
             return;
         }
 
-        if (is_object($serviceInstance)) {
+        //如果是服务对象实例
+        //is_object判断要放在后边，不然回调函数也会返回true
+        if (is_object($service)) {
             //set the new one
-            $this->services[$serviceName] = $serviceInstance;
+            $this->services[$serviceName] = $service;
             return;
         }
     }

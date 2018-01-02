@@ -165,12 +165,30 @@ class ServiceContainerTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals('foo', $foo->foo());
     }
 
+    /**
+     * 测试调用register方法时，传入回调函数
+     */
     public function testAnonymousFunctionRegister() {
         $configs = [];
         $container = new ServiceContainer($configs);
         $container->register('foo', function() {
             return new Foo();
         });
+
+        $foo = $container->get('foo');
+        $this->assertInstanceOf(Foo::class, $foo);
+        $this->assertEquals('foo', $foo->foo());
+    }
+
+    /**
+     * 测试调用register方法时，传入服务配置
+     */
+    public function testConfigRegister() {
+        $configs = [];
+        $container = new ServiceContainer($configs);
+        $container->register('foo', [
+            'class' => Foo::class,
+        ]);
 
         $foo = $container->get('foo');
         $this->assertInstanceOf(Foo::class, $foo);

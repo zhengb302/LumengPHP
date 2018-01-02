@@ -3,7 +3,8 @@
 ## Unreleased
 
 ### Added
-- 新增一些系统自带的控制台应用命令，如清理runtime目录、清理缓存等
+- `ContainerInterface::register`方法支持注册服务配置
+- 服务容器支持PSR-11标准
 
 ### Changed
 - Job监听任务使用日志组件，而不是自己写的日志程序
@@ -11,6 +12,7 @@
 ### Removed
 
 ### Fixed
+- Job队列未注册为服务
 
 ## [v1.1.0] - 2017-12-29
 

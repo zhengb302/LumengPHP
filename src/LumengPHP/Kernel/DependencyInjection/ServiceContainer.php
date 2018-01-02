@@ -35,6 +35,7 @@ class ServiceContainer implements ContainerInterface {
 
     /**
      * 使用服务配置构造一个服务容器
+     * 
      * @param array $configs 服务配置Map，格式：service name => service config/匿名函数
      */
     public function __construct(array $configs) {
@@ -43,21 +44,11 @@ class ServiceContainer implements ContainerInterface {
         $this->serviceBuilder = new ServiceBuilder($this);
     }
 
-    /**
-     * 根据服务名称检查服务容器中是否存在相应的服务对象
-     * @param string $serviceName 服务名称
-     * @return bool 存在则返回true，不存在则返回false
-     */
     public function has($serviceName) {
         return isset($this->services[$serviceName]) ||
                 isset($this->configs[$serviceName]);
     }
 
-    /**
-     * 根据服务名称获取一个服务对象
-     * @param string $serviceName 服务名称
-     * @return object|null 一个服务对象。如果服务不存在，则返回null
-     */
     public function get($serviceName) {
         if (isset($this->services[$serviceName])) {
             return $this->services[$serviceName];
@@ -68,7 +59,8 @@ class ServiceContainer implements ContainerInterface {
             return $this->services[$serviceName];
         }
 
-        return null;
+        //服务不存在，抛出异常
+        throw new ServiceNotFoundException("服务“{$serviceName}”不存在");
     }
 
     private function buildService($serviceName) {

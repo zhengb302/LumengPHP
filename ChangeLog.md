@@ -4,7 +4,7 @@
 
 ### Added
 - `ContainerInterface::register`方法支持注册服务配置
-- 服务容器支持PSR-11标准
+- 服务容器实现PSR-11标准
 
 ### Changed
 - Job监听任务使用日志组件，而不是自己写的日志程序

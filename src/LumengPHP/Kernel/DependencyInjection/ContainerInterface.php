@@ -3,12 +3,16 @@
 namespace LumengPHP\Kernel\DependencyInjection;
 
 use Closure;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\ContainerInterface as PsrContainerInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 /**
  * 容器接口
+ * 
  * @author Lumeng <zhengb302@163.com>
  */
-interface ContainerInterface {
+interface ContainerInterface extends PsrContainerInterface {
 
     /**
      * 根据服务名称检查服务容器中是否存在相应的服务对象
@@ -22,7 +26,11 @@ interface ContainerInterface {
      * 根据服务名称获取一个服务对象
      * 
      * @param string $serviceName 服务名称
-     * @return object|null 一个服务对象。如果服务不存在，则返回null
+     * 
+     * @throws NotFoundExceptionInterface  服务不存在
+     * @throws ContainerExceptionInterface 获取服务对象的过程中发生错误
+     * 
+     * @return object 一个服务对象
      */
     public function get($serviceName);
 

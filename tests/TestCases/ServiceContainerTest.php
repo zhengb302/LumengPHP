@@ -195,4 +195,17 @@ class ServiceContainerTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals('foo', $foo->foo());
     }
 
+    /**
+     * 测试调用register方法时，传入服务对象实例
+     */
+    public function testObjectRegister() {
+        $configs = [];
+        $container = new ServiceContainer($configs);
+        $container->register('foo', new Foo());
+
+        $foo = $container->get('foo');
+        $this->assertInstanceOf(Foo::class, $foo);
+        $this->assertEquals('foo', $foo->foo());
+    }
+
 }

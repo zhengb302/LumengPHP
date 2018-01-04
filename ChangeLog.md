@@ -9,6 +9,7 @@
 ### Removed
 
 ### Fixed
+- 修复“PHP Notice:  Undefined index: REQUEST_SCHEME”消息提示
 
 ## [v1.1.1] - 2018-01-02
 

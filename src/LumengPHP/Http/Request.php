@@ -66,16 +66,24 @@ class Request {
     }
 
     private function init() {
+        //HTTP请求方法，转化为大写
         $this->method = strtoupper($this->server['REQUEST_METHOD']);
-        $this->requestScheme = strtolower($this->server['REQUEST_SCHEME']);
+
+        //http or https，转化为小写
+        $this->requestScheme = isset($this->server['REQUEST_SCHEME']) ? strtolower($this->server['REQUEST_SCHEME']) : 'http';
     }
 
     /**
      * 从超全局变量中创建一个<b>Request</b>实例
+     * 
      * @return Request
      */
     public static function createFromGlobals() {
         $request = new Request($_GET, $_POST, $_REQUEST, $_COOKIE, $_FILES, $_SERVER);
+
+        //session实例
+        $request->setSession(new SimpleSession());
+
         return $request;
     }
 
@@ -93,6 +101,7 @@ class Request {
 
     /**
      * GET、POST、PUT、DELETE等，大写
+     * 
      * @return string
      */
     public function getMethod() {
@@ -101,6 +110,7 @@ class Request {
 
     /**
      * http or https，小写
+     * 
      * @return string
      */
     public function getRequestScheme() {
@@ -109,6 +119,7 @@ class Request {
 
     /**
      * 返回<b>SessionInterface</b>实例
+     * 
      * @return SessionInterface
      */
     public function getSession() {
@@ -117,6 +128,7 @@ class Request {
 
     /**
      * 设置<b>SessionInterface</b>实例
+     * 
      * @param SessionInterface $session
      */
     public function setSession(SessionInterface $session) {

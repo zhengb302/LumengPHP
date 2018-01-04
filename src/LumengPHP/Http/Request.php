@@ -81,7 +81,7 @@ class Request {
     public static function createFromGlobals() {
         $request = new Request($_GET, $_POST, $_REQUEST, $_COOKIE, $_FILES, $_SERVER);
 
-        //session实例
+        //设置session实例
         $request->setSession(new SimpleSession());
 
         return $request;

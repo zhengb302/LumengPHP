@@ -52,8 +52,8 @@ class ClassMetadataLoader {
 
         //准备文件缓存目录
         $metadataCacheDir = $this->appContext->getRuntimeDir() . '/cache/class-metadata';
-        if (!is_dir($metadataCacheDir)) {
-            mkdir($metadataCacheDir, 0755, true);
+        if (!is_dir($metadataCacheDir) && !mkdir($metadataCacheDir, 0755, true)) {
+            _throw("目录“{$metadataCacheDir}”创建失败，请检查权限是否足够");
         }
 
         //inode、最后修改时间

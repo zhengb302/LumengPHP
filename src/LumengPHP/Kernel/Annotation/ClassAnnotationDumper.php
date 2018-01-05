@@ -53,7 +53,10 @@ class ClassAnnotationDumper {
             'methodMetadata' => $this->methodMetadata,
         ];
 
-        file_put_contents($path, "<?php\nreturn " . var_export($classMetadata, true) . ";\n");
+        $codes = "<?php\nreturn " . var_export($classMetadata, true) . ";\n";
+        if (file_put_contents($path, $codes) === false) {
+            _throw("文件“{$path}”写入失败，请检查权限是否足够");
+        }
 
         return $classMetadata;
     }

@@ -10,6 +10,7 @@
 
 ### Fixed
 - 修复“PHP Notice:  Undefined index: REQUEST_SCHEME”消息提示
+- 类元数据加载程序，当创建目录或写入文件权限不足时，抛出错误
 
 ## [v1.1.1] - 2018-01-02
 

@@ -5,9 +5,15 @@
 ### Added
 
 ### Changed
-- 类元数据加载程序，当创建目录或写入文件权限不足时，抛出错误
 
 ### Removed
+
+### Fixed
+
+## [v1.1.2] - 2018-01-05
+
+### Changed
+- 类元数据加载程序，当创建目录或写入文件权限不足时，抛出错误
 
 ### Fixed
 - 修复“PHP Notice:  Undefined index: REQUEST_SCHEME”消息提示

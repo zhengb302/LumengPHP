@@ -3,6 +3,7 @@
 ## Unreleased
 
 ### Added
+- 增加`Lock`组件
 
 ### Changed
 

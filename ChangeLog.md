@@ -3,7 +3,8 @@
 ## Unreleased
 
 ### Added
-- 增加`Lock`组件
+- 新增`Lock`组件
+- 新增`Cron任务调度系统`
 
 ### Changed
 

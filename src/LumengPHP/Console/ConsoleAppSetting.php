@@ -51,6 +51,7 @@ class ConsoleAppSetting implements ConsoleAppSettingInterface {
         //Console应用系统自带的一些命令
         $defaultCmds = [
             'job:listen' => \LumengPHP\Console\Commands\Job\Listen::class,
+            'cron:schedule' => \LumengPHP\Console\Commands\Cron\Schedule::class,
         ];
 
         //应用特定的命令
